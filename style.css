@@ -1,0 +1,61 @@
+html, body{
+    background-color: rgb(255, 154, 3);
+    height: 100%;
+    font-family: emoji;
+}
+
+.header{
+    text-align: center;
+    margin: 0px;
+    height: 6%;
+}
+.restWalker_title{
+    height: 5%;
+}
+.restWalker_title_frame{
+    font-weight: bolder;
+    display: table;
+}
+.restWalker_title_label{
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+.restWalker_header{
+    width: 100%;
+    height: 8%;
+    padding: 1vh 0px;
+    text-align: center;
+}
+.restWalker_header_search{
+    display: table;
+}
+#restWalker_header_search_label{
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+.restWalker_header_search_form{
+    padding: 0px;
+}
+
+/* .inputFrame{
+    height: 94%;
+}
+ */
+
+ #map_content{
+    width: 100%;
+    height: 40%;
+    overflow: auto;
+ }
+
+ #cluster_list{
+    background-color: white;
+ }
+
+
+ /* CSS 미세 조절 */
+ #padding_zero{
+    padding :0px!important;
+ }

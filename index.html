@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="./form.js"></script>
+    <script type="module" src="./parsing.js"></script>
+    <script type="module" src="./map.js"></script>
+
+    <!-- <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6562d56d984e149e99de83f1c6b79e98"></script>     -->
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6562d56d984e149e99de83f1c6b79e98&libraries=clusterer"></script>
+    <title>TEST-FROM-FOR-INSERT-DB</title>
+
+</head>
+<body>
+    <div class="row restWalker_title">
+        <div class="restWalker_title_frame">
+            <div class="restWalker_title_label">
+                 Crowd Walker
+            </div>
+        </div>
+    </div>
+
+    <div class="restWalker_header">
+        <div class="row" id="restWalker_header_frame">
+            <div id="padding_zero" class="col-1"></div>
+            <div id="padding_zero" class="col-4 restWalker_header_search">
+                <div id="restWalker_header_search_label" for="region" class="form-label">지역 설정:</div>
+            </div>
+            <div id="padding_zero" class="col-6 restWalker_header_search_form">
+                <form id="region_form">
+                    <select class="form-select" id="region_form_dong" name="region_form">
+                        <option value="hmd">해밀동</option>
+                        <option value="ard">아름동</option>
+                        <option value="ddd">도담동</option>
+                        <option value="gud">고운동</option>
+                        <option value="uzd">어진동</option>
+                        <option value="nsd">나성동</option>
+                        <option value="djd">다정동</option>
+                        <option value="hsd">한솔동</option>
+                        <option value="srd">새롬동</option>
+                    </select>                
+                </form>
+            </div>
+            <div id="padding_zero" class="col-1"></div>
+        </div>
+    </div>
+    <div id="map" style="width:100%;height:100%;"></div>
+    <div id="map_content">
+        
+    </div>
+ 
+ 
+    <footer></footer>
+    <script>
+
+        
+    </script>
+</body>
+</html>

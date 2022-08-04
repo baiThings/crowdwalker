@@ -1,0 +1,219 @@
+
+    <div class="inputFrame row">
+        <div class="col-12">
+              <!-- The Modal -->
+              <form id="form1" name="form1" class="was-validated">
+                <div class="mb-3 mt-3">
+                  <label for="pk" class="form-label">파티션키:</label>
+                  <input type="text" class="form-control" id="pk" placeholder="Enter pk" name="pk" required>
+                </div>
+                <div class="mb-3">
+                  <label for="crs" class="form-label">지리좌표계:</label>
+                  <input type="crs" class="form-control" id="crs" placeholder="Enter crs" name="crs" required>
+                </div>
+                <div class="mb-3">
+                    <label for="lat" class="form-label">위도:</label>
+                    <input type="lat" class="form-control" id="lat" placeholder="Enter lat" name="lat" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="lng" class="form-label">경도:</label>
+                    <input type="lng" class="form-control" id="lng" placeholder="Enter lng" name="lng" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="entryFind" class="form-label">주출입로접근성:</label>
+                    <select class="form-select" id="entryFind" name="entryFind">
+                        <option>YES</option>
+                        <option>NO</option>
+                    </select>
+                    <!-- <input type="text" class="form-control" id="entryFind" placeholder="Enter entryFind" name="entryFind" required> -->
+                </div>
+                <div class="mb-3">
+                    <label for="entryThold" class="form-label">입구문턱:</label>
+                    <select class="form-select" id="entryThold" name="entryThold">
+                        <option>YES</option>
+                        <option>NO</option>
+                    </select>
+                    <!-- <input type="text" class="form-control" id="entryThold" placeholder="Enter entryThold" name="entryThold" required> -->
+                </div>
+                <div class="mb-3">
+                    <label for="entryDotB" class="form-label">입구점자블록:</label>
+                    <select class="form-select" id="entryDotB" name="entryDotB">
+                        <option>YES</option>
+                        <option>NO</option>
+                    </select>
+                    <!-- <input type="text" class="form-control" id="entryDotB" placeholder="Enter entryDotB" name="entryDotB" required> -->
+                </div>
+                <div class="mb-3">
+                    <label for="entryDotS" class="form-label">입구점자표시판존재여부:</label>
+                    <select class="form-select" id="entryDotS" name="entryDotS">
+                        <option>YES</option>
+                        <option>NO</option>
+                    </select>
+                    <!-- <input type="text" class="form-control" id="entryDotS" placeholder="Enter entryDotS" name="entryDotS" required> -->
+                </div>
+                <div class="mb-3">
+                    <label for="entryAuto" class="form-label">입구자동문여부:</label>
+                    <select class="form-select" id="entryAuto" name="entryAuto">
+                        <option>YES</option>
+                        <option>NO</option>
+                    </select>
+                    <!-- <input type="text" class="form-control" id="entryAuto" placeholder="Enter entryAuto" name="entryAuto" required> -->
+                </div>
+                <div class="mb-3">
+                    <label for="entrySpace" class="form-label">입구폭:</label>
+                    <select class="form-select" id="entrySpace" name="entrySpace">
+                        <option>YES</option>
+                        <option>NO</option>
+                    </select>
+                    <!-- <input type="text" class="form-control" id="entrySpace" placeholder="Enter entrySpace" name="entrySpace" required> -->
+                </div>
+                <div class="mb-3">
+                    <label for="maleFamale" class="form-label">남여화장실최소수량:</label>
+                    <select class="form-select" id="maleFamale" name="maleFamale">
+                        <option>YES</option>
+                        <option>NO</option>
+                    </select>
+                    <!-- <input type="text" class="form-control" id="maleFamale" placeholder="Enter maleFamale" name="maleFamale" required> -->
+                </div>
+                <div class="mb-3">
+                    <label for="floarMatr" class="form-label">바닥재질방수처리여부:</label>
+                    <select class="form-select" id="floarMatr" name="floarMatr">
+                        <option>YES</option>
+                        <option>NO</option>
+                    </select>
+                    <!-- <input type="text" class="form-control" id="floarMatr" placeholder="Enter floarMatr" name="floarMatr" required> -->
+                </div>
+                <div class="mb-3">
+                    <label for="washExist" class="form-label">세면대존재여부:</label>
+                    <select class="form-select" id="washExist" name="washExist">
+                        <option>YES</option>
+                        <option>NO</option>
+                    </select>
+                    <!-- <input type="text" class="form-control" id="washExist" placeholder="Enter washExist" name="washExist" required> -->
+                </div>
+                <div class="mb-3">
+                    <label for="washMalF" class="form-label">세면대고장여부:</label>
+                    <select class="form-select" id="washMalF" name="washMalF">
+                        <option>YES</option>
+                        <option>NO</option>
+                    </select>
+                    <!-- <input type="text" class="form-control" id="washMalF" placeholder="Enter washMalF" name="washMalF" required> -->
+                </div>
+                <div class="mb-3">
+                    <label for="washEasy" class="form-label">세면대편의성여부:</label>
+                    <select class="form-select" id="washEasy" name="washEasy">
+                        <option>YES</option>
+                        <option>NO</option>
+                    </select>
+                    <!-- <input type="text" class="form-control" id="washEasy" placeholder="Enter washEasy" name="washEasy" required> -->
+                </div>
+                <div class="mb-3">
+                    <label for="handRailEX" class="form-label">핸드레일존재여부:</label>
+                    <select class="form-select" id="handRailEX" name="handRailEX">
+                        <option>YES</option>
+                        <option>NO</option>
+                    </select>
+                    <!-- <input type="text" class="form-control" id="handRailEX" placeholder="Enter handRailEX" name="handRailEX" required> -->
+                </div>
+                <div class="mb-3">
+                    <label for="handRailMF" class="form-label">핸드레일훼손여부:</label>
+                    <select class="form-select" id="handRailMF" name="handRailMF">
+                        <option>YES</option>
+                        <option>NO</option>
+                    </select>
+                    <!-- <input type="text" class="form-control" id="handRailMF" placeholder="Enter handRailMF" name="handRailMF" required> -->
+                </div>
+                <div class="mb-3">
+                    <label for="childKeepEX" class="form-label">기저귀교환대존재여부:</label>
+                    <select class="form-select" id="childKeepEX" name="childKeepEX">
+                        <option>YES</option>
+                        <option>NO</option>
+                    </select>
+                    <!-- <input type="text" class="form-control" id="childKeepEX" placeholder="Enter childKeepEX" name="childKeepEX" required> -->
+                </div>
+                <div class="mb-3">
+                    <label for="childKeepMF" class="form-label">기저귀교환대훼손여부:</label>
+                    <select class="form-select" id="childKeepMF" name="childKeepMF">
+                        <option>YES</option>
+                        <option>NO</option>
+                    </select>
+                    <!-- <input type="text" class="form-control" id="childKeepMF" placeholder="Enter childKeepMF" name="childKeepMF" required> -->
+                </div>
+                <div class="mb-3">
+                    <label for="backKeepEX" class="form-label">등받이존재여부:</label>
+                    <select class="form-select" id="backKeepEX" name="backKeepEX">
+                        <option>YES</option>
+                        <option>NO</option>
+                    </select>
+                    <!-- <input type="text" class="form-control" id="backKeepEX" placeholder="Enter backKeepEX" name="backKeepEX" required> -->
+                </div>
+                <div class="mb-3">
+                    <label for="backKeepMF" class="form-label">등받이고장여부:</label>
+                    <select class="form-select" id="backKeepMF" name="backKeepMF">
+                        <option>YES</option>
+                        <option>NO</option>
+                    </select>
+                    <!-- <input type="text" class="form-control" id="backKeepMF" placeholder="Enter backKeepMF" name="backKeepMF" required> -->
+                </div>
+                <div class="mb-3">
+                    <label for="trashBin" class="form-label">쓰레기통존재여부:</label>
+                    <select class="form-select" id="trashBin" name="trashBin">
+                        <option>YES</option>
+                        <option>NO</option>
+                    </select>
+                    <!-- <input type="text" class="form-control" id="trashBin" placeholder="Enter trashBin" name="trashBin" required> -->
+                </div>
+                <div class="mb-3">
+                    <label for="emerCall" class="form-label">비상벨존재여부:</label>
+                    <select class="form-select" id="emerCall" name="emerCall">
+                        <option>YES</option>
+                        <option>NO</option>
+                    </select>
+                    <!-- <input type="text" class="form-control" id="emerCall" placeholder="Enter emerCall" name="emerCall" required> -->
+                </div>
+                <div class="mb-3">
+                    <label for="cleanChartEx" class="form-label">청소점검표존재여부:</label>
+                    <select class="form-select" id="cleanChartEx" name="cleanChartEx">
+                        <option>YES</option>
+                        <option>NO</option>
+                    </select>
+                    <!-- <input type="text" class="form-control" id="cleanChartEx" placeholder="Enter cleanChartEx" name="cleanChartEx" required> -->
+                </div>
+                <div class="mb-3">
+                    <label for="cleanChartMg" class="form-label">청소점검표관리여부:</label>
+                    <select class="form-select" id="cleanChartMg" name="cleanChartMg">
+                        <option>YES</option>
+                        <option>NO</option>
+                    </select>
+                    <!-- <input type="text" class="form-control" id="cleanChartMg" placeholder="Enter cleanChartMg" name="cleanChartMg" required> -->
+                </div>
+                <div class="mb-3">
+                    <label for="cleanToolLf" class="form-label">청소도구방치:</label>
+                    <select class="form-select" id="cleanToolLf" name="cleanToolLf">
+                        <option>YES</option>
+                        <option>NO</option>
+                    </select>
+                    <!-- <input type="text" class="form-control" id="cleanToolLf" placeholder="Enter cleanToolLf" name="cleanToolLf" required> -->
+                </div>
+                <div class="mb-3">
+                    <label for="noclean" class="form-label">청소안됨:</label>
+                    <select class="form-select" id="noclean" name="noclean">
+                        <option>YES</option>
+                        <option>NO</option>
+                    </select>
+                    <!-- <input type="text" class="form-control" id="noclean" placeholder="Enter noclean" name="noclean" required> -->
+                </div>
+                <div class="mb-3">
+                    <label for="noSupplies" class="form-label">비품없음:</label>
+                    <select class="form-select" id="noSupplies" name="noSupplies">
+                        <option>YES</option>
+                        <option>NO</option>
+                    </select>
+                    <!-- <input type="text" class="form-control" id="noSupplies" placeholder="Enter noSupplies" name="noSupplies" required> -->
+                </div>
+              <button type="submit" class="btn btn-primary" onclick="auth(); return false">SUBMIT</button>
+            </form>
+            <button type="button" id="modal_close_btn">닫기</button>
+           
+        </div>      
+    </div>
