@@ -23,7 +23,6 @@ fetch('./resource/toiletData.json')
         // console.log(data['pk'])
         var keys = Object.keys(data)
         for (var i=0; i<keys.length; i++) {
-            console.log(data[key])
             var key = keys[i];
             parseToiletData.set(key, data[key])
         }

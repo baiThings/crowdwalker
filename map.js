@@ -1,4 +1,5 @@
 // import { toilet_form } from './form.js';
+import {submitData, deleteNode, formFixed, formSelect } from './form.js';
 import parseCsv, { parseToiletData } from './parsing.js'
 
 var container = document.getElementById('map');
@@ -16,47 +17,39 @@ var clusterer = new kakao.maps.MarkerClusterer({
     minLevel: 1 // 클러스터 할 최소 지도 레벨 
 });
 
-
+// 마커 정보를 가져온다. 
 function getMarkerInfo(marker){
-
-    var marker_info = items.get(marker.getTitle())[1]
     return function() {
-        var mapContainer = document.getElementById('map');
-        mapContainer.style.height = '50%'; 
-        var parentnode = document.getElementById('map_content')
-        var element = document.getElementById('content_list')
-        while(element){
-            try {
-                element = document.getElementById('content_list')
-                element.parentNode.removeChild(element)
-            } catch (error) {
-                console.error("element is null");
+        var markerInfo = items.get(marker.getTitle())[1]
+        console.log(markerInfo)
+        deleteNode()
+        var formlist = '<form id="form1" name="form1" class="was-validated">'
+        for (var [key, value] of parseToiletData) {
+            if(['pk', 'crs', 'lat', 'lng', 'code'].includes(key)){
+                formlist += formFixed(key, value, markerInfo)
+            }else{
+                formlist += formSelect(key, value, markerInfo)            
             }
         }
-        for (var [key, value] of parseToiletData) {
-            var newNode = document.createElement('div')
-            // newNode.innerHTML="<div id='content_list'>"+ key +' : ' + value +'</div>'
-            newNode.innerHTML=                 
-                '<div class="mb-3">' + 
-                '   <label for='+ key + ' class="form-label">'+value+':</label>' + 
-                '   <select class="form-select" id='+ key+ ' name='+ key+ '>' +
-                '       <option>YES</option>' + 
-                '       <option>NO</option>' + 
-                '   </select> </div>'
-            parentnode.appendChild(newNode)
-            console.log('key : ' + key);
-            console.log('value : ' + value);
-        }
-
-        
-        // for(var key in marker_info){
-        //     var newNode = document.createElement('div')
-        //     newNode.innerHTML="<div id='content_list'>"+ key +' : ' + marker_info[key] +'</div>'
-        //     parentnode.appendChild(newNode)
-        // }
+        formlist +=
+        '<button id="button-markerinfo" type="button" class="btn btn-primary">SUBMIT</button>' + 
+        '</form>'
+        var newNode = document.getElementById('content_list')
+        newNode.innerHTML=formlist
+        document.getElementById("button-markerinfo").addEventListener('click', function(event){
+            submitData()
+            marker.setImage(markerImageGreenMarker)
+        })
     }  
 }
-
+function makeMarker(pos, pk, img){
+    return new kakao.maps.Marker({
+        // map: map, // 마커를 표시할 지도
+        position: pos, // 마커를 표시할 위치
+        title : pk, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다  
+        image : img
+    });
+}
 var items = new Map();
 var tmpdata;
 fetch('./sj3.csv')
@@ -67,16 +60,7 @@ fetch('./sj3.csv')
     for (var i = 0; i < tmpdata.length; i ++) {
         // 마커를 생성합니다
         if(tmpdata[i]['lat'] && tmpdata[i]['lng']){
-            var marker = new kakao.maps.Marker({
-                // map: map, // 마커를 표시할 지도
-                position: new kakao.maps.LatLng(tmpdata[i]['lng'], tmpdata[i]['lat']), // 마커를 표시할 위치
-                title : tmpdata[i]['pk'], // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다  
-                image : markerImageRedMarker
-            });
-            // 마커가 지도 위에 표시되도록 설정합니다
-            // marker.setMap(map);
-            // 마커가 드래그 가능하도록 설정합니다 
-            // marker.setDraggable(true); 
+            var marker = makeMarker(new kakao.maps.LatLng(tmpdata[i]['lng'], tmpdata[i]['lat']),tmpdata[i]['pk'],markerImageRedMarker)
             markers.push(marker);
             items.set(tmpdata[i]['pk'], [marker, tmpdata[i]]);
             // kakao.maps.event.addListener(marker, 'dragend', getMarkerInfo(marker));
@@ -88,28 +72,25 @@ fetch('./sj3.csv')
     clusterer.addMarkers(markers);
   })
 
+// 마커리스트를 가져온다. 
+function getMarkerList(markers){
+    deleteNode()
+    var newNode = ''
+    var parentNode = document.getElementById('content_list')
+    for(var i = 0; i < markers.length; i++){
+        var toilet_dongName_list = items.get(markers[i].getTitle())[1]["dongNm"]
+        newNode = document.createElement('div')
+        newNode.setAttribute('id', 'content_list marker_list')
+        newNode.innerHTML=toilet_dongName_list
+        newNode.addEventListener("click",getMarkerInfo(markers[i]), false )
+        parentNode.appendChild(newNode)
+        // markerList += '<div id="content_list marker_list onClick="getMarkerInfo(\'' + markers[i] + '\')">'+toilet_dongName_list+'</div>'
+    }
+}  
+// 클러스터 클릭 시 이벤트
 // 마커 클러스터러에 클릭이벤트를 등록합니다
 // 마커 클러스터러를 생성할 때 disableClickZoom을 true로 설정하지 않은 경우
 // 이벤트 헨들러로 cluster 객체가 넘어오지 않을 수도 있습니다
-function getMarkerList(markers){
-    var parentnode = document.getElementById('map_content')
-    var element = document.getElementById('content_list')
-    while(element){
-        try {
-            element = document.getElementById('content_list')
-            element.parentNode.removeChild(element)
-        } catch (error) {
-            console.error("element is null");
-        }
-    }
-    for(var i = 0; i < markers.length; i++){
-        console.log(items.get(markers[i].getTitle())[1]["dongNm"])
-        var toilet_dongName_list = items.get(markers[i].getTitle())[1]["dongNm"]
-        var newNode = document.createElement('div')
-        newNode.innerHTML="<div id='content_list'>"+toilet_dongName_list+"</div>"
-        parentnode.appendChild(newNode)
-    }
-}  
 kakao.maps.event.addListener(clusterer, 'clusterclick', function(cluster) {
     var level = map.getLevel();
     if(level == 1){
@@ -131,15 +112,7 @@ kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
 
 // 지도가 이동, 확대, 축소로 인해 중심좌표가 변경되면 마지막 파라미터로 넘어온 함수를 호출하도록 이벤트를 등록합니다
 kakao.maps.event.addListener(map, 'center_changed', function() {
-    // parseToiletData.forEach(function(value, key) {
-    //     console.log('key : ' + key);
-    //     console.log('value : ' + value);
-    //   });
-    for (var [key, value] of parseToiletData) {
-    console.log('key : ' + key);
-    console.log('value : ' + value);
-    }
-    // console.log(parseToiletData)
+
 });
 // 커스텀 오버레이를 닫기 위해 호출되는 함수입니다 
 function mapResize() {
