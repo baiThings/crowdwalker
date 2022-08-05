@@ -1,4 +1,4 @@
-pk,mainPurpsCd,mainPurpsCdNm,heit,grndFlrCnt,ugrndFlrCnt,crtnDay,rnum,platPlc,sigunguCd,bjdongCd,platGbCd,bun,ji,mgmBldrgstPk,newPlatPlc,bldNm,splotNm,block,lot,naRoadCd,naBjdongCd,naUgrndCd,naMainBun,naSubBun,dongNm,mainAtchGbCd,mainAtchGbCdNm,crs,lat,lng,e
+pk,mainPurpsCd,mainPurpsCdNm,heit,grndFlrCnt,ugrndFlrCnt,crtnDay,rnum,platPlc,sigunguCd,bjdongCd,platGbCd,bun,ji,mgmBldrgstPk,newPlatPlc,bldNm,splotNm,block,lot,naRoadCd,naBjdongCd,naUgrndCd,naMainBun,naSubBun,dongNm,mainAtchGbCd,mainAtchGbCdNm,crs,lng,lat,e
 0,10000,교육연구시설,16.45,4,1,20201118,1,세종특별자치시  반곡동 42-9번지,36110,10100,0,42,9,36110-5000167589,세종특별자치시  반곡2길 21,솔빛 초등학교,,,,3.61E+11,10101,0,21,0,,0,주건축물,EPSG:4326,127.3123513,36.49587467,
 1,1000,단독주택,0,2,0,20201026,2,세종특별자치시  반곡동 146-75번지,36110,10100,0,146,75,36110-19639,세종특별자치시  석교길 38-10,,,,,3.61E+11,10101,0,38,10,,0,주건축물,,,,status : no
 2,21000,동.식물관련시설,6.5,1,0,20201026,3,세종특별자치시  반곡동 146-79번지,36110,10100,0,146,79,36110-3495,세종특별자치시  석교길 32-14,,,,,3.61E+11,10101,0,32,14,1동,0,주건축물,,,,status : no

@@ -26,9 +26,6 @@ export function submitData() {
     //     .then((data) => {
     //     });
 } 
-
-
-
 export function formFixed(key, value, markerInfo){  
     try {
         return '<div class="mb-3 mt-3" id="content_list">'+

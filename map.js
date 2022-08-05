@@ -1,6 +1,6 @@
 // import { toilet_form } from './form.js';
 import {submitData, deleteNode, formFixed, formSelect } from './form.js';
-import parseCsv, { parseToiletData } from './parsing.js'
+import parseCsv, { parseToiletData, totalData} from './parsing.js'
 
 var container = document.getElementById('map');
 var options = {
@@ -8,6 +8,7 @@ var options = {
     level: 5
 };
 var map = new kakao.maps.Map(container, options);
+console.log(map)
 
 // 마커 클러스터러를 생성합니다 
 var clusterer = new kakao.maps.MarkerClusterer({
@@ -16,7 +17,26 @@ var clusterer = new kakao.maps.MarkerClusterer({
     disableClickZoom : true,
     minLevel: 2 // 클러스터 할 최소 지도 레벨 
 });
-
+let tmpMarker;
+function changeMarkerDragable(marker){
+    return function(){
+        marker.setZIndex(2);
+        marker.setImage(markerImageGreyMarker);
+        marker.setDraggable(true);
+        map.setLevel(1)
+        tmpMarker = marker.getPosition();
+        // 도착 마커에 dragend 이벤트를 등록합니다
+        kakao.maps.event.addListener(marker, 'dragend', function() {
+            try {
+                document.getElementById('lat').value = marker.getPosition().getLat();
+                document.getElementById('lng').value = marker.getPosition().getLng();
+                // marker.setPosition(marker.getPosition())
+            } catch (error) {
+                console.log(error)
+            }
+        });
+    }
+}
 // 마커 정보를 가져온다. 
 function getMarkerInfo(marker){
     return function() {
@@ -51,26 +71,26 @@ function makeMarker(pos, pk, img){
     });
 }
 var items = new Map();
-var tmpdata;
-fetch('./sj3.csv')
-  .then((response) => response.text())
-  .then((data) => {
-    tmpdata = parseCsv(data);
-    var markers= [];
-    for (var i = 0; i < tmpdata.length; i ++) {
+
+let markers= [];
+window.onload=function(){
+   makeTotalData()
+   clusterer.addMarkers(markers);
+}
+
+
+function makeTotalData(){
+    for (var i = 0; i < totalData.length; i ++) {
         // 마커를 생성합니다
-        if(tmpdata[i]['lat'] && tmpdata[i]['lng']){
-            var marker = makeMarker(new kakao.maps.LatLng(tmpdata[i]['lng'], tmpdata[i]['lat']),tmpdata[i]['pk'],markerImageRedMarker)
+        if(totalData[i]['lat'] && totalData[i]['lng']){
+            var marker = makeMarker(new kakao.maps.LatLng(totalData[i]['lat'], totalData[i]['lng']),totalData[i]['pk'],markerImageRedMarker)
             markers.push(marker);
-            items.set(tmpdata[i]['pk'], [marker, tmpdata[i]]);
+            items.set(totalData[i]['pk'], [marker, totalData[i]]);
             // kakao.maps.event.addListener(marker, 'dragend', getMarkerInfo(marker));
             kakao.maps.event.addListener(marker, 'click', getMarkerInfo(marker));
         }    
     }
-    console.log(items)
-    console.log("setting done!")
-    clusterer.addMarkers(markers);
-  })
+}
 
 // 마커리스트를 가져온다. 
 function getMarkerList(markers){
@@ -83,7 +103,7 @@ function getMarkerList(markers){
         newNode.setAttribute('id', 'content_list marker_list')
         newNode.innerHTML=toilet_dongName_list
         newNode.addEventListener("click",getMarkerInfo(markers[i]), false)
- 
+        newNode.addEventListener("click",changeMarkerDragable(markers[i]), false)
         parentNode.appendChild(newNode)
         // markerList += '<div id="content_list marker_list onClick="getMarkerInfo(\'' + markers[i] + '\')">'+toilet_dongName_list+'</div>'
     }
@@ -104,14 +124,16 @@ kakao.maps.event.addListener(clusterer, 'clusterclick', function(cluster) {
     map.setLevel(level, {anchor: cluster.getCenter()});
 });
 
-kakao.maps.event.addListener(map, 'click', function(mouseEvent) {        
-    var latlng = mouseEvent.latLng;
-    var message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, ';
-    message += '경도는 ' + latlng.getLng() + ' 입니다';
-    console.log(message)
+kakao.maps.event.addListener(map, 'click', function() {   
+    markers = []
+    makeTotalData()
+    clusterer.clear();
+    setTimeout(function(){
+        clusterer.addMarkers(markers);
+        clusterer.redraw();
+    }, 100)
     mapResize()
 });
-
 // 지도가 이동, 확대, 축소로 인해 중심좌표가 변경되면 마지막 파라미터로 넘어온 함수를 호출하도록 이벤트를 등록합니다
 kakao.maps.event.addListener(map, 'center_changed', function() {
 

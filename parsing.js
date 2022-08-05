@@ -1,3 +1,4 @@
+
  export default function parseCsv(data){
     const rows = data.split("\r\n")
 
@@ -26,5 +27,13 @@ fetch('./resource/toiletData.json')
             var key = keys[i];
             parseToiletData.set(key, data[key])
         }
+})
+export let totalData = "";
+fetch('./sj3.csv')
+    .then((response) => response.text())
+    .then((data) => {
+        totalData = parseCsv(data);
+        console.log("total data setting done!")
+        console.log(totalData)
 })
 
