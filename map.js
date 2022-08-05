@@ -17,6 +17,24 @@ var clusterer = new kakao.maps.MarkerClusterer({
     minLevel: 2 // 클러스터 할 최소 지도 레벨 
 });
 
+function changeMarkerDragable(marker){
+    return function(){
+        marker.setZIndex(2);
+        marker.setImage(markerImageGreyMarker);
+        marker.setDraggable(true);
+        map.setLevel(1)
+        
+        // 도착 마커에 dragend 이벤트를 등록합니다
+        kakao.maps.event.addListener(marker, 'dragend', function() {
+            try {
+                document.getElementById('lat').value = marker.getPosition().getLat();
+                document.getElementById('lng').value = marker.getPosition().getLng();
+            } catch (error) {
+                console.log(error)
+            }
+        });
+    }
+}
 // 마커 정보를 가져온다. 
 function getMarkerInfo(marker){
     return function() {
@@ -60,7 +78,7 @@ fetch('./sj3.csv')
     for (var i = 0; i < tmpdata.length; i ++) {
         // 마커를 생성합니다
         if(tmpdata[i]['lat'] && tmpdata[i]['lng']){
-            var marker = makeMarker(new kakao.maps.LatLng(tmpdata[i]['lng'], tmpdata[i]['lat']),tmpdata[i]['pk'],markerImageRedMarker)
+            var marker = makeMarker(new kakao.maps.LatLng(tmpdata[i]['lat'], tmpdata[i]['lng']),tmpdata[i]['pk'],markerImageRedMarker)
             markers.push(marker);
             items.set(tmpdata[i]['pk'], [marker, tmpdata[i]]);
             // kakao.maps.event.addListener(marker, 'dragend', getMarkerInfo(marker));
@@ -83,7 +101,8 @@ function getMarkerList(markers){
         newNode.setAttribute('id', 'content_list marker_list')
         newNode.innerHTML=toilet_dongName_list
         newNode.addEventListener("click",getMarkerInfo(markers[i]), false)
- 
+        newNode.addEventListener("click",changeMarkerDragable(markers[i]), false)
+
         parentNode.appendChild(newNode)
         // markerList += '<div id="content_list marker_list onClick="getMarkerInfo(\'' + markers[i] + '\')">'+toilet_dongName_list+'</div>'
     }
@@ -104,14 +123,9 @@ kakao.maps.event.addListener(clusterer, 'clusterclick', function(cluster) {
     map.setLevel(level, {anchor: cluster.getCenter()});
 });
 
-kakao.maps.event.addListener(map, 'click', function(mouseEvent) {        
-    var latlng = mouseEvent.latLng;
-    var message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, ';
-    message += '경도는 ' + latlng.getLng() + ' 입니다';
-    console.log(message)
+kakao.maps.event.addListener(map, 'click', function() {        
     mapResize()
 });
-
 // 지도가 이동, 확대, 축소로 인해 중심좌표가 변경되면 마지막 파라미터로 넘어온 함수를 호출하도록 이벤트를 등록합니다
 kakao.maps.event.addListener(map, 'center_changed', function() {
 
