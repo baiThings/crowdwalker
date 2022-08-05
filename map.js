@@ -30,7 +30,6 @@ function changeMarkerDragable(marker){
             try {
                 document.getElementById('lat').value = marker.getPosition().getLat();
                 document.getElementById('lng').value = marker.getPosition().getLng();
-                // marker.setPosition(marker.getPosition())
             } catch (error) {
                 console.log(error)
             }
