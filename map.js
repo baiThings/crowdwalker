@@ -14,14 +14,14 @@ var clusterer = new kakao.maps.MarkerClusterer({
     map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체 
     averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정 
     disableClickZoom : true,
-    minLevel: 1 // 클러스터 할 최소 지도 레벨 
+    minLevel: 2 // 클러스터 할 최소 지도 레벨 
 });
 
 // 마커 정보를 가져온다. 
 function getMarkerInfo(marker){
     return function() {
         var markerInfo = items.get(marker.getTitle())[1]
-        console.log(markerInfo)
+        mapChangeSize(marker.getPosition())
         deleteNode()
         var formlist = '<form id="form1" name="form1" class="was-validated">'
         for (var [key, value] of parseToiletData) {
@@ -82,7 +82,8 @@ function getMarkerList(markers){
         newNode = document.createElement('div')
         newNode.setAttribute('id', 'content_list marker_list')
         newNode.innerHTML=toilet_dongName_list
-        newNode.addEventListener("click",getMarkerInfo(markers[i]), false )
+        newNode.addEventListener("click",getMarkerInfo(markers[i]), false)
+ 
         parentNode.appendChild(newNode)
         // markerList += '<div id="content_list marker_list onClick="getMarkerInfo(\'' + markers[i] + '\')">'+toilet_dongName_list+'</div>'
     }
@@ -93,10 +94,11 @@ function getMarkerList(markers){
 // 이벤트 헨들러로 cluster 객체가 넘어오지 않을 수도 있습니다
 kakao.maps.event.addListener(clusterer, 'clusterclick', function(cluster) {
     var level = map.getLevel();
-    if(level == 1){
+    mapResize()
+    if(level == 2){
+        mapChangeSize(cluster.getMarkers()[0].getPosition())
         getMarkerList(cluster.getMarkers())
-        var mapContainer = document.getElementById('map');
-        mapContainer.style.height = '50%'; 
+        // map.panTo(new kakao.maps.LatLng(cluster.getMarkers()[0].getPosition().getLat(), cluster.getMarkers()[0].getPosition().getLng()));            
     }else level -= 1; // 현재 지도 레벨에서 1레벨 확대한 레벨
     // 지도를 클릭된 클러스터의 마커의 위치를 기준으로 확대합니다
     map.setLevel(level, {anchor: cluster.getCenter()});
@@ -114,10 +116,20 @@ kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
 kakao.maps.event.addListener(map, 'center_changed', function() {
 
 });
-// 커스텀 오버레이를 닫기 위해 호출되는 함수입니다 
+// 지도 사이즈 변경
 function mapResize() {
     var mapContainer = document.getElementById('map');
     mapContainer.style.height = '100%';   
+    map.relayout();
+}
+
+function mapChangeSize(pos){
+    var mapContainer = document.getElementById('map');
+    mapContainer.style.height = '50%';   
+    map.relayout();
+    // map.panTo(pos);
+      // 중심으로 이동
+    map.setCenter(pos)
 }
 // 동별로 중심 좌표 찍어주기.
 var element = document.getElementById("region_form_dong");
@@ -127,6 +139,7 @@ element.onchange = function() {
     // 지도 중심을 부드럽게 이동시킵니다
     // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다
     map.panTo(dongToJson.get(dongNameValue));            
+  
 }  
 
 // 동 위치 정보 json
@@ -146,9 +159,11 @@ fetch("./dongTojson.json")
 // 마커 이미지 
 var imageSrc_RedMarker = './resource/marker_red.png', // 마커이미지의 주소입니다
     imageSrc_GreenMarker = './resource/marker_green.png', 
+    imageSrc_GreyMarker = './resource/marker_grey.png',
     imageSize = new kakao.maps.Size(34, 34), // 마커이미지의 크기입니다
     imageOption = {offset: new kakao.maps.Point(10, 20)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다. (+왼쪽, +위쪽)
       
 // 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
 var markerImageRedMarker = new kakao.maps.MarkerImage(imageSrc_RedMarker, imageSize, imageOption),
-    markerImageGreenMarker = new kakao.maps.MarkerImage(imageSrc_GreenMarker, imageSize, imageOption)
+    markerImageGreenMarker = new kakao.maps.MarkerImage(imageSrc_GreenMarker, imageSize, imageOption),
+    markerImageGreyMarker = new kakao.maps.MarkerImage(imageSrc_GreyMarker, imageSize, imageOption)

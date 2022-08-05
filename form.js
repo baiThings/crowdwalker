@@ -51,8 +51,6 @@ export function formFixed(key, value, markerInfo){
  }
 
  export function deleteNode(){
-    var mapContainer = document.getElementById('map');
-    mapContainer.style.height = '50%'; 
     var parentnode = document.getElementById('map_content')
     var element = document.getElementById('content_list')
     while(element){
