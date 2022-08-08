@@ -42,7 +42,11 @@ function getMarkerInfo(marker){
         var markerInfo = items.get(marker.getTitle())[1]
         mapChangeSize(marker.getPosition())
         deleteNode()
-        var formlist = '<form id="form1" name="form1" class="was-validated">'
+        var formBldNm = "<div id='marker-title'>" + markerInfo['bldNm'] + " " +  markerInfo['dongNm'] + "</div>"
+        var formlist = formBldNm + '<form id="form1" name="form1" class="was-validated">'
+        console.log(markerInfo)
+
+        console.log(formBldNm)
         for (var [key, value] of parseToiletData) {
             if(['pk', 'crs', 'lat', 'lng', 'code'].includes(key)){
                 formlist += formFixed(key, value, markerInfo)
@@ -71,6 +75,13 @@ function makeMarker(pos, pk, img){
     });
 }
 
+function makeInfoWindow(con){
+    let tmp = '<div id="info-title">' + con +'</div>'
+    return new kakao.maps.InfoWindow({
+        content: tmp // 인포윈도우에 표시할 내용
+    });
+}
+
 var items = new Map();
 
 let markers= [];
@@ -86,20 +97,35 @@ function makeTotalData(){
         if(totalData[i]['lat'] && totalData[i]['lng']){
             var marker = makeMarker(new kakao.maps.LatLng(totalData[i]['lat'], totalData[i]['lng']),totalData[i]['pk'],markerImageRedMarker)
             markers.push(marker);
+            // var info = makeInfoWindow(totalData[i]['bldNm'] + " " + totalData[i]['dongNm'])
             items.set(totalData[i]['pk'], [marker, totalData[i]]);
             // kakao.maps.event.addListener(marker, 'dragend', getMarkerInfo(marker));
             kakao.maps.event.addListener(marker, 'click', getMarkerInfo(marker));
+            // kakao.maps.event.addListener(marker, 'mouseover', makeOverListener(map, marker, info));
+            // kakao.maps.event.addListener(marker, 'mouseout', makeOutListener(info));
         }    
     }
 }
+// 인포윈도우를 표시하는 클로저를 만드는 함수입니다 
+function makeOverListener(map, marker, infowindow) {
+    return function() {
+        infowindow.open(map, marker);
+    };
+}
 
+// 인포윈도우를 닫는 클로저를 만드는 함수입니다 
+function makeOutListener(infowindow) {
+    return function() {
+        infowindow.close();
+    };
+}
 // 마커리스트를 가져온다. 
 function getMarkerList(markers){
     deleteNode()
     var newNode = ''
     var parentNode = document.getElementById('content_list')
     for(var i = 0; i < markers.length; i++){
-        var toilet_dongName_list = items.get(markers[i].getTitle())[1]["newPlatPlc"]
+        var toilet_dongName_list = items.get(markers[i].getTitle())[1]["bldNm"]
         toilet_dongName_list += " " + items.get(markers[i].getTitle())[1]["dongNm"]
         newNode = document.createElement('div')
         newNode.setAttribute('id', 'content_list marker_list')
