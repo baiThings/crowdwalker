@@ -51,10 +51,11 @@ function getMarkerInfo(marker){
             }
         }
         formlist +=
-        '<button id="button-markerinfo" type="button" class="btn btn-primary">SUBMIT</button>' + 
+        '<div id="button-wrapper"><button id="button-markerinfo" type="button" class="btn btn-primary">SUBMIT</button></div>' + 
         '</form>'
         var newNode = document.getElementById('content_list')
         newNode.innerHTML=formlist
+        newNode.style.padding="0px 5vw"
         document.getElementById("button-markerinfo").addEventListener('click', function(event){
             submitData()
             marker.setImage(markerImageGreenMarker)
@@ -69,6 +70,7 @@ function makeMarker(pos, pk, img){
         image : img
     });
 }
+
 var items = new Map();
 
 let markers= [];
@@ -97,9 +99,12 @@ function getMarkerList(markers){
     var newNode = ''
     var parentNode = document.getElementById('content_list')
     for(var i = 0; i < markers.length; i++){
-        var toilet_dongName_list = items.get(markers[i].getTitle())[1]["dongNm"]
+        var toilet_dongName_list = items.get(markers[i].getTitle())[1]["newPlatPlc"]
+        toilet_dongName_list += " " + items.get(markers[i].getTitle())[1]["dongNm"]
         newNode = document.createElement('div')
         newNode.setAttribute('id', 'content_list marker_list')
+        newNode.style.color='white'
+        newNode.style.fontSize='4vw'
         newNode.innerHTML=toilet_dongName_list
         newNode.addEventListener("click",getMarkerInfo(markers[i]), false)
         newNode.addEventListener("click",changeMarkerDragable(markers[i]), false)
@@ -124,29 +129,43 @@ kakao.maps.event.addListener(clusterer, 'clusterclick', function(cluster) {
 });
 
 kakao.maps.event.addListener(map, 'click', function() {   
-    markers = []
-    makeTotalData()
+    deleteNode();
+    markers = [];
+    makeTotalData();
     clusterer.clear();
-    setTimeout(function(){
-        clusterer.addMarkers(markers);
-        clusterer.redraw();
-    }, 100)
-    mapResize()
+    clusterer.addMarkers(markers);
+    clusterer.redraw();
+    // setTimeout(function(){
+
+    // }, 10)
+    mapResize();
 });
 // 지도가 이동, 확대, 축소로 인해 중심좌표가 변경되면 마지막 파라미터로 넘어온 함수를 호출하도록 이벤트를 등록합니다
 kakao.maps.event.addListener(map, 'center_changed', function() {
 
 });
+// 터치 이벤트 적용 
+document.getElementById('map_content').addEventListener('click', function(e){
+    console.log(document.querySelectorAll("input"))
+    let inputDiv = document.querySelectorAll("input")
+    for(let i = 0; i < inputDiv.length;i++){
+        if(inputDiv[i] == e.target) return;
+    }
+    mapResize();
+})
 // 지도 사이즈 변경
 function mapResize() {
     var mapContainer = document.getElementById('map');
-    mapContainer.style.height = '100%';   
+    mapContainer.style.height = '87%'; 
+    document.getElementById('map_content').style.height='0%'; 
+    // mapContainer 
     map.relayout();
 }
 
 function mapChangeSize(pos){
     var mapContainer = document.getElementById('map');
     mapContainer.style.height = '50%';   
+    document.getElementById('map_content').style.height='37%';
     map.relayout();
     // map.panTo(pos);
       // 중심으로 이동
@@ -188,3 +207,5 @@ var imageSrc_RedMarker = './resource/marker_red.png', // 마커이미지의 주�
 var markerImageRedMarker = new kakao.maps.MarkerImage(imageSrc_RedMarker, imageSize, imageOption),
     markerImageGreenMarker = new kakao.maps.MarkerImage(imageSrc_GreenMarker, imageSize, imageOption),
     markerImageGreyMarker = new kakao.maps.MarkerImage(imageSrc_GreyMarker, imageSize, imageOption)
+
+    

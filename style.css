@@ -2,6 +2,7 @@ html, body{
     background-color: rgb(255, 154, 3);
     height: 100%;
     font-family: emoji;
+    overscroll-behavior-y: none;
 }
 
 .header{
@@ -46,16 +47,32 @@ html, body{
 
  #map_content{
     width: 100%;
-    height: 40%;
+    /* height: 40%; */
     overflow: auto;
  }
-
+ #map_content::-webkit-scrollbar {
+    display: none;
+  }
  #cluster_list{
     background-color: white;
  }
 
-
+/* map 사이즈 조절 */
+#map{
+    width: 100%;
+    height: 86%;
+    transition-property:height;
+    transition-duration:1s;
+    margin-top:1vh;
+}
  /* CSS 미세 조절 */
  #padding_zero{
     padding :0px!important;
  }
+
+#margin_zero{
+    margin : 0px!important;
+}
+#button-wrapper{
+    text-align: center;
+}
