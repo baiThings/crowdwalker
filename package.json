@@ -2,11 +2,16 @@
   "name": "crowd-walker",
   "version": "1.0.0",
   "description": "",
-  "main": "index.html",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "<qhftkf1@naver.com>",
   "license": "ISC",
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "serve": "^14.0.1",
+    "yarn": "^1.22.19"
+  },
+  "repository": "https://github.com/BasiThings/crowdwalker.git"
 }

@@ -92,7 +92,7 @@ window.onload=function(){
 
 
 function makeTotalData(){
-    for (var i = 0; i < totalData.length; i ++) {
+    for (var i = 0; i < 200; i ++) {
         // 마커를 생성합니다
         if(totalData[i]['lat'] && totalData[i]['lng']){
             var marker = makeMarker(new kakao.maps.LatLng(totalData[i]['lat'], totalData[i]['lng']),totalData[i]['pk'],markerImageRedMarker)
@@ -107,18 +107,18 @@ function makeTotalData(){
     }
 }
 // 인포윈도우를 표시하는 클로저를 만드는 함수입니다 
-function makeOverListener(map, marker, infowindow) {
-    return function() {
-        infowindow.open(map, marker);
-    };
-}
+// function makeOverListener(map, marker, infowindow) {
+//     return function() {
+//         infowindow.open(map, marker);
+//     };
+// }
 
 // 인포윈도우를 닫는 클로저를 만드는 함수입니다 
-function makeOutListener(infowindow) {
-    return function() {
-        infowindow.close();
-    };
-}
+// function makeOutListener(infowindow) {
+//     return function() {
+//         infowindow.close();
+//     };
+// }
 // 마커리스트를 가져온다. 
 function getMarkerList(markers){
     deleteNode()
@@ -130,7 +130,7 @@ function getMarkerList(markers){
         newNode = document.createElement('div')
         newNode.setAttribute('id', 'content_list marker_list')
         newNode.style.color='white'
-        newNode.style.fontSize='4vw'
+        newNode.style.fontSize='2vw'
         newNode.innerHTML=toilet_dongName_list
         newNode.addEventListener("click",getMarkerInfo(markers[i]), false)
         newNode.addEventListener("click",changeMarkerDragable(markers[i]), false)

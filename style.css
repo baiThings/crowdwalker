@@ -5,6 +5,9 @@ html, body{
     font-size: 2.5vh;
     overscroll-behavior-y: none;
 }
+body::-webkit-scrollbar {
+    display: none;
+}
 
 .header{
     text-align: center;
