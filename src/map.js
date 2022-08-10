@@ -1,17 +1,19 @@
 // import { toilet_form } from './form.js';
 import {submitData, deleteNode, formFixed, formSelect } from './form.js';
-import parseCsv, { parseToiletData, totalData} from './parsing.js'
+import { makeMarker, spreadMarkers } from './marker.js';
+import { getMarkerKey, parseToiletData, totalData} from './store.js';
 
 var container = document.getElementById('map');
 var options = {
-    center: new kakao.maps.LatLng(36.480069682512664, 127.29019964537333),
+    // center: new kakao.maps.LatLng(36.480069682512664, 127.29019964537333),
+    center: new kakao.maps.LatLng(37.5666805, 126.9784147),
     level: 5
 };
 var map = new kakao.maps.Map(container, options);
 console.log(map)
 
 // 마커 클러스터러를 생성합니다 
-var clusterer = new kakao.maps.MarkerClusterer({
+export var clusterer = new kakao.maps.MarkerClusterer({
     map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체 
     averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정 
     disableClickZoom : true,
@@ -66,14 +68,6 @@ function getMarkerInfo(marker){
         })
     }  
 }
-function makeMarker(pos, pk, img){
-    return new kakao.maps.Marker({
-        // map: map, // 마커를 표시할 지도
-        position: pos, // 마커를 표시할 위치
-        title : pk, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다  
-        image : img
-    });
-}
 
 function makeInfoWindow(con){
     let tmp = '<div id="info-title">' + con +'</div>'
@@ -86,26 +80,24 @@ var items = new Map();
 
 let markers= [];
 window.onload=function(){
-   makeTotalData()
+    spreadMarkersToMap()
    clusterer.addMarkers(markers);
 }
 
 
-function makeTotalData(){
-    for (var i = 0; i < totalData.length; i ++) {
+function spreadMarkersToMap(){
+    for (let i = 0; i < totalData.length; i ++) {
         // 마커를 생성합니다
         if(totalData[i]['lat'] && totalData[i]['lng']){
-            var marker = makeMarker(new kakao.maps.LatLng(totalData[i]['lat'], totalData[i]['lng']),totalData[i]['pk'],markerImageRedMarker)
+            let marker = makeMarker(new kakao.maps.LatLng(totalData[i]['lat'], totalData[i]['lng']),totalData[i]['pk'],markerImageRedMarker)
             markers.push(marker);
-            // var info = makeInfoWindow(totalData[i]['bldNm'] + " " + totalData[i]['dongNm'])
             items.set(totalData[i]['pk'], [marker, totalData[i]]);
-            // kakao.maps.event.addListener(marker, 'dragend', getMarkerInfo(marker));
             kakao.maps.event.addListener(marker, 'click', getMarkerInfo(marker));
-            // kakao.maps.event.addListener(marker, 'mouseover', makeOverListener(map, marker, info));
-            // kakao.maps.event.addListener(marker, 'mouseout', makeOutListener(info));
         }    
     }
 }
+
+
 // 인포윈도우를 표시하는 클로저를 만드는 함수입니다 
 // function makeOverListener(map, marker, infowindow) {
 //     return function() {
@@ -157,7 +149,7 @@ kakao.maps.event.addListener(clusterer, 'clusterclick', function(cluster) {
 kakao.maps.event.addListener(map, 'click', function() {   
     deleteNode();
     markers = [];
-    makeTotalData();
+    spreadMarkersToMap();
     clusterer.clear();
     clusterer.addMarkers(markers);
     clusterer.redraw();
@@ -169,12 +161,37 @@ kakao.maps.event.addListener(map, 'click', function() {
 });
 
    
-
-// 지도가 이동, 확대, 축소로 인해 중심좌표가 변경되면 마지막 파라미터로 넘어온 함수를 호출하도록 이벤트를 등록합니다
-kakao.maps.event.addListener(map, 'center_changed', function() {
+// 지도가 이동하거나 줌을 할 때 중심 좌표와 레벨을 받아옴. 
+kakao.maps.event.addListener(map, 'dragend', function() {
     console.log("move")
+    // let toiletKeys = [];
+    getMarkerKey(map.getCenter().getLat(), map.getCenter().getLng(), map.getLevel()).then((nearToilet) => {
+        clusterer.clear();
+        spreadMarkers(nearToilet)
+    })
+    // getToiletKeys()
+    // spreadMarkersToMap(toiletKeys)
+    // console.log(toiletKeys)
 });
-// 터치 이벤트 적용 
+kakao.maps.event.addListener(map, 'zoom_changed', function() {
+    console.log("zoom")
+    map.setZoomable(true)
+    // if(map.getLevel() > 6){
+    //     map.setZoomable(false)
+    //     map.setLevel(6)
+    // }
+
+    getMarkerKey(map.getCenter().getLat(), map.getCenter().getLng(), map.getLevel()).then((nearToilet) => {
+        clusterer.clear();
+        spreadMarkers(nearToilet)
+    })    // spreadMarkersToMap(toiletKeys)
+
+});
+console.log(map.getLevel())
+function setZoomable(zoomable) {
+    // 마우스 휠로 지도 확대,축소 가능여부를 설정합니다
+    map.setZoomable(zoomable);    
+}
 document.getElementById('map_content').addEventListener('click', function(e){
     // console.log(document.querySelectorAll("input"))
     let inputDiv = document.querySelectorAll("input")
@@ -218,7 +235,7 @@ element.onchange = function() {
 
 // 동 위치 정보 json
 var dongToJson = new Map();
-fetch("./dongTojson.json")
+fetch("../resource/dongTojson.json")
     .then(response => {
     return response.json();
     })
@@ -231,9 +248,9 @@ fetch("./dongTojson.json")
     })
 
 // 마커 이미지 
-var imageSrc_RedMarker = './resource/marker_red.png', // 마커이미지의 주소입니다
-    imageSrc_GreenMarker = './resource/marker_green.png', 
-    imageSrc_GreyMarker = './resource/marker_grey.png',
+var imageSrc_RedMarker = '../resource/marker_red.png', // 마커이미지의 주소입니다
+    imageSrc_GreenMarker = '../resource/marker_green.png', 
+    imageSrc_GreyMarker = '../resource/marker_grey.png',
     imageSize = new kakao.maps.Size(34, 34), // 마커이미지의 크기입니다
     imageOption = {offset: new kakao.maps.Point(10, 20)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다. (+왼쪽, +위쪽)
       
