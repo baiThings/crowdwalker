@@ -21,7 +21,7 @@ if('serviceWorker' in navigator){
     './resource/marker_green.png',
     './resource/marker_red.png',
     './resoucre/marker_grey.png',
-    './resouce/marker_yellow.png'
+    './resouce/marker_yellow.png',
 ];
 
 self.addEventListener('install', async event=>{

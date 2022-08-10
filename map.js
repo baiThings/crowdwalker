@@ -92,7 +92,7 @@ window.onload=function(){
 
 
 function makeTotalData(){
-    for (var i = 0; i < 200; i ++) {
+    for (var i = 0; i < totalData.length; i ++) {
         // 마커를 생성합니다
         if(totalData[i]['lat'] && totalData[i]['lng']){
             var marker = makeMarker(new kakao.maps.LatLng(totalData[i]['lat'], totalData[i]['lng']),totalData[i]['pk'],markerImageRedMarker)
@@ -130,7 +130,7 @@ function getMarkerList(markers){
         newNode = document.createElement('div')
         newNode.setAttribute('id', 'content_list marker_list')
         newNode.style.color='white'
-        newNode.style.fontSize='2vw'
+        newNode.style.fontSize='3vh'
         newNode.innerHTML=toilet_dongName_list
         newNode.addEventListener("click",getMarkerInfo(markers[i]), false)
         newNode.addEventListener("click",changeMarkerDragable(markers[i]), false)
@@ -165,27 +165,35 @@ kakao.maps.event.addListener(map, 'click', function() {
 
     // }, 10)
     mapResize();
+
 });
+
+   
+
 // 지도가 이동, 확대, 축소로 인해 중심좌표가 변경되면 마지막 파라미터로 넘어온 함수를 호출하도록 이벤트를 등록합니다
 kakao.maps.event.addListener(map, 'center_changed', function() {
-
+    console.log("move")
 });
 // 터치 이벤트 적용 
 document.getElementById('map_content').addEventListener('click', function(e){
-    console.log(document.querySelectorAll("input"))
+    // console.log(document.querySelectorAll("input"))
     let inputDiv = document.querySelectorAll("input")
+    // console.log(document.getElementById("marker_list"))
     for(let i = 0; i < inputDiv.length;i++){
         if(inputDiv[i] == e.target) return;
     }
     mapResize();
 })
+
 // 지도 사이즈 변경
 function mapResize() {
     var mapContainer = document.getElementById('map');
     mapContainer.style.height = '87%'; 
     document.getElementById('map_content').style.height='0%'; 
     // mapContainer 
-    map.relayout();
+    setTimeout(function(){
+        map.relayout();
+    }, 500)
 }
 
 function mapChangeSize(pos){

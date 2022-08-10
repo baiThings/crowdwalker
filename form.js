@@ -62,3 +62,4 @@ export function formFixed(key, value, markerInfo){
     newNodeForm.setAttribute('id', 'content_list')
     parentnode.appendChild(newNodeForm)
  }
+

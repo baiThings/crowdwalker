@@ -1,5 +1,4 @@
-
- export default function parseCsv(data){
+export default function parseCsv(data){
     const rows = data.split("\r\n")
 
     const jsonArray = [];
@@ -37,3 +36,26 @@ fetch('./sj3.csv')
         console.log(totalData)
 })
 
+// var formdataTmp = new FormData();
+// formdataTmp.append("lat", "37.5666805");
+// formdataTmp.append("lng", "126.9784147");
+// formdataTmp.append("radius", "1000");
+
+// var requestOptions = {
+//     method: 'POST',
+//     body: formdataTmp,
+//     redirect: 'follow'
+// };
+    
+// fetch('https://10mgfgym1i.execute-api.ap-northeast-2.amazonaws.com/default/-Test', requestOptions)
+//     .then((response) => { 
+//         response.text()
+//     }) // .text 메소드는 프로미스 객체를 리턴하는 메소드이다.
+//     .then((result) => {
+//         const users = JSON.parse(result);
+//         console.log(users)
+//         return users[0];
+//     })
+//     .catch((error) => console.log('error', error));
+
+// console.log(end - start)
