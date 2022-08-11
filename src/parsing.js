@@ -23,25 +23,3 @@ export default function parseCsv(data){
 //         console.log("total data setting done!")
 //         console.log(totalData)
 // })
-
-var formdataTmp = new FormData();
-formdataTmp.append("lat", "37.5666805");
-formdataTmp.append("lng", "126.9784147");
-formdataTmp.append("radius", "100");
-
-var requestOptions = {
-    method: 'POST',
-    body: formdataTmp,
-    redirect: 'follow'
-};
-    
-fetch('https://10mgfgym1i.execute-api.ap-northeast-2.amazonaws.com/default/-Test', requestOptions)
-    .then((response) => {
-        return response.text()
-    })
-    .then((result) => {
-        const markerKeys = JSON.parse(result);
-        console.log(markerKeys[0]['lat']['S'])
-        return markerKeys;
-    })
-    .catch((error) => console.log(error));

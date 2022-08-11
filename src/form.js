@@ -30,13 +30,13 @@ export function formFixed(key, value, markerInfo){
     try {
         return '<div class="mb-3 mt-3" id="content_list">'+
         '<label class="form-label">' + value + '</label>'+
-        '<input type="text" class="form-control" id='+ key+' value='+markerInfo[key]+' name='+ key +'>'+
+        '<input type="text" class="form-control" id='+ key+' value='+ key+' name='+ key +'>'+
         '</div>'
     } catch (error) {
         console.log("fail to get markerInfo")
     }
 }
- export function formSelect(key, value, markerInfo){
+ export function formSelect(key, value){
     return  '<div class="mb-3" id="content_list">' + 
     '   <label for='+ key + ' class="form-label">'+value+':</label>' + 
     '   <select class="form-select" id='+ key+ ' name='+ key+ '>' +

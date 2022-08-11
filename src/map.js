@@ -1,16 +1,20 @@
 // import { toilet_form } from './form.js';
-import {submitData, deleteNode, formFixed, formSelect } from './form.js';
+import {deleteNode } from './form.js';
 import { makeMarker, spreadMarkers } from './marker.js';
-import { getMarkerKey, parseToiletData, totalData} from './store.js';
+import {totalData} from './store.js';
+
+
+window.onload=function(){
+    spreadMarkers(map.getCenter().getLat(), map.getCenter().getLng(), map.getLevel());
+}
 
 var container = document.getElementById('map');
 var options = {
     // center: new kakao.maps.LatLng(36.480069682512664, 127.29019964537333),
     center: new kakao.maps.LatLng(37.5666805, 126.9784147),
-    level: 5
+    level: 3
 };
 var map = new kakao.maps.Map(container, options);
-console.log(map)
 
 // 마커 클러스터러를 생성합니다 
 export var clusterer = new kakao.maps.MarkerClusterer({
@@ -19,7 +23,7 @@ export var clusterer = new kakao.maps.MarkerClusterer({
     disableClickZoom : true,
     minLevel: 2 // 클러스터 할 최소 지도 레벨 
 });
-let tmpMarker;
+
 function changeMarkerDragable(marker){
     return function(){
         marker.setZIndex(2);
@@ -39,78 +43,50 @@ function changeMarkerDragable(marker){
     }
 }
 // 마커 정보를 가져온다. 
-function getMarkerInfo(marker){
-    return function() {
-        var markerInfo = items.get(marker.getTitle())[1]
-        mapChangeSize(marker.getPosition())
-        deleteNode()
-        var formBldNm = "<div id='marker-title'>" + markerInfo['bldNm'] + " " +  markerInfo['dongNm'] + "</div>"
-        var formlist = formBldNm + '<form id="form1" name="form1" class="was-validated">'
-        console.log(markerInfo)
-
-        console.log(formBldNm)
-        for (var [key, value] of parseToiletData) {
-            if(['pk', 'crs', 'lat', 'lng', 'code'].includes(key)){
-                formlist += formFixed(key, value, markerInfo)
-            }else{
-                formlist += formSelect(key, value, markerInfo)            
-            }
-        }
-        formlist +=
-        '<div id="button-wrapper"><button id="button-markerinfo" type="button" class="btn btn-primary">SUBMIT</button></div>' + 
-        '</form>'
-        var newNode = document.getElementById('content_list')
-        newNode.innerHTML=formlist
-        newNode.style.padding="0px 5vw"
-        document.getElementById("button-markerinfo").addEventListener('click', function(event){
-            submitData()
-            marker.setImage(markerImageGreenMarker)
-        })
-    }  
-}
-
-function makeInfoWindow(con){
-    let tmp = '<div id="info-title">' + con +'</div>'
-    return new kakao.maps.InfoWindow({
-        content: tmp // 인포윈도우에 표시할 내용
-    });
-}
-
-var items = new Map();
-
-let markers= [];
-window.onload=function(){
-    spreadMarkersToMap()
-   clusterer.addMarkers(markers);
-}
-
-
-function spreadMarkersToMap(){
-    for (let i = 0; i < totalData.length; i ++) {
-        // 마커를 생성합니다
-        if(totalData[i]['lat'] && totalData[i]['lng']){
-            let marker = makeMarker(new kakao.maps.LatLng(totalData[i]['lat'], totalData[i]['lng']),totalData[i]['pk'],markerImageRedMarker)
-            markers.push(marker);
-            items.set(totalData[i]['pk'], [marker, totalData[i]]);
-            kakao.maps.event.addListener(marker, 'click', getMarkerInfo(marker));
-        }    
-    }
-}
-
-
-// 인포윈도우를 표시하는 클로저를 만드는 함수입니다 
-// function makeOverListener(map, marker, infowindow) {
+// function getMarkerInfo(marker){
 //     return function() {
-//         infowindow.open(map, marker);
-//     };
+//         var markerInfo = items.get(marker.getTitle())[1]
+//         mapChangeSize(marker.getPosition())
+//         deleteNode()
+//         var formBldNm = "<div id='marker-title'>" + markerInfo['bldNm'] + " " +  markerInfo['dongNm'] + "</div>"
+//         var formlist = formBldNm + '<form id="form1" name="form1" class="was-validated">'
+//         console.log(markerInfo)
+
+//         console.log(formBldNm)
+//         for (var [key, value] of parseToiletData) {
+//             if(['pk', 'crs', 'lat', 'lng', 'code'].includes(key)){
+//                 formlist += formFixed(key, value, markerInfo)
+//             }else{
+//                 formlist += formSelect(key, value, markerInfo)            
+//             }
+//         }
+//         formlist +=
+//         '<div id="button-wrapper"><button id="button-markerinfo" type="button" class="btn btn-primary">SUBMIT</button></div>' + 
+//         '</form>'
+//         var newNode = document.getElementById('content_list')
+//         newNode.innerHTML=formlist
+//         newNode.style.padding="0px 5vw"
+//         document.getElementById("button-markerinfo").addEventListener('click', function(event){
+//             submitData()
+//             marker.setImage(markerImageGreenMarker)
+//         })
+//     }  
+// }
+export var items = new Map();
+
+// let markers= [];
+// function spreadMarkersToMap(){
+//     for (let i = 0; i < totalData.length; i ++) {
+//         // 마커를 생성합니다
+//         if(totalData[i]['lat'] && totalData[i]['lng']){
+//             let marker = makeMarker(new kakao.maps.LatLng(totalData[i]['lat'], totalData[i]['lng']),totalData[i]['pk'],markerImageRedMarker)
+//             markers.push(marker);
+//             items.set(totalData[i]['pk'], [marker, totalData[i]]);
+//             kakao.maps.event.addListener(marker, 'click', getMarkerInfo(marker));
+//         }    
+//     }
 // }
 
-// 인포윈도우를 닫는 클로저를 만드는 함수입니다 
-// function makeOutListener(infowindow) {
-//     return function() {
-//         infowindow.close();
-//     };
-// }
 // 마커리스트를 가져온다. 
 function getMarkerList(markers){
     deleteNode()
@@ -149,7 +125,8 @@ kakao.maps.event.addListener(clusterer, 'clusterclick', function(cluster) {
 kakao.maps.event.addListener(map, 'click', function() {   
     deleteNode();
     markers = [];
-    spreadMarkersToMap();
+    spreadMarkers(map.getCenter().getLat(), map.getCenter().getLng(), map.getLevel());
+    
     clusterer.clear();
     clusterer.addMarkers(markers);
     clusterer.redraw();
@@ -160,38 +137,22 @@ kakao.maps.event.addListener(map, 'click', function() {
 
 });
 
-   
 // 지도가 이동하거나 줌을 할 때 중심 좌표와 레벨을 받아옴. 
 kakao.maps.event.addListener(map, 'dragend', function() {
-    console.log("move")
-    // let toiletKeys = [];
-    getMarkerKey(map.getCenter().getLat(), map.getCenter().getLng(), map.getLevel()).then((nearToilet) => {
-        clusterer.clear();
-        spreadMarkers(nearToilet)
-    })
-    // getToiletKeys()
-    // spreadMarkersToMap(toiletKeys)
-    // console.log(toiletKeys)
+    console.log("dragend")
+    spreadMarkers(map.getCenter().getLat(), map.getCenter().getLng(), map.getLevel());
 });
 kakao.maps.event.addListener(map, 'zoom_changed', function() {
     console.log("zoom")
     map.setZoomable(true)
-    // if(map.getLevel() > 6){
-    //     map.setZoomable(false)
-    //     map.setLevel(6)
-    // }
-
-    getMarkerKey(map.getCenter().getLat(), map.getCenter().getLng(), map.getLevel()).then((nearToilet) => {
-        clusterer.clear();
-        spreadMarkers(nearToilet)
-    })    // spreadMarkersToMap(toiletKeys)
-
+    if(map.getLevel() > 5){
+        map.setZoomable(false)
+        map.setLevel(5)
+    }
+    // ### zoom이 변화하면 radius도 변화해야 하므로 코드 수정 필요!!
+    spreadMarkers(map.getCenter().getLat(), map.getCenter().getLng(), map.getLevel());
 });
-console.log(map.getLevel())
-function setZoomable(zoomable) {
-    // 마우스 휠로 지도 확대,축소 가능여부를 설정합니다
-    map.setZoomable(zoomable);    
-}
+
 document.getElementById('map_content').addEventListener('click', function(e){
     // console.log(document.querySelectorAll("input"))
     let inputDiv = document.querySelectorAll("input")
@@ -203,17 +164,17 @@ document.getElementById('map_content').addEventListener('click', function(e){
 })
 
 // 지도 사이즈 변경
-function mapResize() {
+export function mapResize() {
     var mapContainer = document.getElementById('map');
     mapContainer.style.height = '87%'; 
     document.getElementById('map_content').style.height='0%'; 
     // mapContainer 
     setTimeout(function(){
         map.relayout();
-    }, 500)
+    }, 10)
 }
 
-function mapChangeSize(pos){
+export function mapChangeSize(pos){
     var mapContainer = document.getElementById('map');
     mapContainer.style.height = '50%';   
     document.getElementById('map_content').style.height='37%';
