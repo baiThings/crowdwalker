@@ -10,8 +10,7 @@ window.onload=function(){
 
 var container = document.getElementById('map');
 var options = {
-    // center: new kakao.maps.LatLng(36.480069682512664, 127.29019964537333),
-    center: new kakao.maps.LatLng(37.5666805, 126.9784147),
+    center: new kakao.maps.LatLng(36.480069682512664, 127.29019964537333),
     level: 3
 };
 var map = new kakao.maps.Map(container, options);
@@ -124,7 +123,7 @@ kakao.maps.event.addListener(clusterer, 'clusterclick', function(cluster) {
 
 kakao.maps.event.addListener(map, 'click', function() {   
     deleteNode();
-    markers = [];
+    let markers = [];
     spreadMarkers(map.getCenter().getLat(), map.getCenter().getLng(), map.getLevel());
     
     clusterer.clear();
@@ -143,7 +142,7 @@ kakao.maps.event.addListener(map, 'dragend', function() {
     spreadMarkers(map.getCenter().getLat(), map.getCenter().getLng(), map.getLevel());
 });
 kakao.maps.event.addListener(map, 'zoom_changed', function() {
-    console.log("zoom")
+    console.log("zoom : " + map.getLevel())
     map.setZoomable(true)
     if(map.getLevel() > 5){
         map.setZoomable(false)
@@ -159,6 +158,10 @@ document.getElementById('map_content').addEventListener('click', function(e){
     // console.log(document.getElementById("marker_list"))
     for(let i = 0; i < inputDiv.length;i++){
         if(inputDiv[i] == e.target) return;
+    }
+    let selectDiv = document.querySelectorAll("select")
+    for(let i = 0; i < selectDiv.length; i++){
+        if(selectDiv[i] == e.target) return;
     }
     mapResize();
 })

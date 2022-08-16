@@ -1,6 +1,6 @@
-import { deleteNode, formFixed, formSelect, submitData } from "./form.js";
+import { deleteNode, formFixed, formlists, formSelect, submitData } from "./form.js";
 import { clusterer, mapChangeSize } from "./map.js";
-import { getMarkerKey, parseToiletData } from "./store.js";
+import { getMarkerInformation, getMarkerKey, parseToiletData } from "./store.js";
 
 // 마커 이미지 
 var imageSrc_RedMarker = '../resource/marker_red.png', // 마커이미지의 주소입니다
@@ -31,7 +31,12 @@ export function spreadMarkers(mapLat, mapLng, mapLevel){
             for(let i = 0; i < toilets.length; i++){
                 let latlng = toilets[i]['geoJson']['S'].split(',')
                 let marker = makeMarker(new kakao.maps.LatLng(latlng[0], latlng[1]), toilets[i]['PK']['S'], markerImageRedMarker)
-                kakao.maps.event.addListener(marker, 'click', getMarkerInfo(marker));
+                kakao.maps.event.addListener(marker, 'click', function(){
+                    getMarkerInformation(marker.getTitle()).then((data)=>{
+                        deleteNode();
+                        setMarkerInformation(data, marker)
+                    });
+                })
                 markers.push(marker)
             }
         } catch (error) {
@@ -40,30 +45,57 @@ export function spreadMarkers(mapLat, mapLng, mapLevel){
         clusterer.addMarkers(markers);
     })
 }
-// 마커 정보를 가져온다. 
-export function getMarkerInfo(marker){
-    return function() {
-        // var markerInfo = items.get(marker.getTitle())[1]
-        mapChangeSize(marker.getPosition())
-        deleteNode()
-        var formBldNm = "<div id='marker-title'>" + "markerInfo['bldNm']" + " " +  "markerInfo['dongNm']" + "</div>"
-        var formlist = formBldNm + '<form id="form1" name="form1" class="was-validated">'
-        for (var [key, value] of parseToiletData) {
-            if(['pk', 'crs', 'lat', 'lng', 'code'].includes(key)){
-                formlist += formFixed(key, value, "test")
-            }else{
-                formlist += formSelect(key, value)            
-            }
-        }
-        formlist +=
-        '<div id="button-wrapper"><button id="button-markerinfo" type="button" class="btn btn-primary">SUBMIT</button></div>' + 
-        '</form>'
-        var newNode = document.getElementById('content_list')
-        newNode.innerHTML=formlist
-        newNode.style.padding="0px 5vw"
-        document.getElementById("button-markerinfo").addEventListener('click', function(event){
-            submitData()
-            marker.setImage(markerImageGreenMarker)
-        })
-    }  
+
+
+// export function setMarkerInformation(marker){
+//     return function() {
+//         // var markerInfo = items.get(marker.getTitle())[1]
+//         mapChangeSize(marker.getPosition())
+//         deleteNode()
+//         var formBldNm = "<div id='marker-title'>" + "markerInfo['bldNm']" + " " +  "markerInfo['dongNm']" + "</div>"
+//         var formlist = formBldNm + '<form id="form1" name="form1" class="was-validated">'
+//         for (var [key, value] of parseToiletData) {
+//             if(['pk', 'crs', 'lat', 'lng', 'code'].includes(key)){
+//                 formlist += formFixed(key, value, "test")
+//             }else{
+//                 formlist += formSelect(key, value)            
+//             }
+//         }
+//         formlist +=
+//         '<div id="button-wrapper"><button id="button-markerinfo" type="button" class="btn btn-primary">SUBMIT</button></div>' + 
+//         '</form>'
+//         var newNode = document.getElementById('content_list')
+//         newNode.innerHTML=formlist
+//         newNode.style.padding="0px 5vw"
+//         document.getElementById("button-markerinfo").addEventListener('click', function(event){
+//             submitData()
+//             marker.setImage(markerImageGreenMarker)
+//         })
+//     }  
+// }
+
+
+function setMarkerInformation(data, marker){
+    mapChangeSize(marker.getPosition())
+
+    let parentNode = document.getElementById("map_content")
+    let newNode = document.createElement("div")
+    newNode.setAttribute('id', 'marker-content tmp-node')
+    newNode.innerHTML = "<div>" + data[0]['bldNm']['S'] + "</div>"
+    parentNode.appendChild(newNode)
+    
+    newNode = document.createElement('form')
+    newNode.setAttribute('id', 'form1')
+    newNode.setAttribute('class', 'was-validated')
+    newNode.setAttribute('name', 'form1')
+    newNode.innerHTML=formlists(data)
+    
+    parentNode.appendChild(newNode)
+    document.getElementById("button-markerinfo").addEventListener('click', function(event){
+        submitData()
+        marker.setImage(markerImageGreenMarker)
+    })
+  
+
 }
+

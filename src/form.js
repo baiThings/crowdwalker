@@ -1,3 +1,5 @@
+import { parseToiletData } from "./store.js";
+
 function parsingSubmitData(){
     var obj = {};
     var formData =new FormData(document.getElementById("form1"));
@@ -26,18 +28,31 @@ export function submitData() {
     //     .then((data) => {
     //     });
 } 
-export function formFixed(key, value, markerInfo){  
+export function formlists(data){
+    let formlist = "";
+    for(let [key, value] of parseToiletData) {
+        if(['PK', 'CRS', 'lat', 'lng', 'bjdongCd'].includes(key)){
+            formlist += formFixed(key, value, data)
+        }else{
+            formlist += formSelect(key, value)            
+        }
+    }
+    formlist += '<div id="button-wrapper"><button id="button-markerinfo" type="button" class="btn btn-primary">SUBMIT</button></div></form>'
+    return formlist;
+} 
+export function formFixed(key, value, data){  
+    console.log(data)
     try {
-        return '<div class="mb-3 mt-3" id="content_list">'+
+        return '<div class="mb-3 mt-3">'+
         '<label class="form-label">' + value + '</label>'+
-        '<input type="text" class="form-control" id='+ key+' value='+ key+' name='+ key +'>'+
+        '<input type="text" class="form-control" id='+ key+' value='+ data[0][key]['S']+' name='+ key +' disabled >'+
         '</div>'
     } catch (error) {
         console.log("fail to get markerInfo")
     }
 }
  export function formSelect(key, value){
-    return  '<div class="mb-3" id="content_list">' + 
+    return  '<div class="mb-3 mt-3">' + 
     '   <label for='+ key + ' class="form-label">'+value+':</label>' + 
     '   <select class="form-select" id='+ key+ ' name='+ key+ '>' +
     '       <option>선택 안함</options>' + 
@@ -48,18 +63,36 @@ export function formFixed(key, value, markerInfo){
  }
 
  export function deleteNode(){
-    var parentnode = document.getElementById('map_content')
-    var element = document.getElementById('content_list')
-    while(element){
-        try {
-            element = document.getElementById('content_list')
-            element.parentNode.removeChild(element)
-        } catch (error) {
-            console.error("element is null");
+    let parentnode = document.getElementById('map_content')
+
+    // if(parentnode.hasChildNodes){
+    //     let element = parentnode.childNodes;
+    //     console.log(element)
+    //     for(let i = 0; i < element.length;i++){
+    //         console.log(element[i].parentNode)
+    //         element[i].parentNode.removeChild(element[i])
+    //     }
+    // }
+    try {
+        while(parentnode.hasChildNodes){
+            let element = parentnode.childNodes;
+            console.log(element)
+            element[0].parentNode.removeChild(element[0]);
         }
+    } catch (error) {
+        
     }
-    var newNodeForm = document.createElement('div')
-    newNodeForm.setAttribute('id', 'content_list')
-    parentnode.appendChild(newNodeForm)
+    
+    // while(element){
+    //     try {
+    //         element = document.querySelectorAll("#tmp-node")
+    //         element.parentNode.removeChild(element)
+    //     } catch (error) {
+    //         console.error("element is null");
+    //     }
+    // }
+    // var newNodeForm = document.createElement('div')
+    // newNodeForm.setAttribute('id', 'content_list')
+    // parentnode.appendChild(newNodeForm)
  }
 

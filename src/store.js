@@ -1,5 +1,5 @@
 import parseCsv from "./parsing.js";
-let formdataTmp = new FormData();
+
 // export const controller = new AbortController();
 
 // getMarkeyKey : 맵 중앙 위치와 level에 따른 주변 화장실의 프라이머리 키를 반환한다. 
@@ -29,20 +29,35 @@ let formdataTmp = new FormData();
 //     })
 //     .catch((error) => console.log(error));
 // }
-let controller;
+
 let whileFetching = false;
+let controller;
 export async function getMarkerKey(lat, lng, radius){
+    let formdataTmp = new FormData();
     formdataTmp.append("lat", lat)
     formdataTmp.append("lng", lng)
-    formdataTmp.append("radius", "300")
-
+    switch(radius){
+        case 5:
+            formdataTmp.append("radius", "1800");
+            break;
+        case 4:
+            formdataTmp.append("radius", "1000");
+            break;
+        case 3:
+            formdataTmp.append("radius", "700");
+            break;
+        default:
+            formdataTmp.append("radius", "500");
+            break;
+    }
+    console.log(formdataTmp.get("radius"))
     if(whileFetching) controller.abort()
 
     controller = new AbortController();
     whileFetching = true;
 
     try {
-        let response = await fetch('https://10mgfgym1i.execute-api.ap-northeast-2.amazonaws.com/default/-Test', setRequireOptions(controller.signal))
+        let response = await fetch('https://10mgfgym1i.execute-api.ap-northeast-2.amazonaws.com/default/-Test', setRequireOptions(formdataTmp, controller.signal))
         if(response.ok){
             whileFetching = false;
         }
@@ -54,10 +69,10 @@ export async function getMarkerKey(lat, lng, radius){
         console.log(error)
     }
 }
-function setRequireOptions(signal){
+export function setRequireOptions(formdata, signal){
     let requestOptions = {
         method: 'POST',
-        body: formdataTmp,
+        body: formdata,
         redirect: 'follow',
         signal: signal,
     };
@@ -75,7 +90,21 @@ fetch('../resource/toiletData.json')
             parseToiletData.set(key, data[key])
         }
 })
-
+export let markerInfotmation;
+export async function getMarkerInformation(key){
+    console.log(key)
+    let controller = new AbortController()
+    let formData = new FormData()
+    formData.append('PK', key)
+    try {
+        let response = await fetch('https://10mgfgym1i.execute-api.ap-northeast-2.amazonaws.com/default/-Test', setRequireOptions(formData, controller.signal))
+        let result = await response.text()
+        markerInfotmation = await JSON.parse(result)
+        return markerInfotmation;
+    } catch (error) {
+        console.log(error)   
+    }
+}
 
 
 export let totalData = "";
