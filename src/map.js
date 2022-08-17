@@ -1,7 +1,7 @@
 // import { toilet_form } from './form.js';
 import {deleteNode } from './form.js';
 import { makeMarker, spreadMarkers } from './marker.js';
-import {totalData} from './store.js';
+import {getMarkerInformation, totalData} from './store.js';
 
 
 window.onload=function(){
@@ -24,12 +24,17 @@ export var clusterer = new kakao.maps.MarkerClusterer({
 });
 
 function changeMarkerDragable(marker){
+    console.log(marker)
+    // map.setLevel(1)
+    marker.setZIndex(3);
+    marker.setImage(markerImageGreyMarker);
+    marker.setDraggable(true);
     return function(){
+        console.log(marker)
         marker.setZIndex(2);
         marker.setImage(markerImageGreyMarker);
         marker.setDraggable(true);
-        map.setLevel(1)
-        tmpMarker = marker.getPosition();
+        // map.setLevel(1)
         // 도착 마커에 dragend 이벤트를 등록합니다
         kakao.maps.event.addListener(marker, 'dragend', function() {
             try {
@@ -89,20 +94,38 @@ export var items = new Map();
 // 마커리스트를 가져온다. 
 function getMarkerList(markers){
     deleteNode()
-    var newNode = ''
-    var parentNode = document.getElementById('content_list')
-    for(var i = 0; i < markers.length; i++){
-        var toilet_dongName_list = items.get(markers[i].getTitle())[1]["bldNm"]
-        toilet_dongName_list += " " + items.get(markers[i].getTitle())[1]["dongNm"]
-        newNode = document.createElement('div')
-        newNode.setAttribute('id', 'content_list marker_list')
-        newNode.style.color='white'
-        newNode.style.fontSize='3vh'
-        newNode.innerHTML=toilet_dongName_list
-        newNode.addEventListener("click",getMarkerInfo(markers[i]), false)
-        newNode.addEventListener("click",changeMarkerDragable(markers[i]), false)
-        parentNode.appendChild(newNode)
-        // markerList += '<div id="content_list marker_list onClick="getMarkerInfo(\'' + markers[i] + '\')">'+toilet_dongName_list+'</div>'
+    let newNode = ''
+    let parentNode = document.getElementById('map_content')
+    for(let i = 0; i < markers.length; i++){
+        // let toilet_dongName_list = items.
+        let toiletNameList; 
+    
+        getMarkerInformation(markers[i].getTitle()).then((data)=>{
+            toiletNameList = data[0]["bldNm"]["S"] + " " + data[0]["dongNm"]["S"]
+            newNode = document.createElement('div')
+            newNode.setAttribute('id', 'marker_list')
+            newNode.style.color='white'
+            newNode.style.fontSize='3vh'
+            newNode.innerHTML=toiletNameList
+            newNode.addEventListener("click",function(){
+                changeMarkerDragable(markers[i])}
+            , false)
+        
+            parentNode.appendChild(newNode)
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+        // // toilet_dongName_list += " " + items.get(markers[i].getTitle())[1]["dongNm"]
+        // newNode = document.createElement('div')
+        // newNode.setAttribute('id', 'content_list marker_list')
+        // newNode.style.color='white'
+        // newNode.style.fontSize='3vh'
+        // newNode.innerHTML=toiletNameList
+        // // newNode.addEventListener("click",getMarkerInfo(markers[i]), false)
+        // newNode.addEventListener("click",changeMarkerDragable(markers[i]), false)
+        // parentNode.appendChild(newNode)
+        // // // markerList += '<div id="content_list marker_list onClick="getMarkerInfo(\'' + markers[i] + '\')">'+toilet_dongName_list+'</div>'
     }
 }  
 // 클러스터 클릭 시 이벤트
@@ -162,6 +185,10 @@ document.getElementById('map_content').addEventListener('click', function(e){
     let selectDiv = document.querySelectorAll("select")
     for(let i = 0; i < selectDiv.length; i++){
         if(selectDiv[i] == e.target) return;
+    }
+    let markerList = document.querySelectorAll("#marker_list")
+    for(let i = 0; i < markerList.length; i++){
+        if(markerList[i] == e.target) return;
     }
     mapResize();
 })
