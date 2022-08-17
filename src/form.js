@@ -41,7 +41,6 @@ export function formlists(data){
     return formlist;
 } 
 export function formFixed(key, value, data){  
-    console.log(data)
     try {
         return '<div class="mb-3 mt-3">'+
         '<label class="form-label">' + value + '</label>'+
@@ -64,35 +63,13 @@ export function formFixed(key, value, data){
 
  export function deleteNode(){
     let parentnode = document.getElementById('map_content')
-
-    // if(parentnode.hasChildNodes){
-    //     let element = parentnode.childNodes;
-    //     console.log(element)
-    //     for(let i = 0; i < element.length;i++){
-    //         console.log(element[i].parentNode)
-    //         element[i].parentNode.removeChild(element[i])
-    //     }
-    // }
     try {
         while(parentnode.hasChildNodes){
             let element = parentnode.childNodes;
-            console.log(element)
             element[0].parentNode.removeChild(element[0]);
         }
     } catch (error) {
-        
+        console.error("element is null");
     }
-    
-    // while(element){
-    //     try {
-    //         element = document.querySelectorAll("#tmp-node")
-    //         element.parentNode.removeChild(element)
-    //     } catch (error) {
-    //         console.error("element is null");
-    //     }
-    // }
-    // var newNodeForm = document.createElement('div')
-    // newNodeForm.setAttribute('id', 'content_list')
-    // parentnode.appendChild(newNodeForm)
  }
 

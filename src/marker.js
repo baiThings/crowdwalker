@@ -46,42 +46,14 @@ export function spreadMarkers(mapLat, mapLng, mapLevel){
     })
 }
 
-
-// export function setMarkerInformation(marker){
-//     return function() {
-//         // var markerInfo = items.get(marker.getTitle())[1]
-//         mapChangeSize(marker.getPosition())
-//         deleteNode()
-//         var formBldNm = "<div id='marker-title'>" + "markerInfo['bldNm']" + " " +  "markerInfo['dongNm']" + "</div>"
-//         var formlist = formBldNm + '<form id="form1" name="form1" class="was-validated">'
-//         for (var [key, value] of parseToiletData) {
-//             if(['pk', 'crs', 'lat', 'lng', 'code'].includes(key)){
-//                 formlist += formFixed(key, value, "test")
-//             }else{
-//                 formlist += formSelect(key, value)            
-//             }
-//         }
-//         formlist +=
-//         '<div id="button-wrapper"><button id="button-markerinfo" type="button" class="btn btn-primary">SUBMIT</button></div>' + 
-//         '</form>'
-//         var newNode = document.getElementById('content_list')
-//         newNode.innerHTML=formlist
-//         newNode.style.padding="0px 5vw"
-//         document.getElementById("button-markerinfo").addEventListener('click', function(event){
-//             submitData()
-//             marker.setImage(markerImageGreenMarker)
-//         })
-//     }  
-// }
-
-
-function setMarkerInformation(data, marker){
+export function setMarkerInformation(data, marker){
+    console.log(marker.getPosition())
     mapChangeSize(marker.getPosition())
 
     let parentNode = document.getElementById("map_content")
     let newNode = document.createElement("div")
     newNode.setAttribute('id', 'marker-content tmp-node')
-    newNode.innerHTML = "<div>" + data[0]['bldNm']['S'] + "</div>"
+    newNode.innerHTML = "<div>" + data[0]['bldNm']['S'] + " " + data[0]['dongNm']['S'] + "</div>"
     parentNode.appendChild(newNode)
     
     newNode = document.createElement('form')
@@ -95,7 +67,5 @@ function setMarkerInformation(data, marker){
         submitData()
         marker.setImage(markerImageGreenMarker)
     })
-  
-
 }
 
