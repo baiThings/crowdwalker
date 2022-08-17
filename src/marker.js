@@ -64,7 +64,7 @@ export function setMarkerInformation(data, marker){
     
     parentNode.appendChild(newNode)
     document.getElementById("button-markerinfo").addEventListener('click', function(event){
-        submitData()
+        submitData(data)
         marker.setImage(markerImageGreenMarker)
     })
 }

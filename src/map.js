@@ -102,7 +102,7 @@ kakao.maps.event.addListener(map, 'click', function() {
 // 지도가 이동하거나 줌을 할 때 중심 좌표와 레벨을 받아옴. 
 kakao.maps.event.addListener(map, 'dragend', function() {
     console.log("dragend")
-    spreadMarkers(map.getCenter().getLat(), map.getCenter().getLng(), map.getLevel());
+    mapInit();
 });
 kakao.maps.event.addListener(map, 'zoom_changed', function() {
     console.log("zoom : " + map.getLevel())

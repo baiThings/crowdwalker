@@ -50,7 +50,6 @@ export async function getMarkerKey(lat, lng, radius){
             formdataTmp.append("radius", "500");
             break;
     }
-    console.log(formdataTmp.get("radius"))
     if(whileFetching) controller.abort()
 
     controller = new AbortController();
