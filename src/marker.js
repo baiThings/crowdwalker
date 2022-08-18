@@ -1,6 +1,6 @@
-import { deleteNode, formFixed, formlists, formSelect, submitData } from "./form.js";
-import { clusterer, mapChangeSize } from "./map.js";
-import { getMarkerInformation, getMarkerKey, parseToiletData } from "./store.js";
+import { deleteNode,formlists,submitData } from "./form.js";
+import { changeDragLock, clearMarkers, clusterer, dragLock, mapChangeSize, mapInit } from "./map.js";
+import { getMarkerInformation, getMarkerKey } from "./store.js";
 
 // 마커 이미지 
 var imageSrc_RedMarker = '../resource/marker_red.png', // 마커이미지의 주소입니다
@@ -35,6 +35,15 @@ export function spreadMarkers(mapLat, mapLng, mapLevel){
                     getMarkerInformation(marker.getTitle()).then((data)=>{
                         deleteNode();
                         setMarkerInformation(data, marker)
+                        console.log("dragLock status " + dragLock)
+                        if(marker.getDraggable() != true && dragLock){
+                            console.log("grey -> red : " + dragLock)
+                            changeDragLock();
+                            clearMarkers();
+                            mapInit();
+                            console.log(" ->  " + dragLock)
+                        }else if(marker.getDraggable() && dragLock == false) changeDragLock();
+                        console.log("dragLock status " + dragLock)
                     });
                 })
                 markers.push(marker)
@@ -46,16 +55,18 @@ export function spreadMarkers(mapLat, mapLng, mapLevel){
     })
 }
 
-export function setMarkerInformation(data, marker){
-    console.log(marker.getPosition())
+export function setMarkerInformation(data, marker){ 
     mapChangeSize(marker.getPosition())
-
     let parentNode = document.getElementById("map_content")
     let newNode = document.createElement("div")
     newNode.setAttribute('id', 'marker-content tmp-node')
-    newNode.innerHTML = "<div>" + data[0]['bldNm']['S'] + " " + data[0]['dongNm']['S'] + "</div>"
+    try {
+        newNode.innerHTML = "<div>" + data[0]['bldNm']['S'] + " " + data[0]['dongNm']['S'] + "</div>"
+    } catch (error) {
+        console.log(error)
+        newNode.innerHTML = "<div>" + data[0]['bldNm']['S'] + "</div>"
+    }
     parentNode.appendChild(newNode)
-    
     newNode = document.createElement('form')
     newNode.setAttribute('id', 'form1')
     newNode.setAttribute('class', 'was-validated')
@@ -64,7 +75,10 @@ export function setMarkerInformation(data, marker){
     
     parentNode.appendChild(newNode)
     document.getElementById("button-markerinfo").addEventListener('click', function(event){
+        if(dragLock == true) changeDragLock();
+        // clearMarkers();
         submitData(data)
+        marker.setDraggable(false);
         marker.setImage(markerImageGreenMarker)
     })
 }

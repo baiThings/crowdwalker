@@ -62,7 +62,6 @@ export async function getMarkerKey(lat, lng, radius){
         }
         let result = await response.text()
         let markerKeys = await JSON.parse(result)
-        console.log(markerKeys)
         return markerKeys
     } catch (error) {
         console.log(error)
@@ -91,7 +90,6 @@ fetch('../resource/toiletData.json')
 })
 export let markerInfotmation;
 export async function getMarkerInformation(key){
-    console.log(key)
     let controller = new AbortController()
     let formData = new FormData()
     formData.append('PK', key)
@@ -106,12 +104,9 @@ export async function getMarkerInformation(key){
 }
 
 
-export let totalData = "";
-fetch('../resource/sj3.csv')
-    .then((response) => response.text())
-    .then((data) => {
-        totalData = parseCsv(data);
-        console.log("total data setting done!")
-        console.log(totalData)
-        
-})
+// export let totalData = "";
+// fetch('../resource/sj3.csv')
+//     .then((response) => response.text())
+//     .then((data) => {
+//         totalData = parseCsv(data);
+// })

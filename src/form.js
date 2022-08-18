@@ -1,3 +1,4 @@
+import { dragLock } from "./map.js";
 import { parseToiletData } from "./store.js";
 
 function parsingSubmitData(data){
@@ -75,7 +76,6 @@ export function formFixed(key, value, data){
             element[0].parentNode.removeChild(element[0]);
         }
     } catch (error) {
-        console.error("element is null");
+        console.log("element is null");
     }
- }
-
+}

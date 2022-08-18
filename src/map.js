@@ -4,7 +4,7 @@ import {setMarkerInformation, spreadMarkers } from './marker.js';
 import {getMarkerInformation} from './store.js';
 
 
-function mapInit(){
+export function mapInit(){
     spreadMarkers(map.getCenter().getLat(), map.getCenter().getLng(), map.getLevel());
 }
 
@@ -25,12 +25,14 @@ export var clusterer = new kakao.maps.MarkerClusterer({
     averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정 
     disableClickZoom : true,
 });
-export let tmpMarker = [];
+let tmpMarker = [];
 function changeMarkerDragable(marker){
+    // dragLock = true;
     clusterer.removeMarker(marker);
     marker.setImage(markerImageGreyMarker);
     marker.setDraggable(true);
-    marker.setMap(map)
+    marker.setMap(map);
+    marker.setZIndex(2);
     tmpMarker.push(marker)
     kakao.maps.event.addListener(marker, 'dragend', function() {
         try {
@@ -40,14 +42,23 @@ function changeMarkerDragable(marker){
             console.log(error)
         }
     });
+} 
+
+
+export let dragLock = false;
+export const changeDragLock = () => { 
+    if(dragLock == false) dragLock = true;
+    else dragLock = false;
 }
-// 마커리스트를 가져온다. 
+
+export const clearMarkers = () => {
+    tmpMarker.forEach((marker)=> marker.setMap(null));
+}
 function getMarkerList(markers){
     deleteNode();
     let newNode = ''
     let parentNode = document.getElementById('map_content')
     for(let i = 0; i < markers.length; i++){
-        // let toilet_dongName_list = items.
         let toiletNameList; 
         getMarkerInformation(markers[i].getTitle()).then((data)=>{
             toiletNameList = data[0]["bldNm"]["S"] + " " + data[0]["dongNm"]["S"]
@@ -56,22 +67,23 @@ function getMarkerList(markers){
             newNode.style.color='white'
             newNode.style.fontSize='3vh'
             newNode.innerHTML=toiletNameList
-            newNode.addEventListener("click",function(event){
+            newNode.addEventListener("click",function(){ 
                 try {
                     deleteNode()
                     setMarkerInformation(data, markers[i])
                     changeMarkerDragable(markers[i])
-
+                    dragLock = true;
                 } catch (error) {
-                    alert("다시 클릭해주세요.")
+                    console.log(error)
+                    alert("클러스터를 다시 클릭해주세요.")
                 }
-        })
+            })
             parentNode.appendChild(newNode)
         })
         .catch((error) => {
             console.log(error)
         })
-     }
+    }
 }  
 // 클러스터 클릭 시 이벤트
 // 마커 클러스터러를 생성할 때 disableClickZoom을 true로 설정하지 않은 경우
@@ -90,11 +102,9 @@ kakao.maps.event.addListener(clusterer, 'clusterclick', function(cluster) {
 
 kakao.maps.event.addListener(map, 'click', function() {   
     deleteNode();
-    let markers = [];
-    tmpMarker.forEach((marker) => marker.setMap(null));
-    clusterer.clear();
-    clusterer.addMarkers(markers);
-    clusterer.redraw();
+    dragLock = false;
+    clearMarkers();
+    // clusterer.clear();
     mapResize();
     mapInit();
 });
@@ -102,7 +112,11 @@ kakao.maps.event.addListener(map, 'click', function() {
 // 지도가 이동하거나 줌을 할 때 중심 좌표와 레벨을 받아옴. 
 kakao.maps.event.addListener(map, 'dragend', function() {
     console.log("dragend")
-    mapInit();
+    if(dragLock == false){ 
+        mapInit();
+        mapResize();
+        clearMarkers();
+    }
 });
 kakao.maps.event.addListener(map, 'zoom_changed', function() {
     console.log("zoom : " + map.getLevel())
@@ -111,8 +125,7 @@ kakao.maps.event.addListener(map, 'zoom_changed', function() {
         map.setZoomable(false)
         map.setLevel(5)
     }
-    // ### zoom이 변화하면 radius도 변화해야 하므로 코드 수정 필요!!
-    mapInit();
+    if(dragLock == false) mapInit();
 });
 
 // document.getElementById('map_content').addEventListener('click', function(e){
@@ -184,5 +197,3 @@ var imageSrc_RedMarker = '../resource/marker_red.png', // 마커이미지의 주
 var markerImageRedMarker = new kakao.maps.MarkerImage(imageSrc_RedMarker, imageSize, imageOption),
     markerImageGreenMarker = new kakao.maps.MarkerImage(imageSrc_GreenMarker, imageSize, imageOption),
     markerImageGreyMarker = new kakao.maps.MarkerImage(imageSrc_GreyMarker, imageSize, imageOption)
-
-    
