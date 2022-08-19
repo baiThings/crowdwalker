@@ -57,7 +57,7 @@ export const clearMarkers = () => {
 function getMarkerList(markers){
     deleteNode();
     let newNode = ''
-    let parentNode = document.getElementById('map_content')
+    let parentNode = document.getElementById('map_inner')
     for(let i = 0; i < markers.length; i++){
         let toiletNameList; 
         getMarkerInformation(markers[i].getTitle()).then((data)=>{
@@ -149,18 +149,29 @@ kakao.maps.event.addListener(map, 'zoom_changed', function() {
 
 // 지도 사이즈 변경
 export function mapResize() {
-    var mapContainer = document.getElementById('map');
-    mapContainer.style.height = '87%'; 
-    document.getElementById('map_content').style.height='0%'; 
-    map.relayout();
+    let mapWrap = document.getElementById('map_inner');
+    try {
+        mapWrap.style.height = '0%'; 
+        map.relayout();
+    } catch (error) {
+        console.log(error)
+    }
+    // document.getElementById('map_content').style.height='0%'; 
 }
 
 export function mapChangeSize(pos){
-    var mapContainer = document.getElementById('map');
-    mapContainer.style.height = '50%';   
-    document.getElementById('map_content').style.height='37%';
-    map.relayout();
+    let mapWrap = document.getElementById('map_inner');
+    try {
+        mapWrap.style.height = '40%'; 
+        map.relayout();
+    } catch (error) {
+        console.log(error)
+    }
     map.setCenter(pos)
+    // let mapWrap = document.getElementById('map');
+    // mapWrap.style.height = '50%'; 
+    // document.getElementById('map_content').style.height='50%';
+    // map.relayout();
 }
 // 동별로 중심 좌표 찍어주기.
 var element = document.getElementById("region_form_dong");
@@ -169,7 +180,7 @@ element.onchange = function() {
     var dongNameValue=dongName.options[dongName.selectedIndex].value
     // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다
     map.panTo(dongToJson.get(dongNameValue));            
-  
+    mapInit()
 }  
 
 // 동 위치 정보 json

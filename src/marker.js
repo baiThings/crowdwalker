@@ -57,7 +57,9 @@ export function spreadMarkers(mapLat, mapLng, mapLevel){
 
 export function setMarkerInformation(data, marker){ 
     mapChangeSize(marker.getPosition())
-    let parentNode = document.getElementById("map_content")
+    let parentNode = document.getElementById("map_inner")
+    parentNode.style.height='40%'
+    console.log(parentNode)
     let newNode = document.createElement("div")
     newNode.setAttribute('id', 'marker-content tmp-node')
     try {

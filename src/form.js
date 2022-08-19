@@ -69,7 +69,7 @@ export function formFixed(key, value, data){
  }
 
  export function deleteNode(){
-    let parentnode = document.getElementById('map_content')
+    let parentnode = document.getElementById('map_inner')
     try {
         while(parentnode.hasChildNodes){
             let element = parentnode.childNodes;
