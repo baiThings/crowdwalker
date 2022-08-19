@@ -50,8 +50,8 @@ export function formlists(data){
 export function formFixed(key, value, data){  
     try {
         return '<div class="mb-3 mt-3">'+
-        '<label class="form-label">' + value + '</label>'+
-        '<input type="text" class="form-control" id='+ key+' value='+ data[0][key]['S']+' name='+ key +' disabled >'+
+        '<label class="form-label" hidden>' + value + '</label>'+
+        '<input type="hidden" class="form-control" id='+ key+' value='+ data[0][key]['S']+' name='+ key +' disabled >'+
         '</div>'
     } catch (error) {
         console.log("fail to get markerInfo")
@@ -59,7 +59,7 @@ export function formFixed(key, value, data){
 }
  export function formSelect(key, value){
     return  '<div class="mb-3 mt-3">' + 
-    '   <label for='+ key + ' class="form-label">'+value+':</label>' + 
+    '   <label  for='+ key + ' class="form-label">'+value+':</label>' + 
     '   <select class="form-select" id='+ key+ ' name='+ key+ '>' +
     '       <option>선택 안함</options>' + 
     '       <option>YES</option>' + 

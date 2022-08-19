@@ -1,6 +1,6 @@
 import { deleteNode,formlists,submitData } from "./form.js";
 import { changeDragLock, clearMarkers, clusterer, dragLock, mapChangeSize, mapInit } from "./map.js";
-import { getMarkerInformation, getMarkerKey } from "./store.js";
+import { getMarkerInformation, getMarkerKey, setRequireOptions } from "./store.js";
 
 // 마커 이미지 
 var imageSrc_RedMarker = '../resource/marker_red.png', // 마커이미지의 주소입니다
@@ -54,12 +54,59 @@ export function spreadMarkers(mapLat, mapLng, mapLevel){
         clusterer.addMarkers(markers);
     })
 }
+function createElement(e, file) {
+    const li = document.createElement('li');
+    const img = document.createElement('img');
+    img.setAttribute('src', e.target.result);
+    img.setAttribute('data-file', file.name);
+    li.appendChild(img);
 
+    return li;
+  }
+function getImageFiles(e, m){
+    const unploadFiles = [];
+    const files = e.currentTarget.files;
+    console.log(files)
+    const imagePreview = document.querySelector('.img-preview');
+
+    console.log(imagePreview)
+    Array.from(files).forEach(file => {
+        unploadFiles.push(file);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const preview = createElement(e, file);
+            imagePreview.appendChild(preview);
+        }
+        reader.readAsDataURL(file);
+        console.log(file)
+    })
+    console.log(m)
+    uploadImage(files, m)
+}
+
+async function uploadImage(files, m){
+    let formdata = new FormData();
+    console.log(m.getTitle())
+    // formdata.append('PK', m.getTitle());
+    for(let i = 0; i < files.length; i++){
+        formdata.append('file'+ i, files[i]);
+    }
+    for (const key of formdata.keys()) {
+        console.log(key + " : " + formdata.get(key).name);
+    }
+    console.log(formdata)
+    try {
+        let response = await fetch('https://10mgfgym1i.execute-api.ap-northeast-2.amazonaws.com/default/-Test', setRequireOptions(formdata, controller.signal))
+        let result = await response.text();
+        return result; 
+    } catch (error) {
+        console.log(error)
+    }
+}
 export function setMarkerInformation(data, marker){ 
     mapChangeSize(marker.getPosition())
     let parentNode = document.getElementById("map_inner")
     parentNode.style.height='40%'
-    console.log(parentNode)
     let newNode = document.createElement("div")
     newNode.setAttribute('id', 'marker-content tmp-node')
     try {
@@ -69,6 +116,17 @@ export function setMarkerInformation(data, marker){
         newNode.innerHTML = "<div>" + data[0]['bldNm']['S'] + "</div>"
     }
     parentNode.appendChild(newNode)
+    let imgNode = document.createElement("div")
+    imgNode.setAttribute('id', "marker-toilet-img")
+    imgNode.innerHTML = 
+        "<input type='file' class='img-upload' required multiple></input>" +
+        "<ul class='img-preview'></ul>"
+    parentNode.appendChild(imgNode)
+    document.querySelector('.img-upload').addEventListener('change', function(e){
+        getImageFiles(e, marker)
+    });
+    
+
     newNode = document.createElement('form')
     newNode.setAttribute('id', 'form1')
     newNode.setAttribute('class', 'was-validated')
