@@ -90,9 +90,10 @@ function getMarkerList(markers){
 // 이벤트 헨들러로 cluster 객체가 넘어오지 않을 수도 있습니다
 kakao.maps.event.addListener(clusterer, 'clusterclick', function(cluster) {
     var level = map.getLevel();
-    mapResize()
+    mapResize(0)
+    mapSetCenter(cluster.getMarkers()[0].getPosition())
     if(level == 1){
-        mapChangeSize(cluster.getMarkers()[0].getPosition())
+        mapContentChangeSize(40)
         getMarkerList(cluster.getMarkers())
         // map.panTo(new kakao.maps.LatLng(cluster.getMarkers()[0].getPosition().getLat(), cluster.getMarkers()[0].getPosition().getLng()));            
     }else level -= 1; // 현재 지도 레벨에서 1레벨 확대한 레벨
@@ -105,7 +106,7 @@ kakao.maps.event.addListener(map, 'click', function() {
     dragLock = false;
     clearMarkers();
     // clusterer.clear();
-    mapResize();
+    mapResize(0);
     mapInit();
 });
 
@@ -114,7 +115,7 @@ kakao.maps.event.addListener(map, 'dragend', function() {
     console.log("dragend")
     if(dragLock == false){ 
         mapInit();
-        mapResize();
+        mapResize(0);
         clearMarkers();
     }
 });
@@ -146,12 +147,15 @@ kakao.maps.event.addListener(map, 'zoom_changed', function() {
 //     // }
 //     // mapResize();
 // })
-
+//
+export function mapSetCenter(pos){
+    map.setCenter(pos)
+}
 // 지도 사이즈 변경
-export function mapResize() {
+export function mapResize(size) {
     let mapWrap = document.getElementById('map_inner');
     try {
-        mapWrap.style.height = '0%'; 
+        mapWrap.style.height = size + '%'; 
         map.relayout();
     } catch (error) {
         console.log(error)
@@ -159,19 +163,28 @@ export function mapResize() {
     // document.getElementById('map_content').style.height='0%'; 
 }
 
-export function mapChangeSize(pos){
+export function mapContentChangeSize(size){
     let mapWrap = document.getElementById('map_inner');
     try {
-        mapWrap.style.height = '40%'; 
+        mapWrap.style.height = size + '%';  
         map.relayout();
     } catch (error) {
         console.log(error)
     }
-    map.setCenter(pos)
     // let mapWrap = document.getElementById('map');
     // mapWrap.style.height = '50%'; 
     // document.getElementById('map_content').style.height='50%';
     // map.relayout();
+}
+export function mapChangeSize(size){
+    let mapWrap = document.getElementById('map');
+    try {
+        mapWrap.style.height = size + '%';  
+        map.relayout();
+    } catch (error) {
+        console.log(error)
+    }
+    return Promise.resolve(map.getCenter());
 }
 // 동별로 중심 좌표 찍어주기.
 var element = document.getElementById("region_form_dong");

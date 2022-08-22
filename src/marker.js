@@ -1,5 +1,6 @@
+import { makeCarousel } from "./component.js";
 import { deleteNode,formlists,submitData } from "./form.js";
-import { changeDragLock, clearMarkers, clusterer, dragLock, mapChangeSize, mapInit } from "./map.js";
+import { changeDragLock, clearMarkers, clusterer, dragLock, mapChangeSize, mapInit, mapSetCenter } from "./map.js";
 import { getMarkerInformation, getMarkerKey, setRequireOptions } from "./store.js";
 
 // 마커 이미지 
@@ -35,15 +36,11 @@ export function spreadMarkers(mapLat, mapLng, mapLevel){
                     getMarkerInformation(marker.getTitle()).then((data)=>{
                         deleteNode();
                         setMarkerInformation(data, marker)
-                        console.log("dragLock status " + dragLock)
                         if(marker.getDraggable() != true && dragLock){
-                            console.log("grey -> red : " + dragLock)
                             changeDragLock();
                             clearMarkers();
                             mapInit();
-                            console.log(" ->  " + dragLock)
                         }else if(marker.getDraggable() && dragLock == false) changeDragLock();
-                        console.log("dragLock status " + dragLock)
                     });
                 })
                 markers.push(marker)
@@ -106,40 +103,59 @@ async function uploadImage(files, m){
 export function setMarkerInformation(data, marker){ 
     mapChangeSize(marker.getPosition())
     let parentNode = document.getElementById("map_inner")
-    parentNode.style.height='40%'
+    parentNode.style.height='20%'
     let newNode = document.createElement("div")
     newNode.setAttribute('id', 'marker-content tmp-node')
     try {
-        newNode.innerHTML = "<div>" + data[0]['bldNm']['S'] + " " + data[0]['dongNm']['S'] + "</div>"
+        newNode.innerHTML = "<div id='marker-title'>" + data[0]['bldNm']['S'] + " " + data[0]['dongNm']['S'] + "</div>"
     } catch (error) {
         console.log(error)
-        newNode.innerHTML = "<div>" + data[0]['bldNm']['S'] + "</div>"
+        newNode.innerHTML = "<div id='marker-title'>" + data[0]['bldNm']['S'] + "</div>"
     }
     parentNode.appendChild(newNode)
-    let imgNode = document.createElement("div")
-    imgNode.setAttribute('id', "marker-toilet-img")
-    imgNode.innerHTML = 
-        "<input type='file' class='img-upload' required multiple></input>" +
-        "<ul class='img-preview'></ul>"
-    parentNode.appendChild(imgNode)
-    document.querySelector('.img-upload').addEventListener('change', function(e){
-        getImageFiles(e, marker)
-    });
     
-
-    newNode = document.createElement('form')
-    newNode.setAttribute('id', 'form1')
-    newNode.setAttribute('class', 'was-validated')
-    newNode.setAttribute('name', 'form1')
-    newNode.innerHTML=formlists(data)
-    
-    parentNode.appendChild(newNode)
-    document.getElementById("button-markerinfo").addEventListener('click', function(event){
-        if(dragLock == true) changeDragLock();
-        // clearMarkers();
-        submitData(data)
-        marker.setDraggable(false);
-        marker.setImage(markerImageGreenMarker)
-    })
+    document.getElementById('marker-title').addEventListener("click", setDetailMarkerInformation(data, marker));
 }
 
+function setDetailMarkerInformation(data, marker){
+    return function(){
+        // mapChangeSize(50)
+        // .then((pos) => function(){
+        //     console.log("pos")
+        //     mapSetCenter(pos);
+        // })
+        // .catch(function(err){
+        //     console.log(err)
+        // })
+        let parentNode = document.getElementById("map_inner");
+
+        parentNode.style.height='60%';
+        makeCarousel();
+        let imgNode = document.createElement("div");
+        imgNode.setAttribute('id', "marker-toilet-img");
+        imgNode.innerHTML = 
+            "<input type='file' class='img-upload' required multiple></input>" +
+            "<ul class='img-preview'></ul>"
+        parentNode.appendChild(imgNode);
+        document.querySelector('.img-upload').addEventListener('change', function(e){
+            getImageFiles(e, marker);
+        });
+        
+    
+        let newNode = document.createElement('form');
+        newNode.setAttribute('id', 'form1');
+        newNode.setAttribute('class', 'was-validated');
+        newNode.setAttribute('name', 'form1');
+        newNode.innerHTML=formlists(data);
+        
+        parentNode.appendChild(newNode);
+        document.getElementById("button-markerinfo").addEventListener('click', function(event){
+            if(dragLock == true) changeDragLock();
+            // clearMarkers();
+            submitData(data)
+            marker.setDraggable(false);
+            marker.setImage(markerImageGreenMarker);
+        })
+        
+    }
+}

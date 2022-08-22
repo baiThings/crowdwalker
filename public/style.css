@@ -58,6 +58,7 @@ body::-webkit-scrollbar {
     background-color: #0d6efd;
 
  }
+
  #map_content::-webkit-scrollbar {
     display: none;
   }
@@ -115,18 +116,25 @@ body::-webkit-scrollbar {
     transition-property:height;
     transition-duration:1s;
 }
+#map_inner::-webkit-scrollbar {
+    display: none;
+}
 
-img{
+/* img{
 width: 2.9rem;
 height: auto;
-}
+} */
 
 li{
     list-style: none;
 }
 
+ul{
+    padding:0px;
+    margin:0px;
+}
 .img-upload{
-    width: 10rem;
+    width: 15rem;
 }
 
 .img-preview{
@@ -137,4 +145,18 @@ li{
     flex-wrap: wrap;
     text-align: center;
     padding: 0px 1rem;
+}
+#carousel-wrapper{
+    
+}
+#carousel{
+    display: flex;
+}
+.prev-button{
+    cursor: pointer;
+    width: 2.9rem;
+}
+.next-button{
+    cursor: pointer;
+    width: 2.9rem;
 }
