@@ -1,6 +1,13 @@
+@font-face {
+    font-family: 'GmarketSansMedium';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 html, body{
     height: 100%;
-    font-family: 'Lexend Exa', sans-serif;
+    font-family: 'GmarketSansMedium', sans-serif;
     font-size: 2.5vh;
     overscroll-behavior-y: none;
 }
@@ -54,6 +61,7 @@ body::-webkit-scrollbar {
 
  #map_content{
     width: 100%;
+    height: 30%;
     overflow: auto;
     background-color: #0d6efd;
 
@@ -70,10 +78,44 @@ body::-webkit-scrollbar {
 #map{
     width: 100%;
     height: 100%;
-    transition-property:height;
+    transition-property:bottom;
     transition-duration:1s;
     /* margin-top:1vh; */
 }
+
+#map_inner {
+    position:absolute;
+    bottom:0%;
+    overflow:auto;
+    width:100%;
+    height:0%;
+    margin:0;
+    padding:0;
+    z-index:1;
+    border: 1px grey solid;
+    background-color: white;
+    transition-property:height;
+    transition-duration:1s;
+}
+#map_inner::-webkit-scrollbar {
+    display: none;
+}
+.map-custom-movedong {
+    position:absolute;
+    top:2vh;
+    left:10px;
+    overflow:hidden;
+    width:30%;
+    height:6%;
+    margin:0;
+    padding:0;
+    z-index:1;
+    font-size:12px;
+    display: flex;
+    align-items: center;
+}
+
+
  /* CSS 미세 조절 */
  #padding_zero{
     padding :0px!important;
@@ -93,32 +135,74 @@ body::-webkit-scrollbar {
 
 }
 #marker-title{
-    color:white;
+    color:black;
     font-weight: bold;
+    font-size: 1rem;
+    padding: 0.2rem 0.5rem;
+    height: 2rem;
+}
+#marker-content{
+    height: 100%;
+
+}
+#marker-summary{
+    color: #41464b;
+    font-weight: bold;
+    font-size: 0.8rem;
+    padding: 0.2rem 0.5rem;
+    height: 2rem;
+}
+#marker-summary-button{
+    display: flex;
+    justify-content: center;
+    /* margin: 1rem 0px; */
+    height: 2rem;
+}
+#marker-summary-button-input{
+    display: flex;
+    align-items: center;
+    font-size: 0.7rem;
+    margin: 0px 0.5rem;
+    font-weight: 600;
+    border: 1px rgb(140, 140, 140) solid;
+    padding: 0px 0.5rem;
+    cursor: pointer
+}
+
+#marker-toilet-img{
+    padding: 2rem;
+
+}
+#carousel-wrapper{
+    transition-property:height;
+    transition-duration:4s;
+}
+#marker-list-title{
+    color:black;
+    font-weight: bold;
+    font-size: 1rem;
+    padding: 0.2rem 0.5rem;
+    height: 2rem;
+}
+#marker_list{
+    color: #41464b;
+    font-weight: bold;
+    font-size: 0.8rem;
+    padding: 0.2rem 0.5rem;
+    margin: 0.5rem;
 }
 
 #region_form_dong{
     font-size: 1.5vh;
     height: 100%;
 }
-.map_wrap {position:relative;overflow:hidden;width:100%;height:95%;transition-property:height;transition-duration:1s;}
-.custom_typecontrol {position:absolute;top:2vh;left:10px;overflow:hidden;width:30%;height:6%;margin:0;padding:0;z-index:1;font-size:12px;font-family:'Malgun Gothic', '맑은 고딕', sans-serif;}
-#map_inner {
-    position:absolute;
-    bottom:0%;
-    overflow:auto;
+.map_wrap {
+    position:relative;
+    overflow:hidden;
     width:100%;
-    height:0%;
-    margin:0;
-    padding:0;
-    z-index:1;
-    background-color: #0d6efdb0;
-    transition-property:height;
-    transition-duration:1s;
+    height:95%;
 }
-#map_inner::-webkit-scrollbar {
-    display: none;
-}
+
 
 /* img{
 width: 2.9rem;
@@ -146,8 +230,8 @@ ul{
     text-align: center;
     padding: 0px 1rem;
 }
-#carousel-wrapper{
-    
+#img-preview-node{
+    width: 2.9rem;
 }
 #carousel{
     display: flex;
@@ -159,4 +243,30 @@ ul{
 .next-button{
     cursor: pointer;
     width: 2.9rem;
+}
+#button-markerinfo{
+    color: #41464b;
+    margin-bottom: 1rem;
+    font-size: 0.8rem;
+    background-color: white;
+    /* border-radius: 0.5rem; */
+    font-weight: 600;
+    border: 1px rgb(140, 140, 140) solid;
+    padding: 0px 0.5rem;
+    cursor: pointer;
+}
+
+
+.form-select{
+    width: 100%;
+}
+#form-radio{
+    display: flex;
+    justify-content: space-between;
+    margin: auto 1rem;
+    align-items: center;
+    font-size: 0.7rem;
+}
+.form-radio{
+    margin:2vw
 }

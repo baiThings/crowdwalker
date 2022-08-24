@@ -10,11 +10,15 @@ export function mapInit(){
 
 window.onload=function(){
     mapInit();
+    let mapNode = document.getElementById('map');
+    mapNode.removeChild(mapNode.childNodes[1]);
 }
+
+
 
 var container = document.getElementById('map');
 var options = {
-    center: new kakao.maps.LatLng(36.480069682512664, 127.29019964537333),
+    center: new kakao.maps.LatLng(36.479074216, 127.28465568800002),
     level: 3
 };
 var map = new kakao.maps.Map(container, options);
@@ -58,14 +62,17 @@ function getMarkerList(markers){
     deleteNode();
     let newNode = ''
     let parentNode = document.getElementById('map_inner')
+    let titleNode = document.createElement('div');
+    titleNode.setAttribute('id', 'marker-list-title');
+    titleNode.innerHTML="구역 내 화장실 목록";
+    parentNode.appendChild(titleNode);
+
     for(let i = 0; i < markers.length; i++){
         let toiletNameList; 
         getMarkerInformation(markers[i].getTitle()).then((data)=>{
             toiletNameList = data[0]["bldNm"]["S"] + " " + data[0]["dongNm"]["S"]
             newNode = document.createElement('div')
             newNode.setAttribute('id', 'marker_list')
-            newNode.style.color='white'
-            newNode.style.fontSize='3vh'
             newNode.innerHTML=toiletNameList
             newNode.addEventListener("click",function(){ 
                 try {
@@ -149,7 +156,15 @@ kakao.maps.event.addListener(map, 'zoom_changed', function() {
 // })
 //
 export function mapSetCenter(pos){
-    map.setCenter(pos)
+    console.log("change pos : " + pos);
+    map.setCenter(pos);
+}
+export function mapReset(){
+    map.relayout();
+    return Promise.resolve(map.getCenter());
+}
+export function mapMove(dx, dy){
+    map.panBy(dx, dy);
 }
 // 지도 사이즈 변경
 export function mapResize(size) {
@@ -157,10 +172,10 @@ export function mapResize(size) {
     try {
         mapWrap.style.height = size + '%'; 
         map.relayout();
+        document.getElementById('map').style.bottom = "0";
     } catch (error) {
         console.log(error)
     }
-    // document.getElementById('map_content').style.height='0%'; 
 }
 
 export function mapContentChangeSize(size){
@@ -171,12 +186,8 @@ export function mapContentChangeSize(size){
     } catch (error) {
         console.log(error)
     }
-    // let mapWrap = document.getElementById('map');
-    // mapWrap.style.height = '50%'; 
-    // document.getElementById('map_content').style.height='50%';
-    // map.relayout();
 }
-export function mapChangeSize(size){
+export function mapChangeSize(size, marker){
     let mapWrap = document.getElementById('map');
     try {
         mapWrap.style.height = size + '%';  
@@ -184,7 +195,7 @@ export function mapChangeSize(size){
     } catch (error) {
         console.log(error)
     }
-    return Promise.resolve(map.getCenter());
+    map.setCenter(marker.getPosition());
 }
 // 동별로 중심 좌표 찍어주기.
 var element = document.getElementById("region_form_dong");

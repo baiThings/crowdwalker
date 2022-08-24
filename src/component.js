@@ -54,34 +54,30 @@ function translateContainerRight(){
     container.style.transitionDuration= '500ms';
 }                    
  export function makeCarousel(){
-    let parentNode = document.getElementById("map_inner")
-    let carousleWrapperNode = document.createElement('div')
-    let carousleNode = document.createElement("div");
+    let parentNode = document.getElementById("marker-content")
+    let carouselWrapperNode = document.createElement('div')
+    let carouselNode = document.createElement("div");
     let leftButton = document.createElement('img')
     let rightButton = document.createElement('img')
     let carouselWidth = $('#map_inner').width();
 
-    carousleWrapperNode.setAttribute('id', 'carousel-wrapper');
-    carousleWrapperNode.style.overflow="hidden"
-    carousleWrapperNode.style.width="100%";
-    carousleWrapperNode.style.height="90%"
-    carousleWrapperNode.style.position="relative";
-    // container.style.transform="translateY(-50%)"
-    // container.style.transform="translateX(-50%)"
- 
-    carousleNode.setAttribute("id", "carousel");
-    // carousleNode.style.position="absolute";
-    carousleNode.style.width= carouselWidth * 2 + "px";
-    carousleNode.style.height="100%";
-    console.log(carouselWidth)
+    carouselWrapperNode.setAttribute('id', 'carousel-wrapper');
+    carouselWrapperNode.style.overflow="hidden"
+    carouselWrapperNode.style.width="100%";
+    carouselWrapperNode.style.position="relative";
+
+    carouselNode.setAttribute("id", "carousel");
+    carouselNode.style.width= carouselWidth * 2 + "px";
+    carouselNode.style.height="100%";
+
+    
     for(let i = 1; i <= 2; i++){
         let newNode = document.createElement('img')
         newNode.setAttribute('id', 'img-frame')
         newNode.setAttribute('src', "../resource/test"+i+".jpg")
         newNode.style.height = "100%";
         newNode.style.width = carouselWidth + "px";
-        console.log(carouselWidth)
-        carousleNode.appendChild(newNode)
+        carouselNode.appendChild(newNode)
     }
    
     leftButton.setAttribute("class", "prev-button")
@@ -103,11 +99,12 @@ function translateContainerRight(){
     })
     leftButton.setAttribute('src', "../resource/left-arrow.png")
     rightButton.setAttribute('src', "../resource/right-arrow.png")
-    carousleWrapperNode.appendChild(rightButton)
-    carousleWrapperNode.appendChild(leftButton);
+    carouselWrapperNode.appendChild(rightButton)
+    carouselWrapperNode.appendChild(leftButton);
    
-    carousleWrapperNode.appendChild(carousleNode);
-    parentNode.appendChild(carousleWrapperNode);
+    carouselWrapperNode.appendChild(carouselNode);
+    parentNode.appendChild(carouselWrapperNode);
+
  }                          
 
 //  <button class="btn1" type="button" onclick="javascript:sensorBtnClick('btn1');">버튼1</button>

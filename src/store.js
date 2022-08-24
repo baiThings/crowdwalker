@@ -29,7 +29,7 @@ import parseCsv from "./parsing.js";
 //     })
 //     .catch((error) => console.log(error));
 // }
-
+export let myStorage = window.localStorage;
 let whileFetching = false;
 let controller;
 export async function getMarkerKey(lat, lng, radius){

@@ -6,11 +6,13 @@ function parsingSubmitData(data){
     var formData =new FormData(document.getElementById("form1"));
     obj["PK"] = data[0]["PK"]["S"]
     for(let [name, value] of formData) {
+        console.log(name + " : " + value);
+
         if(name == "pk") value=parseInt(value);
         else if(name == "lat" || name == "lng") value=parseFloat(value);
         else if(value == "YES") value=true;
         else if(value == "NO") value=false;
-        else if(value == "선택 안함") value=false;
+        else value=false;
         obj[name] = value;
     }
     return JSON.stringify(obj)
@@ -44,7 +46,7 @@ export function formlists(data){
             formlist += formSelect(key, value)            
         }
     }
-    formlist += '<div id="button-wrapper"><button id="button-markerinfo" type="button" class="btn btn-primary">SUBMIT</button></div></form>'
+    formlist += '<div id="button-wrapper"><input type="button" id="button-markerinfo" value ="제출"></input></div></form>'
     return formlist;
 } 
 export function formFixed(key, value, data){  
@@ -57,17 +59,24 @@ export function formFixed(key, value, data){
         console.log("fail to get markerInfo")
     }
 }
- export function formSelect(key, value){
-    return  '<div class="mb-3 mt-3">' + 
-    '   <label  for='+ key + ' class="form-label">'+value+':</label>' + 
-    '   <select class="form-select" id='+ key+ ' name='+ key+ '>' +
-    '       <option>선택 안함</options>' + 
-    '       <option>YES</option>' + 
-    '       <option>NO</option>' + 
-    '   </select>' + 
-    '</div>'
- }
+//  export function formSelect(key, value){
+//     return  '<div class="mb-3 mt-3" id="form-select">' + 
+//     '   <label  for='+ key + ' class="form-label">'+value+':</label>' + 
+//     '   <select class="form-select" id='+ key+ ' name='+ key+ '>' +
+//     '       <option>선택 안함</options>' + 
+//     '       <option>YES</option>' + 
+//     '       <option>NO</option>' + 
+//     '   </select>' + 
+//     '</div>'
+//  }
 
+ export function formSelect(key, value){
+    return '<div class="mb-3 mt-3" id="form-radio">' 
+    + '<label for=' + key + 'class="form-label">' + value +':</label>'
+    + '<div><input class="form-radio" type="radio" name="'+key+'" value="YES"><label for="yes">YES</label>'
+    + '<input class="form-radio" type="radio" name="'+key+'" value="NO" checked="checked"><label for="no">NO</label></div>'   
+    +'</div>'
+ }
  export function deleteNode(){
     let parentnode = document.getElementById('map_inner')
     try {

@@ -1,7 +1,7 @@
 import { makeCarousel } from "./component.js";
 import { deleteNode,formlists,submitData } from "./form.js";
-import { changeDragLock, clearMarkers, clusterer, dragLock, mapChangeSize, mapInit, mapSetCenter } from "./map.js";
-import { getMarkerInformation, getMarkerKey, setRequireOptions } from "./store.js";
+import { changeDragLock, clearMarkers, clusterer, dragLock, mapChangeSize, mapInit, mapMove, mapReset, mapResize, mapSetCenter } from "./map.js";
+import { getMarkerInformation, getMarkerKey, myStorage, setRequireOptions } from "./store.js";
 
 // 마커 이미지 
 var imageSrc_RedMarker = '../resource/marker_red.png', // 마커이미지의 주소입니다
@@ -34,8 +34,9 @@ export function spreadMarkers(mapLat, mapLng, mapLevel){
                 let marker = makeMarker(new kakao.maps.LatLng(latlng[0], latlng[1]), toilets[i]['PK']['S'], markerImageRedMarker)
                 kakao.maps.event.addListener(marker, 'click', function(){
                     getMarkerInformation(marker.getTitle()).then((data)=>{
+                        myStorage.setItem("data", JSON.stringify(data));
                         deleteNode();
-                        setMarkerInformation(data, marker)
+                        setMarkerInformation()
                         if(marker.getDraggable() != true && dragLock){
                             changeDragLock();
                             clearMarkers();
@@ -56,11 +57,12 @@ function createElement(e, file) {
     const img = document.createElement('img');
     img.setAttribute('src', e.target.result);
     img.setAttribute('data-file', file.name);
+    img.setAttribute('id', "img-preview-node")
     li.appendChild(img);
 
     return li;
   }
-function getImageFiles(e, m){
+function getImageFiles(e){
     const unploadFiles = [];
     const files = e.currentTarget.files;
     console.log(files)
@@ -77,14 +79,12 @@ function getImageFiles(e, m){
         reader.readAsDataURL(file);
         console.log(file)
     })
-    console.log(m)
-    uploadImage(files, m)
+    uploadImage(files)
 }
 
-async function uploadImage(files, m){
+async function uploadImage(files){
     let formdata = new FormData();
-    console.log(m.getTitle())
-    // formdata.append('PK', m.getTitle());
+
     for(let i = 0; i < files.length; i++){
         formdata.append('file'+ i, files[i]);
     }
@@ -100,48 +100,90 @@ async function uploadImage(files, m){
         console.log(error)
     }
 }
-export function setMarkerInformation(data, marker){ 
-    mapChangeSize(marker.getPosition())
+export function setMarkerInformation(){ 
+    let data = JSON.parse(myStorage.getItem('data'))
     let parentNode = document.getElementById("map_inner")
+    let toiletTitle;
     parentNode.style.height='20%'
     let newNode = document.createElement("div")
-    newNode.setAttribute('id', 'marker-content tmp-node')
-    try {
-        newNode.innerHTML = "<div id='marker-title'>" + data[0]['bldNm']['S'] + " " + data[0]['dongNm']['S'] + "</div>"
-    } catch (error) {
-        console.log(error)
-        newNode.innerHTML = "<div id='marker-title'>" + data[0]['bldNm']['S'] + "</div>"
+    newNode.setAttribute('id', 'marker-content')
+    console.log(data[0])
+    if(Object.hasOwn(data[0], 'dongNm') && Object.hasOwn(data[0], 'bldNm')){
+        let dongNm = data[0]['dongNm']['S'];
+        let bldNm = data[0]['bldNm']['S'];
+        if(dongNm != bldNm){
+            toiletTitle = data[0]['dongNm']['S'] + " " + data[0]['bldNm']['S'];
+        }else toiletTitle = data[0]['dongNm']['S'];
+    }else if(Object.hasOwn(data[0], 'dongNm')){
+        toiletTitle = data[0]['dongNm']['S'];
+    }else{
+        toiletTitle = data[0]['bldNm']['S'];
     }
+    newNode.innerHTML = "<div id='marker-title'>" + toiletTitle + "</div>"
+    newNode.innerHTML += "<div id='marker-summary'>" + data[0]['newPlatPlc']['S'] + "</div>"
+    newNode.innerHTML += "<div id='marker-summary-button'>" + 
+                            "<div id='marker-summary-button-input' type='input'>사진 등록</div>" + 
+                            "<div id='marker-summary-button-input' type='input'>세부 정보 입력</div>" + 
+                         "</div>";
     parentNode.appendChild(newNode)
-    
-    document.getElementById('marker-title').addEventListener("click", setDetailMarkerInformation(data, marker));
+    document.getElementById('map').style.bottom = '10%';
+
+    document.getElementById('marker-title').addEventListener("click", setImageToilet); 
+    document.querySelectorAll('#marker-summary-button-input')[0].addEventListener("click", uploadImageToilet);
+    document.querySelectorAll('#marker-summary-button-input')[1].addEventListener("click", setDetailMarkerInformation);
 }
 
-function setDetailMarkerInformation(data, marker){
-    return function(){
-        // mapChangeSize(50)
-        // .then((pos) => function(){
-        //     console.log("pos")
-        //     mapSetCenter(pos);
-        // })
-        // .catch(function(err){
-        //     console.log(err)
-        // })
-        let parentNode = document.getElementById("map_inner");
-
-        parentNode.style.height='60%';
-        makeCarousel();
+function setImageToilet(){
+        // let data = JSON.parse(myStorage.getItem('data'))
+        document.getElementById('map').style.bottom = "30%";
+        let contentNode = document.getElementById("map_inner");
+        let parentNode = document.getElementById("marker-content");        
+        document.getElementById('marker-summary-button').remove();
+        setTimeout(function(){
+            makeCarousel();
+            document.getElementById('carousel-wrapper').style.height='calc(100% - 4rem)';
+            document.getElementById('marker-title').removeEventListener("click", setImageToilet); 
+            document.getElementById('marker-title').addEventListener("click", function(){
+                deleteNode();
+                setMarkerInformation()
+            }); 
+        },250)
+        contentNode.style.height='60%';
+}
+function uploadImageToilet(){
+        document.getElementById('map').style.bottom = "20%";
+        let contentNode = document.getElementById("map_inner");
+        let parentNode = document.getElementById("marker-content");
+        // parentNode.style.backgroundColor="#0d6efd"        
+        
+        document.getElementById('marker-summary-button').remove();
         let imgNode = document.createElement("div");
+
         imgNode.setAttribute('id', "marker-toilet-img");
         imgNode.innerHTML = 
             "<input type='file' class='img-upload' required multiple></input>" +
             "<ul class='img-preview'></ul>"
         parentNode.appendChild(imgNode);
         document.querySelector('.img-upload').addEventListener('change', function(e){
-            getImageFiles(e, marker);
+            getImageFiles(e);
         });
-        
-    
+        document.getElementById('marker-title').removeEventListener("click", setImageToilet); 
+        document.getElementById('marker-title').addEventListener("click", function(){
+            deleteNode();
+            setMarkerInformation();
+        }); 
+       
+        contentNode.style.height='40%';
+
+
+}
+function setDetailMarkerInformation(){
+        document.getElementById('map').style.bottom = "30%";
+        let data = JSON.parse(myStorage.getItem('data'))
+        document.getElementById('marker-summary-button').remove();
+
+        let parentNode = document.getElementById("marker-content");
+        // parentNode.style.height='60%';
         let newNode = document.createElement('form');
         newNode.setAttribute('id', 'form1');
         newNode.setAttribute('class', 'was-validated');
@@ -151,11 +193,16 @@ function setDetailMarkerInformation(data, marker){
         parentNode.appendChild(newNode);
         document.getElementById("button-markerinfo").addEventListener('click', function(event){
             if(dragLock == true) changeDragLock();
-            // clearMarkers();
+            clearMarkers();
             submitData(data)
-            marker.setDraggable(false);
-            marker.setImage(markerImageGreenMarker);
+            // marker.setDraggable(false);
+            // marker.setImage(markerImageGreenMarker);
         })
-        
-    }
+        document.getElementById('marker-title').removeEventListener("click", setImageToilet); 
+        document.getElementById('marker-title').addEventListener("click", function(){
+            deleteNode();
+            setMarkerInformation();
+        });
+        document.getElementById('map_inner').style.height='60%'
+
 }
