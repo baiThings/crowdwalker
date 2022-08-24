@@ -1,7 +1,7 @@
 // import { toilet_form } from './form.js';
 import {deleteNode } from './form.js';
 import {setMarkerInformation, spreadMarkers } from './marker.js';
-import {getMarkerInformation} from './store.js';
+import {getMarkerInformation, myStorage} from './store.js';
 
 
 export function mapInit(){
@@ -75,9 +75,10 @@ function getMarkerList(markers){
             newNode.setAttribute('id', 'marker_list')
             newNode.innerHTML=toiletNameList
             newNode.addEventListener("click",function(){ 
+                myStorage.setItem('data', JSON.stringify(data))
                 try {
                     deleteNode()
-                    setMarkerInformation(data, markers[i])
+                    setMarkerInformation()
                     changeMarkerDragable(markers[i])
                     dragLock = true;
                 } catch (error) {

@@ -112,7 +112,7 @@ export function setMarkerInformation(){
         let dongNm = data[0]['dongNm']['S'];
         let bldNm = data[0]['bldNm']['S'];
         if(dongNm != bldNm){
-            toiletTitle = data[0]['dongNm']['S'] + " " + data[0]['bldNm']['S'];
+            toiletTitle = data[0]['bldNm']['S'] + "  " + data[0]['dongNm']['S'];
         }else toiletTitle = data[0]['dongNm']['S'];
     }else if(Object.hasOwn(data[0], 'dongNm')){
         toiletTitle = data[0]['dongNm']['S'];
