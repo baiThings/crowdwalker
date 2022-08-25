@@ -1,6 +1,5 @@
-// import { toilet_form } from './form.js';
 import {deleteNode } from './form.js';
-import {setMarkerInformation, spreadMarkers } from './marker.js';
+import { setMarkerInformation, spreadMarkers } from './marker.js';
 import {getMarkerInformation, myStorage} from './store.js';
 
 
@@ -14,30 +13,29 @@ window.onload=function(){
     mapNode.removeChild(mapNode.childNodes[1]);
 }
 
-
-
-var container = document.getElementById('map');
-var options = {
+let container = document.getElementById('map');
+let options = {
     center: new kakao.maps.LatLng(36.479074216, 127.28465568800002),
     level: 3
 };
-var map = new kakao.maps.Map(container, options);
+let map = new kakao.maps.Map(container, options);
 
 // 마커 클러스터러를 생성합니다 
-export var clusterer = new kakao.maps.MarkerClusterer({
+export let clusterer = new kakao.maps.MarkerClusterer({
     map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체 
     averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정 
     disableClickZoom : true,
 });
 let tmpMarker = [];
 function changeMarkerDragable(marker){
-    // dragLock = true;
+    console.log(marker)
     clusterer.removeMarker(marker);
     marker.setImage(markerImageGreyMarker);
     marker.setDraggable(true);
     marker.setMap(map);
     marker.setZIndex(2);
     tmpMarker.push(marker)
+
     kakao.maps.event.addListener(marker, 'dragend', function() {
         try {
             document.getElementById('lat').value = marker.getPosition().getLat();
@@ -59,6 +57,7 @@ export const clearMarkers = () => {
     tmpMarker.forEach((marker)=> marker.setMap(null));
 }
 function getMarkerList(markers){
+    console.log(markers)
     deleteNode();
     let newNode = ''
     let parentNode = document.getElementById('map_inner')
@@ -66,59 +65,92 @@ function getMarkerList(markers){
     titleNode.setAttribute('id', 'marker-list-title');
     titleNode.innerHTML="구역 내 화장실 목록";
     parentNode.appendChild(titleNode);
-
-    for(let i = 0; i < markers.length; i++){
+    for(let marker of markers){
+        console.log(marker);
+    }
+    for(let marker of markers){
         let toiletNameList; 
-        getMarkerInformation(markers[i].getTitle()).then((data)=>{
+        console.log(marker)
+        getMarkerInformation(marker.getTitle()).then((data)=>{
+            // console.log(i);
             toiletNameList = data[0]["bldNm"]["S"] + " " + data[0]["dongNm"]["S"]
             newNode = document.createElement('div')
             newNode.setAttribute('id', 'marker_list')
             newNode.innerHTML=toiletNameList
-            newNode.addEventListener("click",function(){ 
-                myStorage.setItem('data', JSON.stringify(data))
+            console.log(marker);
+            newNode.addEventListener("click", function(){
+                myStorage.setItem('data', JSON.stringify(data));
                 try {
                     deleteNode()
                     setMarkerInformation()
-                    changeMarkerDragable(markers[i])
+                    changeMarkerDragable(marker)
                     dragLock = true;
                 } catch (error) {
                     console.log(error)
                     alert("클러스터를 다시 클릭해주세요.")
                 }
-            })
+            });
             parentNode.appendChild(newNode)
         })
         .catch((error) => {
             console.log(error)
         })
+        console.log(marker) 
     }
 }  
-// 클러스터 클릭 시 이벤트
-// 마커 클러스터러를 생성할 때 disableClickZoom을 true로 설정하지 않은 경우
-// 이벤트 헨들러로 cluster 객체가 넘어오지 않을 수도 있습니다
+
+function clickMarkerList(data, marker){
+    return function(){
+        myStorage.setItem('data', JSON.stringify(data));
+        try {
+            deleteNode()
+            setMarkerInformation()
+            console.log(marker);
+            clusterer.removeMarker(marker);
+            changeMarkerDragable(marker)
+            dragLock = true;
+        } catch (error) {
+            console.log(error)
+            alert("클러스터를 다시 클릭해주세요.")
+        }
+    }
+}
+/**
+ * 클러스터 클릭 시 이벤트
+ */ 
+function getMarkersPromise(cluster){
+    return new Promise(function(resolve, reject){
+        let markers = cluster.getMarkers();
+        resolve(markers);
+    })
+}
+
 kakao.maps.event.addListener(clusterer, 'clusterclick', function(cluster) {
-    var level = map.getLevel();
+    let level = map.getLevel();
     mapResize(0)
-    mapSetCenter(cluster.getMarkers()[0].getPosition())
     if(level == 1){
         mapContentChangeSize(40)
-        getMarkerList(cluster.getMarkers())
-        // map.panTo(new kakao.maps.LatLng(cluster.getMarkers()[0].getPosition().getLat(), cluster.getMarkers()[0].getPosition().getLng()));            
-    }else level -= 1; // 현재 지도 레벨에서 1레벨 확대한 레벨
-    // 지도를 클릭된 클러스터의 마커의 위치를 기준으로 확대합니다
+        // let markers = cluster.getMarkers()
+        getMarkersPromise(cluster).then((markers)=>{
+            console.log(markers)
+            getMarkerList(markers)
+        })
+    }else level -= 1;
     map.setLevel(level, {anchor: cluster.getCenter()});
+    mapSetCenter(cluster.getCenter())
 });
-
+/**
+ * 지도 클릭 시 이벤트
+ */ 
 kakao.maps.event.addListener(map, 'click', function() {   
     deleteNode();
     dragLock = false;
     clearMarkers();
-    // clusterer.clear();
     mapResize(0);
     mapInit();
 });
 
-// 지도가 이동하거나 줌을 할 때 중심 좌표와 레벨을 받아옴. 
+
 kakao.maps.event.addListener(map, 'dragend', function() {
     console.log("dragend")
     if(dragLock == false){ 
@@ -137,28 +169,9 @@ kakao.maps.event.addListener(map, 'zoom_changed', function() {
     if(dragLock == false) mapInit();
 });
 
-// document.getElementById('map_content').addEventListener('click', function(e){
-//     // console.log(document.querySelectorAll("input"))
-//     let inputDiv = document.querySelectorAll("input")
-//     // console.log(document.getElementById("marker_list"))
-//     for(let i = 0; i < inputDiv.length;i++){
-//         if(inputDiv[i] == e.target) return;
-//     }
-//     let selectDiv = document.querySelectorAll("select")
-//     for(let i = 0; i < selectDiv.length; i++){
-//         if(selectDiv[i] == e.target) return;
-//     }
-//     let markerList = document.getElementById("marker_list")
-//     console.log(markerList)
-//     // for(let i = 0; i < markerList.length; i++){
-//     //     if(markerList[i] == e.target) return;
-//     // }
-//     // mapResize();
-// })
-//
 export function mapSetCenter(pos){
     console.log("change pos : " + pos);
-    map.setCenter(pos);
+    map.panTo(pos);
 }
 export function mapReset(){
     map.relayout();
@@ -167,7 +180,7 @@ export function mapReset(){
 export function mapMove(dx, dy){
     map.panBy(dx, dy);
 }
-// 지도 사이즈 변경
+
 export function mapResize(size) {
     let mapWrap = document.getElementById('map_inner');
     try {
@@ -178,7 +191,6 @@ export function mapResize(size) {
         console.log(error)
     }
 }
-
 export function mapContentChangeSize(size){
     let mapWrap = document.getElementById('map_inner');
     try {
@@ -196,20 +208,19 @@ export function mapChangeSize(size, marker){
     } catch (error) {
         console.log(error)
     }
-    map.setCenter(marker.getPosition());
+    mapSetCenter(marker.getPosition())
 }
 // 동별로 중심 좌표 찍어주기.
-var element = document.getElementById("region_form_dong");
+let element = document.getElementById("region_form_dong");
 element.onchange = function() {
-    var dongName = document.getElementById("region_form_dong");
-    var dongNameValue=dongName.options[dongName.selectedIndex].value
-    // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다
-    map.panTo(dongToJson.get(dongNameValue));            
+    let dongName = document.getElementById("region_form_dong");
+    let dongNameValue=dongName.options[dongName.selectedIndex].value
+    mapSetCenter(dongToJson.get(dongNameValue));
     mapInit()
 }  
 
 // 동 위치 정보 json
-var dongToJson = new Map();
+let dongToJson = new Map();
 fetch("../resource/dongTojson.json")
     .then(response => {
     return response.json();

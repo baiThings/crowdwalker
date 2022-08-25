@@ -2,17 +2,16 @@ import { dragLock } from "./map.js";
 import { parseToiletData } from "./store.js";
 
 function parsingSubmitData(data){
-    var obj = {};
-    var formData =new FormData(document.getElementById("form1"));
-    obj["PK"] = data[0]["PK"]["S"]
+    let obj = {};
+    let formData =new FormData(document.getElementById("form1"));
+    // obj["PK"] = data[0]["PK"]["S"]
     for(let [name, value] of formData) {
         console.log(name + " : " + value);
 
-        if(name == "pk") value=parseInt(value);
+        if(name == "PK") value=parseInt(value);
         else if(name == "lat" || name == "lng") value=parseFloat(value);
         else if(value == "YES") value=true;
         else if(value == "NO") value=false;
-        else value=false;
         obj[name] = value;
     }
     return JSON.stringify(obj)
@@ -53,22 +52,12 @@ export function formFixed(key, value, data){
     try {
         return '<div class="mb-3 mt-3">'+
         '<label class="form-label" hidden>' + value + '</label>'+
-        '<input type="hidden" class="form-control" id='+ key+' value='+ data[0][key]['S']+' name='+ key +' disabled >'+
+        '<input type="hidden" class="form-control" id='+ key+' value='+ data[0][key]['S']+' name='+ key +'>'+
         '</div>'
     } catch (error) {
         console.log("fail to get markerInfo")
     }
 }
-//  export function formSelect(key, value){
-//     return  '<div class="mb-3 mt-3" id="form-select">' + 
-//     '   <label  for='+ key + ' class="form-label">'+value+':</label>' + 
-//     '   <select class="form-select" id='+ key+ ' name='+ key+ '>' +
-//     '       <option>선택 안함</options>' + 
-//     '       <option>YES</option>' + 
-//     '       <option>NO</option>' + 
-//     '   </select>' + 
-//     '</div>'
-//  }
 
  export function formSelect(key, value){
     return '<div class="mb-3 mt-3" id="form-radio">' 

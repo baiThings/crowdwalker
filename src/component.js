@@ -1,24 +1,5 @@
-// const container = document.querySelector(".container");
-// const prevBtn = document.querySelector(".prev-button");
-// const nextBtn = document.querySelector(".next-button"); 
-
-// (function addEvent(){
-//     console.log(prevBtn)
-//   prevBtn.addEventListener('click', translateContainer.bind(this, 1));
-//   nextBtn.addEventListener('click', translateContainer.bind(this, -1));
-// })();
-
-// function translateContainer(direction){
-//   const selectedBtn = (direction === 1) ? 'prev' : 'next';
-//   container.style.transitionDuration = '500ms';
-//   container.style.transform = `translateX(${direction * (100 / 5)}%)`;
-//   container.ontransitionend = () => reorganizeEl(selectedBtn);
-// }
-
-// function reorganizeEl(selectedBtn) {
-//   container.removeAttribute('style');
-//   (selectedBtn === 'prev') ? container.insertBefore(container.lastElementChild, container.firstElementChild): container.appendChild(container.firstElementChild);
-// }
+import { deleteNode } from "./form.js";
+import { setImageToilet, setMarkerInformation } from "./marker.js";
 
 window.onresize = function(){
     console.log($('#map_inner').width())
@@ -107,12 +88,27 @@ function translateContainerRight(){
 
  }                          
 
-//  <button class="btn1" type="button" onclick="javascript:sensorBtnClick('btn1');">버튼1</button>
-//  <button class="btn2" type="button" onclick="javascript:sensorBtnClick('btn2');">버튼2</button>
+export function touchScroll(){
+    let startX = 0;
+    let startY = 0;
+    let endX = 0;
+    let endY = 0;
+    let di = 0;
+    $("#marker-title").on('touchstart',function(event){
+        startX = event.originalEvent.changedTouches[0].screenX;
+        startY = event.originalEvent.changedTouches[0].screenY;
+    });
 
-                      
-// button.btn1 {
-//     position: absolute;
-//     top: 170px;
-//     left : 35px; 
-//   }
+    $("#marker-title").on('touchend',function(event){
+        endX = event.originalEvent.changedTouches[0].screenX;
+        endY = event.originalEvent.changedTouches[0].screenY;
+        console.log(startY + " : " + endY)
+        if(startY - endY > 10){
+            setImageToilet();
+        }
+        else if(endY - startY > 10){
+            deleteNode();
+            setMarkerInformation();
+        }
+    });
+}
