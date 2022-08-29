@@ -129,45 +129,10 @@ export function setMarkerInformation(){
                          "</div>";
     parentNode.appendChild(newNode)
     document.getElementById('map').style.bottom = '10%';
-
-    // document.getElementById('marker-title').addEventListener("click", setImageToilet); 
-    // $("#marker-title").on('touchstart',function(event){
-    //     startX = event.originalEvent.changedTouches[0].screenX;
-    //     startY = event.originalEvent.changedTouches[0].screenY;
-    // });
-
-    // $("#marker-title").on('touchend',function(event){
-    //     endX = event.originalEvent.changedTouches[0].screenX;
-    //     endY = event.originalEvent.changedTouches[0].screenY;
-    //     console.log(startY + " : " + endY)
-    //     if(startY - endY > 10){
-    //         setImageToilet();
-    //     }
-    //     if(endY - startY > 10){
-    //         deleteNode();
-    //         setMarkerInformation();
-    //     }
-    // });
-    // document.getElementById('marker-content').addEventListener("touchstart", function(event){
-    //     mstartX = event.originalEvent.changedTouches[0].screenX;
-    //     mstartY = event.originalEvent.changedTouches[0].screenY;
-    //     console.log(mstartX + " : " + mstartY);
-    // }); 
-
-    // document.getElementById('marker-content').addEventListener("touchend", function(event){
-    //     mendX = event.originalEvent.changedTouches[0].screenX;
-    //     mendY = event.originalEvent.changedTouches[0].screenY;
-    //     if(mstartY - mendY > 10) alert("위에서 아래");
-    //     console.log(mendX  + " : " +  mendY);
-
-    //     console.log(mstartY - mendY);
-    // }); 
     touchScroll();
     document.querySelectorAll('#marker-summary-button-input')[0].addEventListener("click", uploadImageToilet);
     document.querySelectorAll('#marker-summary-button-input')[1].addEventListener("click", setDetailMarkerInformation);
 }
-
-
 
 export function setImageToilet(){
         // let data = JSON.parse(myStorage.getItem('data'))

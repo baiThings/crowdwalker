@@ -1,7 +1,44 @@
 import {deleteNode } from './form.js';
-import { setMarkerInformation, spreadMarkers } from './marker.js';
+import {setMarkerInformation, spreadMarkers } from './marker.js';
 import {getMarkerInformation, myStorage} from './store.js';
 
+
+let container = document.getElementById('map');
+let options = {
+    center: new kakao.maps.LatLng(36.479074216, 127.28465568800002),
+    level: 3
+};
+
+const geolocationOptions = {
+    enableHighAccuracy: true,
+    timeout: 10000,
+    maximumAge: 0
+};
+
+let map = new kakao.maps.Map(container, options);
+let markerSrcCircle= '<svg width="60" height="60" version="1.1">' +
+                     '<polygon  id="triangle" fill="red" points="20,30 40,30 30,10"/>' +
+                     '<circle cx="30" cy="30" r="9" stroke="white" fill="red" stroke-width="5"/></svg>'
+let circleMarker = new kakao.maps.CustomOverlay();
+
+document.querySelector(".map-custom-geolocation").addEventListener('click', function(){
+    navigator.geolocation.getCurrentPosition(successGeolocation, errorGeolocation, geolocationOptions)
+})
+function successGeolocation(pos) {
+    let latitude = pos.coords.latitude;
+    let longitude = pos.coords.longitude;
+    let direction = pos.coords.heading;
+    mapSetCenter(new kakao.maps.LatLng(latitude, longitude))
+    circleMarker.setPosition(new kakao.maps.LatLng(latitude, longitude));
+    circleMarker.setContent(markerSrcCircle)
+    circleMarker.setMap(map);
+    if(direction == null) document.getElementById('triangle').style.display="none";
+    else document.getElementById('triangle').style.transform="rotate(" + direction+ "deg)";
+}
+function errorGeolocation(err) {
+    console.warn(`ERROR(${err.code}): ${err.message}`);
+}
+  
 
 export function mapInit(){
     spreadMarkers(map.getCenter().getLat(), map.getCenter().getLng(), map.getLevel());
@@ -13,14 +50,7 @@ window.onload=function(){
     mapNode.removeChild(mapNode.childNodes[1]);
 }
 
-let container = document.getElementById('map');
-let options = {
-    center: new kakao.maps.LatLng(36.479074216, 127.28465568800002),
-    level: 3
-};
-let map = new kakao.maps.Map(container, options);
-
-// 마커 클러스터러를 생성합니다 
+ 
 export let clusterer = new kakao.maps.MarkerClusterer({
     map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체 
     averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정 
@@ -46,7 +76,11 @@ function changeMarkerDragable(marker){
     });
 } 
 
-
+/**
+ * dragLock 
+ * marker한테 draggable을 설정해줬을 때, 다른 동작이 안되어야 한다. 
+ * 그 때 필요한 dragLock
+ */
 export let dragLock = false;
 export const changeDragLock = () => { 
     if(dragLock == false) dragLock = true;
@@ -77,7 +111,6 @@ function getMarkerList(markers){
             newNode = document.createElement('div')
             newNode.setAttribute('id', 'marker_list')
             newNode.innerHTML=toiletNameList
-            console.log(marker);
             newNode.addEventListener("click", function(){
                 myStorage.setItem('data', JSON.stringify(data));
                 try {
@@ -99,22 +132,6 @@ function getMarkerList(markers){
     }
 }  
 
-function clickMarkerList(data, marker){
-    return function(){
-        myStorage.setItem('data', JSON.stringify(data));
-        try {
-            deleteNode()
-            setMarkerInformation()
-            console.log(marker);
-            clusterer.removeMarker(marker);
-            changeMarkerDragable(marker)
-            dragLock = true;
-        } catch (error) {
-            console.log(error)
-            alert("클러스터를 다시 클릭해주세요.")
-        }
-    }
-}
 /**
  * 클러스터 클릭 시 이벤트
  */ 
@@ -233,14 +250,17 @@ fetch("../resource/dongTojson.json")
         }
     })
 
+
 // 마커 이미지 
 var imageSrc_RedMarker = '../resource/marker_red.png', // 마커이미지의 주소입니다
     imageSrc_GreenMarker = '../resource/marker_green.png', 
     imageSrc_GreyMarker = '../resource/marker_grey.png',
+    imageSrc_Circle = markerSrcCircle,
     imageSize = new kakao.maps.Size(34, 34), // 마커이미지의 크기입니다
     imageOption = {offset: new kakao.maps.Point(10, 20)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다. (+왼쪽, +위쪽)
       
 // 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
 var markerImageRedMarker = new kakao.maps.MarkerImage(imageSrc_RedMarker, imageSize, imageOption),
     markerImageGreenMarker = new kakao.maps.MarkerImage(imageSrc_GreenMarker, imageSize, imageOption),
-    markerImageGreyMarker = new kakao.maps.MarkerImage(imageSrc_GreyMarker, imageSize, imageOption)
+    markerImageGreyMarker = new kakao.maps.MarkerImage(imageSrc_GreyMarker, imageSize, imageOption),
+    markerImageCircleMarker = new kakao.maps.MarkerImage(imageSrc_Circle, imageSize, imageOption)

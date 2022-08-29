@@ -114,7 +114,21 @@ body::-webkit-scrollbar {
     display: flex;
     align-items: center;
 }
-
+.map-custom-geolocation{
+    position:absolute;
+    top:2vh;
+    right:10px;
+    overflow:hidden;
+    width:10%;
+    height:6%;
+    margin:0;
+    padding:0;
+    z-index:1;
+    font-size:12px;
+    display: flex;
+    align-items: center;
+    justify-content:space-evenly;
+}
 
  /* CSS 미세 조절 */
  #padding_zero{
@@ -269,4 +283,8 @@ ul{
 }
 .form-radio{
     margin:2vw
+}
+
+#triangle{
+    transform-origin: 50% 50%;
 }
