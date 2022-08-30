@@ -188,7 +188,7 @@ kakao.maps.event.addListener(map, 'zoom_changed', function() {
 
 export function mapSetCenter(pos){
     console.log("change pos : " + pos);
-    map.panTo(pos);
+    map.setCenter(pos);
 }
 export function mapReset(){
     map.relayout();

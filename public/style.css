@@ -285,6 +285,28 @@ ul{
     margin:2vw
 }
 
+.form-fixed{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size:0.7rem;   
+    margin: auto 1rem;
+}
+.form-control{
+    width: 60%;
+    font-size: 0.7rem;
+}
+.form-label{
+    margin: 0px;
+}
+.form-select-list{
+    width: 60%;
+    font-size: 0.7rem;
+    padding: .375rem 2.25rem .375rem .75rem;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    background-color: #fff;
+}
 #triangle{
     transform-origin: 50% 50%;
 }

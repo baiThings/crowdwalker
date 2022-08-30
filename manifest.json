@@ -4,7 +4,7 @@
     "display": "standalone",
     "scope": ".",
     "start_url": ".",
-    "name": "CrowdWalker",
+    "name": "CrowdWorker",
     "short_name": "cw",
     "description": "",
     "icons": [

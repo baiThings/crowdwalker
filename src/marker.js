@@ -1,5 +1,5 @@
 import { makeCarousel, touchScroll } from "./component.js";
-import { deleteNode,formlists,submitData } from "./form.js";
+import { applyData, deleteNode,formlists,setFormlist,submitData } from "./form.js";
 import { changeDragLock, clearMarkers, clusterer, dragLock, mapChangeSize, mapInit, mapMove, mapReset, mapResize, mapSetCenter } from "./map.js";
 import { getMarkerInformation, getMarkerKey, myStorage, setRequireOptions } from "./store.js";
 
@@ -30,11 +30,15 @@ export function spreadMarkers(mapLat, mapLng, mapLevel){
         let markers= [];
         try {
             for(let i = 0; i < toilets.length; i++){
+                let markerImg = '';
                 let latlng = toilets[i]['geoJson']['S'].split(',')
-                let marker = makeMarker(new kakao.maps.LatLng(latlng[0], latlng[1]), toilets[i]['PK']['S'], markerImageRedMarker)
+                if(toilets[i].hasOwnProperty(['DtoiletType'])) markerImg = markerImageGreenMarker
+                else markerImg = markerImageRedMarker
+                let marker = makeMarker(new kakao.maps.LatLng(latlng[0], latlng[1]), toilets[i]['PK']['S'], markerImg)
                 kakao.maps.event.addListener(marker, 'click', function(){
                     getMarkerInformation(marker.getTitle()).then((data)=>{
                         myStorage.setItem("data", JSON.stringify(data));
+                        myStorage.setItem("PK", data[0]["PK"]["S"])
                         mapSetCenter(marker.getPosition());
                         deleteNode();
                         setMarkerInformation()
@@ -53,6 +57,7 @@ export function spreadMarkers(mapLat, mapLng, mapLevel){
         clusterer.addMarkers(markers);
     })
 }
+
 function createElement(e, file) {
     const li = document.createElement('li');
     const img = document.createElement('img');
@@ -178,26 +183,27 @@ function uploadImageToilet(){
 
 
 }
+
+
 function setDetailMarkerInformation(){
         document.getElementById('map').style.bottom = "30%";
         let data = JSON.parse(myStorage.getItem('data'))
+        console.log(data[0])
         document.getElementById('marker-summary-button').remove();
 
-        let parentNode = document.getElementById("marker-content");
-        // parentNode.style.height='60%';
-        let newNode = document.createElement('form');
-        newNode.setAttribute('id', 'form1');
-        newNode.setAttribute('class', 'was-validated');
-        newNode.setAttribute('name', 'form1');
-        newNode.innerHTML=formlists(data);
-        
-        parentNode.appendChild(newNode);
+        setFormlist()
         document.getElementById("button-markerinfo").addEventListener('click', function(event){
             if(dragLock == true) changeDragLock();
             clearMarkers();
-            submitData(data)
-            // marker.setDraggable(false);
-            // marker.setImage(markerImageGreenMarker);
+            submitData(data).then(() => {
+                console.log(data[0]['PK']['S'])
+                applyData(data[0]['PK']['S'])
+                let lat = data[0]['geoJson']['S'].split(',')[0];
+                let lng = data[0]['geoJson']['S'].split(',')[1];
+                mapSetCenter(new kakao.maps.LatLng(lat, lng));
+                mapInit();
+                alert('등록되었습니다!')
+            })
         })
         document.getElementById('marker-title').removeEventListener("click", setImageToilet); 
         document.getElementById('marker-title').addEventListener("click", function(){
@@ -205,5 +211,4 @@ function setDetailMarkerInformation(){
             setMarkerInformation();
         });
         document.getElementById('map_inner').style.height='60%'
-
 }

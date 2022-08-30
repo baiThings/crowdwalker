@@ -14,12 +14,3 @@ export default function parseCsv(data){
     }
     return jsonArray;
 }
-
-// export let totalData = "";
-// fetch('../resource/sj3.csv')
-//     .then((response) => response.text())
-//     .then((data) => {
-//         totalData = parseCsv(data);
-//         console.log("total data setting done!")
-//         console.log(totalData)
-// })

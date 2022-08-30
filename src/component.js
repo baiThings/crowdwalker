@@ -2,12 +2,15 @@ import { deleteNode } from "./form.js";
 import { setImageToilet, setMarkerInformation } from "./marker.js";
 
 window.onresize = function(){
-    console.log($('#map_inner').width())
-    document.getElementById('carousel').style.width = $('#map_inner').width() * 2 + 'px';
-    let imgFrameNode = document.querySelectorAll('#img-frame')
-    imgFrameNode.forEach(function(element){
-        element.style.width = $('#map_inner').width() +'px';
-    })
+    try {
+        document.getElementById('carousel').style.width = $('#map_inner').width() * 2 + 'px';
+        let imgFrameNode = document.querySelectorAll('#img-frame')
+        imgFrameNode.forEach(function(element){
+            element.style.width = $('#map_inner').width() +'px';
+        })
+    } catch (error) {
+     console.log("not ready : " + error)   
+    }
 }
 let index = 0; 
 function translateContainerLeft(){
