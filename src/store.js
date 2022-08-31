@@ -18,7 +18,7 @@ export async function getMarkerKey(lat, lng, radius){
             formdataTmp.append("radius", "700");
             break;
         default:
-            formdataTmp.append("radius", "500");
+            formdataTmp.append("radius", "100");
             break;
     }
     if(whileFetching) controller.abort()
@@ -83,6 +83,32 @@ export async function getMarkerInformation(key){
         return markerInfotmation['Items'];
     } catch (error) {
         console.log(error)   
+    }
+}
+
+// export function setLocalStorage(){
+//     return{
+//         setData : function(data){
+//             myStorage.setItem("data", JSON.stringify(data));
+//         }
+//     } 
+// }
+export function setLocalStoragePosition(){
+    return{
+        setPos : function(lat, lng){
+            myStorage.setItem("lat", lat)
+            myStorage.setItem("lng", lng)
+        }
+    } 
+}
+
+export function setLocalStoragePK(lat, lng){
+    let tmpLocalStorage = setLocalStoragePosition()
+    tmpLocalStorage.setPos(lat, lng)
+    return {
+        setPK : function(pk){
+            myStorage.setItem('PK', pk);
+        }
     }
 }
 

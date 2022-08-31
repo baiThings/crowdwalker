@@ -1,6 +1,6 @@
 import {deleteNode } from './form.js';
 import {setMarkerInformation, spreadMarkers } from './marker.js';
-import {getMarkerInformation, myStorage} from './store.js';
+import {getMarkerInformation, myStorage, setLocalStorage, setLocalStoragePK} from './store.js';
 
 
 let container = document.getElementById('map');
@@ -50,7 +50,6 @@ window.onload=function(){
     mapNode.removeChild(mapNode.childNodes[1]);
 }
 
- 
 export let clusterer = new kakao.maps.MarkerClusterer({
     map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체 
     averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정 
@@ -58,7 +57,6 @@ export let clusterer = new kakao.maps.MarkerClusterer({
 });
 let tmpMarker = [];
 function changeMarkerDragable(marker){
-    console.log(marker)
     clusterer.removeMarker(marker);
     marker.setImage(markerImageGreyMarker);
     marker.setDraggable(true);
@@ -68,8 +66,7 @@ function changeMarkerDragable(marker){
 
     kakao.maps.event.addListener(marker, 'dragend', function() {
         try {
-            document.getElementById('lat').value = marker.getPosition().getLat();
-            document.getElementById('lng').value = marker.getPosition().getLng();
+            setLocalStoragePK(marker.getPosition().getLat(), marker.getPosition().getLng()).setPK(marker.getTitle())
         } catch (error) {
             console.log(error)
         }
@@ -113,6 +110,8 @@ function getMarkerList(markers){
             newNode.innerHTML=toiletNameList
             newNode.addEventListener("click", function(){
                 myStorage.setItem('data', JSON.stringify(data));
+                setLocalStoragePK(marker.getPosition().getLat(), marker.getPosition().getLng()).setPK(marker.getTitle())
+                
                 try {
                     deleteNode()
                     setMarkerInformation()

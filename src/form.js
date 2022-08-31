@@ -1,11 +1,11 @@
-import { dragLock, mapResize } from "./map.js";
+import { mapResize } from "./map.js";
 import { makeFormdata, myStorage, parseToiletData, setRequireOptions } from "./store.js";
 
 function parsingSubmitData(){
     let obj = {};
     let formData =new FormData(document.getElementById("form1"));
     for(let [name, value] of formData) {
-         if(name == "lat" || name == "lng") value=parseFloat(value);
+        if(name == "lat" || name == "lng") value=parseFloat(value);
         else if(name == "toiletType") {
             if(value === "개방화장실") value="N"
             else if(value === "공공화장실") value="G"
@@ -31,14 +31,6 @@ export async function submitData(data) {
     console.log(jsonSet)
     let response = await fetch('https://uwfym97g49.execute-api.ap-northeast-2.amazonaws.com/details',setRequireOptions(JSON.stringify(jsonSet), null));
     let result = await response.text()
-    console.log(result)
-    //     .then((response) => response.text)
-    //     .then((data) => {
-    //         // console.log(this.data[0]['PK']['S'].toString());
-    //         return data;
-    //         // applyData(data[0]['PK']['S'].toString()).then()
-    //         // window.location.href = "/"
-    // });
 } 
 
 export async function applyData(key){
@@ -89,7 +81,7 @@ export function formFixed(key, value){
     try {
         return '<div class="mb-3 mt-3 form-fixed">'+
         '<label class="form-label" >' + value + '</label>'+
-        '<input type="text" class="form-control" id='+ key+' value='+ JSON.parse(myStorage.getItem('data'))[0][key]['S']+' name='+ key +' readonly>'+
+        '<input type="text" class="form-control" id='+ key+' value='+ JSON.parse(myStorage.getItem(key))+' name='+ key +' readonly>'+
         '</div>'
     } catch (error) {
         console.log("fail to get markerInfo")

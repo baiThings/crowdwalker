@@ -1,7 +1,7 @@
 import { makeCarousel, touchScroll } from "./component.js";
 import { applyData, deleteNode,formlists,setFormlist,submitData } from "./form.js";
 import { changeDragLock, clearMarkers, clusterer, dragLock, mapChangeSize, mapInit, mapMove, mapReset, mapResize, mapSetCenter } from "./map.js";
-import { getMarkerInformation, getMarkerKey, myStorage, setRequireOptions } from "./store.js";
+import { getMarkerInformation, getMarkerKey, myStorage, setLocalStorage, setLocalStoragePK, setRequireOptions } from "./store.js";
 
 // 마커 이미지 
 var imageSrc_RedMarker = '../resource/marker_red.png', // 마커이미지의 주소입니다
@@ -27,6 +27,7 @@ export function makeMarker(pos, pk, img){
 export function spreadMarkers(mapLat, mapLng, mapLevel){
     getMarkerKey(mapLat, mapLng, mapLevel).then((toilets) => {
         clusterer.clear();
+        console.log(toilets)
         let markers= [];
         try {
             for(let i = 0; i < toilets.length; i++){
@@ -38,7 +39,11 @@ export function spreadMarkers(mapLat, mapLng, mapLevel){
                 kakao.maps.event.addListener(marker, 'click', function(){
                     getMarkerInformation(marker.getTitle()).then((data)=>{
                         myStorage.setItem("data", JSON.stringify(data));
-                        myStorage.setItem("PK", data[0]["PK"]["S"])
+                    
+                        // myStorage.setItem("PK", marker.getTitle())
+                        setLocalStoragePK(marker.getPosition().getLat(), marker.getPosition().getLng()).setPK(marker.getTitle())
+                        // setLocalStorage(marker.getPosition().getLat(), marker.getPosition().getLng())
+                    //    tmp.setPos()
                         mapSetCenter(marker.getPosition());
                         deleteNode();
                         setMarkerInformation()
@@ -99,8 +104,12 @@ async function uploadImage(files){
     }
     console.log(formdata)
     try {
-        let response = await fetch('https://10mgfgym1i.execute-api.ap-northeast-2.amazonaws.com/default/-Test', setRequireOptions(formdata, controller.signal))
-        let result = await response.text();
+        let response = await fetch('https://icqx7s6y94.execute-api.ap-northeast-2.amazonaws.com/default/error-code', setRequireOptions(formdata, null))
+        console.log(response);
+
+        let result = await response.json();
+        console.log(Base64.decode(result['body']))
+        console.log(window.atob(result['body']) )
         return result; 
     } catch (error) {
         console.log(error)
@@ -188,7 +197,6 @@ function uploadImageToilet(){
 function setDetailMarkerInformation(){
         document.getElementById('map').style.bottom = "30%";
         let data = JSON.parse(myStorage.getItem('data'))
-        console.log(data[0])
         document.getElementById('marker-summary-button').remove();
 
         setFormlist()
@@ -196,7 +204,6 @@ function setDetailMarkerInformation(){
             if(dragLock == true) changeDragLock();
             clearMarkers();
             submitData(data).then(() => {
-                console.log(data[0]['PK']['S'])
                 applyData(data[0]['PK']['S'])
                 let lat = data[0]['geoJson']['S'].split(',')[0];
                 let lng = data[0]['geoJson']['S'].split(',')[1];
