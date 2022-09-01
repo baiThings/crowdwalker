@@ -1,6 +1,6 @@
 import {deleteNode } from './form.js';
 import {setMarkerInformation, spreadMarkers } from './marker.js';
-import {getMarkerInformation, myStorage, setLocalStorage, setLocalStoragePK} from './store.js';
+import {getMarkerInformation, myStorage, setLocalStoragePK} from './store.js';
 
 
 let container = document.getElementById('map');

@@ -52,6 +52,25 @@ export async function applyData(key){
     }
 }
 
+export async function resetData(key){
+    const formObj = {
+        'PK' : key,
+        'user' : 'user01',
+        'method' : 'CLEAR_INFO'
+    }
+    let formData = makeFormdata(formObj);
+    try {
+        let response = await fetch("https://uwfym97g49.execute-api.ap-northeast-2.amazonaws.com/details", setRequireOptions(formData, null))
+        if(response.ok){
+            alert('초기화 되었습니다!')
+            return response.text();
+        }else{
+            alert("초기화에 실패하였습니다. 이미 초기화 된게 아닌지 확인하십시오.")
+
+        }
+    } catch (error) {
+    }
+}
 
 export function setFormlist(){
     let parentNode = document.getElementById("marker-content");
@@ -73,7 +92,12 @@ export function formlists(){
             formlist += formRadio(key, value)   
         }
     }
-    formlist += '<div id="button-wrapper"><input type="button" id="button-markerinfo" value ="제출"></input></div></form>'
+    let buttonNode = '<div id="button-wrapper">'+ 
+                     '<input type="button" id="button-marker-info" value ="제출"></input>' + 
+                     '<input type="button" id="button-marker-reset" value="초기화"></input>' + 
+                     '</div></form>'  
+                
+    formlist += buttonNode
     return formlist;
 } 
 export function formFixed(key, value){  

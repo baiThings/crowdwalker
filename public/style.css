@@ -138,9 +138,7 @@ body::-webkit-scrollbar {
 #margin_zero{
     margin : 0px!important;
 }
-#button-wrapper{
-    text-align: center;
-}
+
 
 #info-title{
     font-size: 0.7vw;
@@ -258,9 +256,17 @@ ul{
     cursor: pointer;
     width: 2.9rem;
 }
-#button-markerinfo{
+
+/* button */
+#button-wrapper{
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+
+#button-marker-info{
     color: #41464b;
-    margin-bottom: 1rem;
+    margin: 1rem;
     font-size: 0.8rem;
     background-color: white;
     /* border-radius: 0.5rem; */
@@ -270,6 +276,17 @@ ul{
     cursor: pointer;
 }
 
+#button-marker-reset{
+    color: #41464b;
+    margin: 1rem;
+    font-size: 0.8rem;
+    background-color: white;
+    /* border-radius: 0.5rem; */
+    font-weight: 600;
+    border: 1px rgb(140, 140, 140) solid;
+    padding: 0px 0.5rem;
+    cursor: pointer;
+}
 
 .form-select{
     width: 100%;

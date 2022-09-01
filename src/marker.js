@@ -1,7 +1,7 @@
 import { makeCarousel, touchScroll } from "./component.js";
-import { applyData, deleteNode,formlists,setFormlist,submitData } from "./form.js";
+import { applyData, deleteNode,resetData,setFormlist,submitData } from "./form.js";
 import { changeDragLock, clearMarkers, clusterer, dragLock, mapChangeSize, mapInit, mapMove, mapReset, mapResize, mapSetCenter } from "./map.js";
-import { getMarkerInformation, getMarkerKey, myStorage, setLocalStorage, setLocalStoragePK, setRequireOptions } from "./store.js";
+import { getMarkerInformation, getMarkerKey, myStorage, setLocalStoragePK, setRequireOptions } from "./store.js";
 
 // 마커 이미지 
 var imageSrc_RedMarker = '../resource/marker_red.png', // 마커이미지의 주소입니다
@@ -108,8 +108,8 @@ async function uploadImage(files){
         console.log(response);
 
         let result = await response.json();
-        console.log(Base64.decode(result['body']))
-        console.log(window.atob(result['body']) )
+        // console.log(Base64.decode(result['body']))
+        // console.log(window.atob(result['body']) )
         return result; 
     } catch (error) {
         console.log(error)
@@ -200,7 +200,7 @@ function setDetailMarkerInformation(){
         document.getElementById('marker-summary-button').remove();
 
         setFormlist()
-        document.getElementById("button-markerinfo").addEventListener('click', function(event){
+        document.getElementById("button-marker-info").addEventListener('click', function(event){
             if(dragLock == true) changeDragLock();
             clearMarkers();
             submitData(data).then(() => {
@@ -210,6 +210,15 @@ function setDetailMarkerInformation(){
                 mapSetCenter(new kakao.maps.LatLng(lat, lng));
                 mapInit();
                 alert('등록되었습니다!')
+            })
+        })
+        document.getElementById('button-marker-reset').addEventListener('click', function(){
+            resetData(data[0]['PK']['S']).then(()=>{
+                let lat = data[0]['geoJson']['S'].split(',')[0];
+                let lng = data[0]['geoJson']['S'].split(',')[1];
+                mapSetCenter(new kakao.maps.LatLng(lat, lng));
+                mapInit();
+                mapResize(0);
             })
         })
         document.getElementById('marker-title').removeEventListener("click", setImageToilet); 
