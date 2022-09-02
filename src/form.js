@@ -1,5 +1,5 @@
 import { mapResize } from "./map.js";
-import { makeFormdata, myStorage, parseToiletData, setRequireOptions } from "./store.js";
+import { awsUrl, makeFormdata, myStorage, parseToiletData, setRequireOptions } from "./store.js";
 
 function parsingSubmitData(){
     let obj = {};
@@ -29,7 +29,7 @@ export async function submitData(data) {
         "PK": data[0]['PK']['S'].toString()
     };
     console.log(jsonSet)
-    let response = await fetch('https://uwfym97g49.execute-api.ap-northeast-2.amazonaws.com/details',setRequireOptions(JSON.stringify(jsonSet), null));
+    let response = await fetch(awsUrl + '/details',setRequireOptions(JSON.stringify(jsonSet), null));
     let result = await response.text()
 } 
 
@@ -42,7 +42,7 @@ export async function applyData(key){
     }
     let formData = makeFormdata(formObj);
       try {
-        let response = await fetch('https://uwfym97g49.execute-api.ap-northeast-2.amazonaws.com/details', setRequireOptions(formData, null))
+        let response = await fetch(awsUrl + '/details', setRequireOptions(formData, null))
         let result = await response.text()
         let markerInfotmation = await JSON.parse(result)
         console.log(markerInfotmation)
@@ -60,7 +60,7 @@ export async function resetData(key){
     }
     let formData = makeFormdata(formObj);
     try {
-        let response = await fetch("https://uwfym97g49.execute-api.ap-northeast-2.amazonaws.com/details", setRequireOptions(formData, null))
+        let response = await fetch(awsUrl + '/details', setRequireOptions(formData, null))
         if(response.ok){
             alert('초기화 되었습니다!')
             return response.text();
@@ -182,6 +182,18 @@ export function formSelect(key, value){
 }
  export function deleteNode(){
     let parentnode = document.getElementById('map_inner')
+    try {
+        while(parentnode.hasChildNodes){
+            let element = parentnode.childNodes;
+            element[0].parentNode.removeChild(element[0]);
+        }
+    } catch (error) {
+        console.log("element is null");
+    }
+}
+
+export function deleteNodeClass(val){
+    let parentnode = document.querySelector(val);
     try {
         while(parentnode.hasChildNodes){
             let element = parentnode.childNodes;

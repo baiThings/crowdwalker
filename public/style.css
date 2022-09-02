@@ -182,8 +182,8 @@ body::-webkit-scrollbar {
 }
 
 #marker-toilet-img{
-    padding: 2rem;
-
+    padding: 1.5rem;
+    height: 50%;
 }
 #carousel-wrapper{
     transition-property:height;
@@ -238,9 +238,11 @@ ul{
     margin: 1rem 0px;
     display: flex;
     gap: 10px;
+    height: 80%;
     flex-wrap: wrap;
     text-align: center;
     padding: 0px 1rem;
+    overflow: auto;
 }
 #img-preview-node{
     width: 2.9rem;
@@ -277,6 +279,17 @@ ul{
 }
 
 #button-marker-reset{
+    color: #41464b;
+    margin: 1rem;
+    font-size: 0.8rem;
+    background-color: white;
+    /* border-radius: 0.5rem; */
+    font-weight: 600;
+    border: 1px rgb(140, 140, 140) solid;
+    padding: 0px 0.5rem;
+    cursor: pointer;
+}
+#button-upload-image{
     color: #41464b;
     margin: 1rem;
     font-size: 0.8rem;

@@ -1,6 +1,7 @@
 // getMarkeyKey : 맵 중앙 위치와 level에 따른 주변 화장실의 프라이머리 키를 반환한다. 
 
 export let myStorage = window.localStorage;
+export let awsUrl = 'https://a8rksepiki.execute-api.ap-northeast-2.amazonaws.com'
 let whileFetching = false;
 let controller;
 export async function getMarkerKey(lat, lng, radius){
@@ -27,7 +28,7 @@ export async function getMarkerKey(lat, lng, radius){
     whileFetching = true;
 
     try {
-        let response = await fetch('https://uwfym97g49.execute-api.ap-northeast-2.amazonaws.com/', setRequireOptions(formdataTmp, controller.signal))
+        let response = await fetch(awsUrl, setRequireOptions(formdataTmp, controller.signal))
         if(response.ok){
             whileFetching = false;
         }
@@ -77,7 +78,7 @@ export async function getMarkerInformation(key){
     }
     let formData = makeFormdata(formObj);
       try {
-        let response = await fetch('https://uwfym97g49.execute-api.ap-northeast-2.amazonaws.com/details', setRequireOptions(formData, controller.signal))
+        let response = await fetch(awsUrl + '/details', setRequireOptions(formData, controller.signal))
         let result = await response.text()
         markerInfotmation = await JSON.parse(result)
         return markerInfotmation['Items'];

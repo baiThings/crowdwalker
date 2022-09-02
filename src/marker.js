@@ -1,7 +1,9 @@
 import { makeCarousel, touchScroll } from "./component.js";
-import { applyData, deleteNode,resetData,setFormlist,submitData } from "./form.js";
-import { changeDragLock, clearMarkers, clusterer, dragLock, mapChangeSize, mapInit, mapMove, mapReset, mapResize, mapSetCenter } from "./map.js";
+import { uploadImageToilet } from "./file.js";
+import { applyData, deleteNode,deleteNodeClass,resetData,setFormlist,submitData } from "./form.js";
+import { changeDragLock, clearMarkers, clusterer, dragLock, mapContentChangeSize, mapInit, mapMove, mapReset, mapResize, mapSetCenter } from "./map.js";
 import { getMarkerInformation, getMarkerKey, myStorage, setLocalStoragePK, setRequireOptions } from "./store.js";
+
 
 // 마커 이미지 
 var imageSrc_RedMarker = '../resource/marker_red.png', // 마커이미지의 주소입니다
@@ -43,10 +45,12 @@ export function spreadMarkers(mapLat, mapLng, mapLevel){
                         // myStorage.setItem("PK", marker.getTitle())
                         setLocalStoragePK(marker.getPosition().getLat(), marker.getPosition().getLng()).setPK(marker.getTitle())
                         // setLocalStorage(marker.getPosition().getLat(), marker.getPosition().getLng())
-                    //    tmp.setPos()
-                        mapSetCenter(marker.getPosition());
+                        //    tmp.setPos()
                         deleteNode();
+                        mapSetCenter(marker.getPosition());
+
                         setMarkerInformation()
+
                         if(marker.getDraggable() != true && dragLock){
                             changeDragLock();
                             clearMarkers();
@@ -63,67 +67,18 @@ export function spreadMarkers(mapLat, mapLng, mapLevel){
     })
 }
 
-function createElement(e, file) {
-    const li = document.createElement('li');
-    const img = document.createElement('img');
-    img.setAttribute('src', e.target.result);
-    img.setAttribute('data-file', file.name);
-    img.setAttribute('id', "img-preview-node")
-    li.appendChild(img);
-
-    return li;
-  }
-function getImageFiles(e){
-    const unploadFiles = [];
-    const files = e.currentTarget.files;
-    console.log(files)
-    const imagePreview = document.querySelector('.img-preview');
-
-    console.log(imagePreview)
-    Array.from(files).forEach(file => {
-        unploadFiles.push(file);
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const preview = createElement(e, file);
-            imagePreview.appendChild(preview);
-        }
-        reader.readAsDataURL(file);
-        console.log(file)
-    })
-    uploadImage(files)
-}
-
-async function uploadImage(files){
-    let formdata = new FormData();
-
-    for(let i = 0; i < files.length; i++){
-        formdata.append('file'+ i, files[i]);
-    }
-    for (const key of formdata.keys()) {
-        console.log(key + " : " + formdata.get(key).name);
-    }
-    console.log(formdata)
-    try {
-        let response = await fetch('https://icqx7s6y94.execute-api.ap-northeast-2.amazonaws.com/default/error-code', setRequireOptions(formdata, null))
-        console.log(response);
-
-        let result = await response.json();
-        // console.log(Base64.decode(result['body']))
-        // console.log(window.atob(result['body']) )
-        return result; 
-    } catch (error) {
-        console.log(error)
-    }
-}
 export function setMarkerInformation(){ 
     let data = JSON.parse(myStorage.getItem('data'))
     
     let parentNode = document.getElementById("map_inner")
     let toiletTitle;
-    parentNode.style.height='20%'
+    mapContentChangeSize(20);
+    setTimeout(() =>{
+        mapResize(10);
+    },0)
+    // parentNode.style.height='20%'
     let newNode = document.createElement("div")
     newNode.setAttribute('id', 'marker-content')
-    console.log(data[0])
     if(Object.hasOwn(data[0], 'dongNm') && Object.hasOwn(data[0], 'bldNm')){
         let dongNm = data[0]['dongNm']['S'];
         let bldNm = data[0]['bldNm']['S'];
@@ -142,7 +97,7 @@ export function setMarkerInformation(){
                             "<div id='marker-summary-button-input' type='input'>세부 정보 입력</div>" + 
                          "</div>";
     parentNode.appendChild(newNode)
-    document.getElementById('map').style.bottom = '10%';
+    // document.getElementById('map').style.bottom = '10%';
     touchScroll();
     document.querySelectorAll('#marker-summary-button-input')[0].addEventListener("click", uploadImageToilet);
     document.querySelectorAll('#marker-summary-button-input')[1].addEventListener("click", setDetailMarkerInformation);
@@ -165,35 +120,17 @@ export function setImageToilet(){
         },250)
         contentNode.style.height='60%';
 }
-function uploadImageToilet(){
-        document.getElementById('map').style.bottom = "20%";
-        let contentNode = document.getElementById("map_inner");
-        let parentNode = document.getElementById("marker-content");
-        // parentNode.style.backgroundColor="#0d6efd"        
-        
-        document.getElementById('marker-summary-button').remove();
-        let imgNode = document.createElement("div");
-
-        imgNode.setAttribute('id', "marker-toilet-img");
-        imgNode.innerHTML = 
-            "<input type='file' class='img-upload' required multiple></input>" +
-            "<ul class='img-preview'></ul>"
-        parentNode.appendChild(imgNode);
-        document.querySelector('.img-upload').addEventListener('change', function(e){
-            getImageFiles(e);
-        });
-        document.getElementById('marker-title').removeEventListener("click", setImageToilet); 
-        document.getElementById('marker-title').addEventListener("click", function(){
-            deleteNode();
-            setMarkerInformation();
-        }); 
-       
-        contentNode.style.height='40%';
 
 
+export function buttonNode(){
+    let wrapperNode = document.createElement('div');
+    wrapperNode.setAttribute('id', 'button-wrapper');
+    let buttonNode = document.createElement('div');
+    buttonNode.setAttribute('id', 'button-upload-image');
+    buttonNode.innerHTML="등록"
+    wrapperNode.appendChild(buttonNode);
+    return wrapperNode;
 }
-
-
 function setDetailMarkerInformation(){
         document.getElementById('map').style.bottom = "30%";
         let data = JSON.parse(myStorage.getItem('data'))
@@ -219,6 +156,7 @@ function setDetailMarkerInformation(){
                 mapSetCenter(new kakao.maps.LatLng(lat, lng));
                 mapInit();
                 mapResize(0);
+                mapContentChangeSize(0);
             })
         })
         document.getElementById('marker-title').removeEventListener("click", setImageToilet); 

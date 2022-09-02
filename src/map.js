@@ -1,5 +1,5 @@
 import {deleteNode } from './form.js';
-import {setMarkerInformation, spreadMarkers } from './marker.js';
+import {makeMarker, setMarkerInformation, spreadMarkers } from './marker.js';
 import {getMarkerInformation, myStorage, setLocalStoragePK} from './store.js';
 
 
@@ -55,7 +55,6 @@ export let clusterer = new kakao.maps.MarkerClusterer({
     averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정 
     disableClickZoom : true,
 });
-let tmpMarker = [];
 function changeMarkerDragable(marker){
     clusterer.removeMarker(marker);
     marker.setImage(markerImageGreyMarker);
@@ -85,10 +84,15 @@ export const changeDragLock = () => {
 }
 
 export const clearMarkers = () => {
-    tmpMarker.forEach((marker)=> marker.setMap(null));
+    try {
+        tmpMarker.forEach((marker)=> marker.setMap(null));
+
+    } catch (error) {
+        
+    }
 }
+let tmpMarker = makeMarker()
 function getMarkerList(markers){
-    console.log(markers)
     deleteNode();
     let newNode = ''
     let parentNode = document.getElementById('map_inner')
@@ -144,6 +148,8 @@ function getMarkersPromise(cluster){
 kakao.maps.event.addListener(clusterer, 'clusterclick', function(cluster) {
     let level = map.getLevel();
     mapResize(0)
+    mapContentChangeSize(0);
+
     if(level == 1){
         mapContentChangeSize(40)
         // let markers = cluster.getMarkers()
@@ -163,6 +169,8 @@ kakao.maps.event.addListener(map, 'click', function() {
     dragLock = false;
     clearMarkers();
     mapResize(0);
+    mapContentChangeSize(0);
+
     mapInit();
 });
 
@@ -172,6 +180,8 @@ kakao.maps.event.addListener(map, 'dragend', function() {
     if(dragLock == false){ 
         mapInit();
         mapResize(0);
+        mapContentChangeSize(0);
+
         clearMarkers();
     }
 });
@@ -198,11 +208,9 @@ export function mapMove(dx, dy){
 }
 
 export function mapResize(size) {
-    let mapWrap = document.getElementById('map_inner');
     try {
-        mapWrap.style.height = size + '%'; 
-        map.relayout();
-        document.getElementById('map').style.bottom = "0";
+        document.getElementById('map').style.bottom = size + '%';
+        // map.relayout();
     } catch (error) {
         console.log(error)
     }
@@ -211,21 +219,20 @@ export function mapContentChangeSize(size){
     let mapWrap = document.getElementById('map_inner');
     try {
         mapWrap.style.height = size + '%';  
-        map.relayout();
+        // map.relayout();
     } catch (error) {
         console.log(error)
     }
 }
-export function mapChangeSize(size, marker){
-    let mapWrap = document.getElementById('map');
-    try {
-        mapWrap.style.height = size + '%';  
-        map.relayout();
-    } catch (error) {
-        console.log(error)
-    }
-    mapSetCenter(marker.getPosition())
-}
+// export function mapContentChangeSize(size){
+//     let mapWrap = document.getElementById('map');
+//     try {
+//         mapWrap.style.height = size + '%';  
+//         map.relayout();
+//     } catch (error) {
+//         console.log(error)
+//     }
+// }
 // 동별로 중심 좌표 찍어주기.
 let element = document.getElementById("region_form_dong");
 element.onchange = function() {
