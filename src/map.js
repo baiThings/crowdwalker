@@ -35,10 +35,10 @@ function successGeolocation(pos) {
     if(direction == null) document.getElementById('triangle').style.display="none";
     else document.getElementById('triangle').style.transform="rotate(" + direction+ "deg)";
 }
+
 function errorGeolocation(err) {
     console.warn(`ERROR(${err.code}): ${err.message}`);
 }
-  
 
 export function mapInit(){
     spreadMarkers(map.getCenter().getLat(), map.getCenter().getLng(), map.getLevel());
@@ -61,8 +61,7 @@ function changeMarkerDragable(marker){
     marker.setDraggable(true);
     marker.setMap(map);
     marker.setZIndex(2);
-    tmpMarker.push(marker)
-
+    tmpMarker.push(marker);
     kakao.maps.event.addListener(marker, 'dragend', function() {
         try {
             setLocalStoragePK(marker.getPosition().getLat(), marker.getPosition().getLng()).setPK(marker.getTitle())

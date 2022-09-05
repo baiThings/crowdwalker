@@ -107,10 +107,19 @@ export function setImageToilet(){
         // let data = JSON.parse(myStorage.getItem('data'))
         document.getElementById('map').style.bottom = "30%";
         let contentNode = document.getElementById("map_inner");
-        let parentNode = document.getElementById("marker-content");        
-        document.getElementById('marker-summary-button').remove();
+        try {
+            document.getElementById('marker-toilet-img').remove();
+            document.getElementById('button-wrapper').remove();
+        } catch (error) {
+            
+        }
+        try {
+            document.getElementById('marker-summary-button').remove();
+        } catch (error) {
+            console.log(error);
+        }
         setTimeout(function(){
-            makeCarousel();
+        makeCarousel();
             document.getElementById('carousel-wrapper').style.height='calc(100% - 4rem)';
             document.getElementById('marker-title').removeEventListener("click", setImageToilet); 
             document.getElementById('marker-title').addEventListener("click", function(){

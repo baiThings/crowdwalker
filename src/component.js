@@ -1,5 +1,7 @@
+import { uploadImageToilet } from "./file.js";
 import { deleteNode } from "./form.js";
 import { setImageToilet, setMarkerInformation } from "./marker.js";
+import { makeFormdata, myStorage, setRequireOptions } from "./store.js";
 
 window.onresize = function(){
     try {
@@ -25,10 +27,9 @@ function translateContainerLeft(){
     container.style.transform = `translate3d(${dynamicWidth * index}px, 0, 0)`
     container.style.transitionDuration= '500ms';
 }
-function translateContainerRight(){
-    if(index == -1) return;
+function translateContainerRight(idx){
+    if(index == -(idx-1)) return;
     index -= 1;
-    console.log(index)
 
     let dynamicWidth = $('#map_inner').width();
     const container = document.getElementById('carousel');
@@ -54,33 +55,46 @@ function translateContainerRight(){
     carouselNode.style.width= carouselWidth * 2 + "px";
     carouselNode.style.height="100%";
 
-    
-    for(let i = 1; i <= 2; i++){
-        let newNode = document.createElement('img')
-        newNode.setAttribute('id', 'img-frame')
-        newNode.setAttribute('src', "../resource/test"+i+".jpg")
-        newNode.style.height = "100%";
-        newNode.style.width = carouselWidth + "px";
-        carouselNode.appendChild(newNode)
-    }
-   
+    getFile()
+    .then((imgSrc) =>{
+        let imgFiles = [];
+        imgFiles = imgSrc['urls']
+        for(let i = 0; i < imgFiles.length; i++){
+            console.log(imgFiles[i])
+            let newNode = document.createElement('img')
+            newNode.setAttribute('id', 'img-frame')
+            newNode.setAttribute('src', imgFiles[i]);
+            newNode.style.height = "100%";
+            newNode.style.width = carouselWidth + "px";
+            carouselNode.appendChild(newNode)
+        }
+        index = 0;
+        document.querySelectorAll('.next-button')[0].addEventListener('click', function(){
+            translateContainerRight(imgFiles.length);
+        })
+        document.querySelectorAll('.prev-button')[0].addEventListener('click', function(){
+            translateContainerLeft();
+        })
+    })
+    .catch(err => {
+        console.log(err);
+        alert("사진이 없습니다.")
+        deleteNode();
+        setMarkerInformation();
+    })
+ 
     leftButton.setAttribute("class", "prev-button")
     leftButton.style.position = "absolute";
     leftButton.style.top = "100px";
     leftButton.style.left = "10px";
     leftButton.style.zIndex= "1";
-    leftButton.addEventListener('click', function(){
-        translateContainerLeft();
-    })
-
+   
     rightButton.setAttribute("class", "next-button")
     rightButton.style.position = "absolute";
     rightButton.style.top = "100px";
     rightButton.style.right = "10px";
     rightButton.style.zIndex= "1";
-    rightButton.addEventListener('click', function(){
-        translateContainerRight();
-    })
+
     leftButton.setAttribute('src', "../resource/left-arrow.png")
     rightButton.setAttribute('src', "../resource/right-arrow.png")
     carouselWrapperNode.appendChild(rightButton)
@@ -114,4 +128,18 @@ export function touchScroll(){
             setMarkerInformation();
         }
     });
+}
+ 
+
+async function getFile(){
+    let pk = myStorage.getItem("PK");
+    const formObj = {
+        'PK' : pk.toString(),
+        'user' : 'user01',
+        'method' : 'GET_IMAGES'
+    }
+    let formdata = makeFormdata(formObj)
+    let response = fetch('https://a8rksepiki.execute-api.ap-northeast-2.amazonaws.com/details/images', setRequireOptions(formdata, null))
+    let result = (await response).json();
+    return result;
 }
