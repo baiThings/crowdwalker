@@ -1,6 +1,5 @@
 // getMarkeyKey : 맵 중앙 위치와 level에 따른 주변 화장실의 프라이머리 키를 반환한다. 
 
-export let myStorage = window.localStorage;
 export let awsUrl = 'https://a8rksepiki.execute-api.ap-northeast-2.amazonaws.com'
 let whileFetching = false;
 let controller;
@@ -70,7 +69,6 @@ export function makeFormdata(formArray){
 }
 export async function getMarkerInformation(key){
     let controller = new AbortController();
-    console.log(key)
     const formObj = {
         'PK' : key,
         'user' : 'user01',
@@ -84,32 +82,6 @@ export async function getMarkerInformation(key){
         return markerInfotmation['Items'];
     } catch (error) {
         console.log(error)   
-    }
-}
-
-// export function setLocalStorage(){
-//     return{
-//         setData : function(data){
-//             myStorage.setItem("data", JSON.stringify(data));
-//         }
-//     } 
-// }
-export function setLocalStoragePosition(){
-    return{
-        setPos : function(lat, lng){
-            myStorage.setItem("lat", lat)
-            myStorage.setItem("lng", lng)
-        }
-    } 
-}
-
-export function setLocalStoragePK(lat, lng){
-    let tmpLocalStorage = setLocalStoragePosition()
-    tmpLocalStorage.setPos(lat, lng)
-    return {
-        setPK : function(pk){
-            myStorage.setItem('PK', pk);
-        }
     }
 }
 

@@ -1,7 +1,7 @@
-import { uploadImageToilet } from "./file.js";
 import { deleteNode } from "./form.js";
+import { localStorageHandler } from "./localStorage.js";
 import { setImageToilet, setMarkerInformation } from "./marker.js";
-import { makeFormdata, myStorage, setRequireOptions } from "./store.js";
+import { makeFormdata, setRequireOptions } from "./store.js";
 
 window.onresize = function(){
     try {
@@ -60,7 +60,6 @@ function translateContainerRight(idx){
         let imgFiles = [];
         imgFiles = imgSrc['urls']
         for(let i = 0; i < imgFiles.length; i++){
-            console.log(imgFiles[i])
             let newNode = document.createElement('img')
             newNode.setAttribute('id', 'img-frame')
             newNode.setAttribute('src', imgFiles[i]);
@@ -119,7 +118,6 @@ export function touchScroll(){
     $("#marker-title").on('touchend',function(event){
         endX = event.originalEvent.changedTouches[0].screenX;
         endY = event.originalEvent.changedTouches[0].screenY;
-        console.log(startY + " : " + endY)
         if(startY - endY > 10){
             setImageToilet();
         }
@@ -132,7 +130,7 @@ export function touchScroll(){
  
 
 async function getFile(){
-    let pk = myStorage.getItem("PK");
+    let pk = localStorageHandler.getItem('PK');
     const formObj = {
         'PK' : pk.toString(),
         'user' : 'user01',
@@ -143,3 +141,4 @@ async function getFile(){
     let result = (await response).json();
     return result;
 }
+

@@ -1,5 +1,6 @@
+import { localStorageHandler } from "./localStorage.js";
 import { mapResize } from "./map.js";
-import { awsUrl, makeFormdata, myStorage, parseToiletData, setRequireOptions } from "./store.js";
+import { awsUrl, makeFormdata, parseToiletData, setRequireOptions } from "./store.js";
 
 function parsingSubmitData(){
     let obj = {};
@@ -101,11 +102,10 @@ export function formlists(){
     return formlist;
 } 
 export function formFixed(key, value){  
-
     try {
         return '<div class="mb-3 mt-3 form-fixed">'+
         '<label class="form-label" >' + value + '</label>'+
-        '<input type="text" class="form-control" id='+ key+' value='+ JSON.parse(myStorage.getItem(key))+' name='+ key +' readonly>'+
+        '<input type="text" class="form-control" id='+ key+' value='+ localStorageHandler.getItem(key)+' name='+ key +' readonly>'+
         '</div>'
     } catch (error) {
         console.log("fail to get markerInfo")
@@ -116,7 +116,7 @@ export function formFixed(key, value){
 
     let tmp;
     try {
-        if(JSON.parse(myStorage.getItem('data'))[0][('D'+ key)]['BOOL']){
+        if(localStorageHandler.getData()[0][('D'+ key)]['BOOL']){
             tmp = '<input class="form-radio" type="radio" name="'+key+'" value="YES" checked="checked"><label for="yes">YES</label>'
                     + '<input class="form-radio" type="radio" name="'+key+'" value="NO"><label for="no">NO</label>'
         }else{
@@ -138,7 +138,7 @@ export function formFixed(key, value){
 export function formSelect(key, value){
     let node = "";
     try {
-        let toiletType = JSON.parse(myStorage.getItem('data'))[0]["DtoiletType"]['S']
+        let toiletType = localStorageHandler.getData()[0]["DtoiletType"]['S']
 
         if(toiletType === 'N'){
             node =     

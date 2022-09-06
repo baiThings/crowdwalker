@@ -1,6 +1,7 @@
 import { deleteNode, deleteNodeClass } from "./form.js";
+import { localStorageHandler } from "./localStorage.js";
 import { buttonNode, setImageToilet, setMarkerInformation } from "./marker.js";
-import { myStorage, setRequireOptions } from "./store.js";
+import { setRequireOptions } from "./store.js";
 
 export function uploadImageToilet(){
     document.getElementById('map').style.bottom = "20%";
@@ -44,6 +45,8 @@ let fileHandler = {
     init(){
         const files = Array.from(document.querySelector('.img-upload').files);
         const imagePreview = document.querySelector('.img-preview');
+        let fileType = files[0].type;
+
         files.forEach(file => {
             let reader = new FileReader();
             reader.readAsDataURL(file);
@@ -62,7 +65,7 @@ let fileHandler = {
         for(let key in filelist){
             formdata.append('file', (Object.values(filelist))[key]);
         }
-        formdata.append('PK', myStorage.getItem('PK'));
+        formdata.append('PK', localStorageHandler.getItem('PK'));
         formdata.append('method', 'UPLOAD_IMAGES');
         formdata.append('user', 'user01');
         fetch('https://a8rksepiki.execute-api.ap-northeast-2.amazonaws.com/details/images', setRequireOptions(formdata, null))

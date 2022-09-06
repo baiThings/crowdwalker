@@ -1,6 +1,7 @@
 import {deleteNode } from './form.js';
-import {makeMarker, setMarkerInformation, spreadMarkers } from './marker.js';
-import {getMarkerInformation, myStorage, setLocalStoragePK} from './store.js';
+import { localStorageHandler } from './localStorage.js';
+import {setMarkerInformation, spreadMarkers } from './marker.js';
+import {getMarkerInformation} from './store.js';
 
 
 let container = document.getElementById('map');
@@ -8,6 +9,7 @@ let options = {
     center: new kakao.maps.LatLng(36.479074216, 127.28465568800002),
     level: 3
 };
+let tmpMarker = [];
 
 const geolocationOptions = {
     enableHighAccuracy: true,
@@ -64,7 +66,18 @@ function changeMarkerDragable(marker){
     tmpMarker.push(marker);
     kakao.maps.event.addListener(marker, 'dragend', function() {
         try {
-            setLocalStoragePK(marker.getPosition().getLat(), marker.getPosition().getLng()).setPK(marker.getTitle())
+            // setLocalStoragePK(marker.getPosition().getLat(), marker.getPosition().getLng()).setPK(marker.getTitle())
+            localStorageHandler.setPosition(marker.getPosition().getLat(), marker.getPosition().getLng());
+            localStorageHandler.setPK(marker.getTitle());
+            // setLocalStorage(marker.getPosition().getLat(), marker.getPosition().getLng())
+            // setLocalStoragePK(marker.getTitle())
+            try {
+                document.getElementById('lat').value = marker.getPosition().getLat();
+                document.getElementById('lng').value = marker.getPosition().getLng();
+
+            } catch (error) {
+                
+            }
         } catch (error) {
             console.log(error)
         }
@@ -85,12 +98,10 @@ export const changeDragLock = () => {
 export const clearMarkers = () => {
     try {
         tmpMarker.forEach((marker)=> marker.setMap(null));
-
     } catch (error) {
-        
+        console.log(error);
     }
 }
-let tmpMarker = makeMarker()
 function getMarkerList(markers){
     deleteNode();
     let newNode = ''
@@ -112,9 +123,9 @@ function getMarkerList(markers){
             newNode.setAttribute('id', 'marker_list')
             newNode.innerHTML=toiletNameList
             newNode.addEventListener("click", function(){
-                myStorage.setItem('data', JSON.stringify(data));
-                setLocalStoragePK(marker.getPosition().getLat(), marker.getPosition().getLng()).setPK(marker.getTitle())
-                
+                localStorageHandler.setData(JSON.stringify(data));
+                localStorageHandler.setPosition(marker.getPosition().getLat(), marker.getPosition().getLng());
+                localStorageHandler.setPK(marker.getTitle());
                 try {
                     deleteNode()
                     setMarkerInformation()
@@ -130,7 +141,6 @@ function getMarkerList(markers){
         .catch((error) => {
             console.log(error)
         })
-        console.log(marker) 
     }
 }  
 
@@ -180,7 +190,7 @@ kakao.maps.event.addListener(map, 'dragend', function() {
         mapInit();
         mapResize(0);
         mapContentChangeSize(0);
-
+        
         clearMarkers();
     }
 });
@@ -195,7 +205,6 @@ kakao.maps.event.addListener(map, 'zoom_changed', function() {
 });
 
 export function mapSetCenter(pos){
-    console.log("change pos : " + pos);
     map.setCenter(pos);
 }
 export function mapReset(){

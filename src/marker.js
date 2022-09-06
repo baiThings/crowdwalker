@@ -1,8 +1,9 @@
 import { makeCarousel, touchScroll } from "./component.js";
 import { uploadImageToilet } from "./file.js";
-import { applyData, deleteNode,deleteNodeClass,resetData,setFormlist,submitData } from "./form.js";
-import { changeDragLock, clearMarkers, clusterer, dragLock, mapContentChangeSize, mapInit, mapMove, mapReset, mapResize, mapSetCenter } from "./map.js";
-import { getMarkerInformation, getMarkerKey, myStorage, setLocalStoragePK, setRequireOptions } from "./store.js";
+import { applyData, deleteNode,resetData,setFormlist,submitData } from "./form.js";
+import { localStorageHandler } from "./localStorage.js";
+import { changeDragLock, clearMarkers, clusterer, dragLock, mapContentChangeSize, mapInit, mapResize, mapSetCenter } from "./map.js";
+import { getMarkerInformation, getMarkerKey} from "./store.js";
 
 
 // 마커 이미지 
@@ -29,7 +30,6 @@ export function makeMarker(pos, pk, img){
 export function spreadMarkers(mapLat, mapLng, mapLevel){
     getMarkerKey(mapLat, mapLng, mapLevel).then((toilets) => {
         clusterer.clear();
-        console.log(toilets)
         let markers= [];
         try {
             for(let i = 0; i < toilets.length; i++){
@@ -40,15 +40,12 @@ export function spreadMarkers(mapLat, mapLng, mapLevel){
                 let marker = makeMarker(new kakao.maps.LatLng(latlng[0], latlng[1]), toilets[i]['PK']['S'], markerImg)
                 kakao.maps.event.addListener(marker, 'click', function(){
                     getMarkerInformation(marker.getTitle()).then((data)=>{
-                        myStorage.setItem("data", JSON.stringify(data));
-                    
-                        // myStorage.setItem("PK", marker.getTitle())
-                        setLocalStoragePK(marker.getPosition().getLat(), marker.getPosition().getLng()).setPK(marker.getTitle())
-                        // setLocalStorage(marker.getPosition().getLat(), marker.getPosition().getLng())
-                        //    tmp.setPos()
+                        // myStorage.setItem("data", JSON.stringify(data));
+                        localStorageHandler.setData(JSON.stringify(data));
+                        localStorageHandler.setPosition(marker.getPosition().getLat(), marker.getPosition().getLng());
+                        localStorageHandler.setPK(marker.getTitle());
                         deleteNode();
                         mapSetCenter(marker.getPosition());
-
                         setMarkerInformation()
 
                         if(marker.getDraggable() != true && dragLock){
@@ -68,7 +65,7 @@ export function spreadMarkers(mapLat, mapLng, mapLevel){
 }
 
 export function setMarkerInformation(){ 
-    let data = JSON.parse(myStorage.getItem('data'))
+    let data = localStorageHandler.getData();
     
     let parentNode = document.getElementById("map_inner")
     let toiletTitle;
@@ -104,14 +101,13 @@ export function setMarkerInformation(){
 }
 
 export function setImageToilet(){
-        // let data = JSON.parse(myStorage.getItem('data'))
         document.getElementById('map').style.bottom = "30%";
         let contentNode = document.getElementById("map_inner");
         try {
             document.getElementById('marker-toilet-img').remove();
             document.getElementById('button-wrapper').remove();
         } catch (error) {
-            
+            console.log(error)
         }
         try {
             document.getElementById('marker-summary-button').remove();
@@ -142,7 +138,7 @@ export function buttonNode(){
 }
 function setDetailMarkerInformation(){
         document.getElementById('map').style.bottom = "30%";
-        let data = JSON.parse(myStorage.getItem('data'))
+        let data = localStorageHandler.getData();
         document.getElementById('marker-summary-button').remove();
 
         setFormlist()
