@@ -151,6 +151,8 @@ function setDetailMarkerInformation(){
                 let lng = data[0]['geoJson']['S'].split(',')[1];
                 mapSetCenter(new kakao.maps.LatLng(lat, lng));
                 mapInit();
+                mapResize(0);
+                mapContentChangeSize(0);
                 alert('등록되었습니다!')
             })
         })

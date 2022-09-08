@@ -1,6 +1,8 @@
 import { deleteNode, deleteNodeClass } from "./form.js";
+import { formdataHandler, makeFormdata } from "./formData.js";
 import { localStorageHandler } from "./localStorage.js";
 import { buttonNode, setImageToilet, setMarkerInformation } from "./marker.js";
+import { knockknockHandler } from "./resource.js";
 import { setRequireOptions } from "./store.js";
 
 export function uploadImageToilet(){
@@ -41,46 +43,70 @@ export function uploadImageToilet(){
 }
 
 let filelist = [];
+let formdata = new FormData();
+let fileOptions = {
+    meta: true, 
+    orientation: true, 
+    canvas: true, 
+    maxWidth: 800,
+    maxHeight: 300,
+    minWidth: 100,
+    minHeight: 50, 
+}
 let fileHandler = {
     init(){
         const files = Array.from(document.querySelector('.img-upload').files);
-        const imagePreview = document.querySelector('.img-preview');
-        let fileType = files[0].type;
-
+        const imagePreview = document.querySelector('.img-preview');    
         files.forEach(file => {
             let reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = (e) => {
-                const preview = createImgElement(e, file);
-                imagePreview.appendChild(preview);
-            }
+
+            loadImage(
+                file,
+                function(img, data){
+                    loadImage.writeExifData(data.imageHead, data, 'Orientation', 1)
+                    img.toBlob(function (blob) {
+                        loadImage.replaceHead(blob, data.imageHead, function (newBlob) {
+                            let newfile = new File([newBlob], file.name, { type: "image/jpeg"});
+                            file = newfile;
+                            formdataHandler.setImgFormdata(file);
+                            reader.readAsDataURL(file);
+                            reader.onload = (e) => {
+                                const preview = createImgElement(e, file);
+                                imagePreview.appendChild(preview);
+                            }
+                            filelist.push(file);
+                        })
+                  }, 'image/jpeg')
+            },
+            fileOptions)
         })
-        filelist = filelist.concat(files);
+
     },
     selectFile(){
         console.log(filelist);
     },
     uploadFile(){
-        let formdata = new FormData();
-        for(let key in filelist){
-            formdata.append('file', (Object.values(filelist))[key]);
+        const formObj = {
+            'PK' : localStorageHandler.getItem('PK'),
+            'method': 'UPLOAD_IMAGES',
+            'user': 'user01'
         }
-        formdata.append('PK', localStorageHandler.getItem('PK'));
-        formdata.append('method', 'UPLOAD_IMAGES');
-        formdata.append('user', 'user01');
-        fetch('https://a8rksepiki.execute-api.ap-northeast-2.amazonaws.com/details/images', setRequireOptions(formdata, null))
+        formdataHandler.setImgOptionFormdata(formObj);
+        fetch(knockknockHandler.getUrl() + '/details/images', setRequireOptions(formdataHandler.getImgFormdata(), null))
             .then((response) => {
                 if(response.ok) alert('등록되었습니다.')
                 return response.json()
             })
             .then((result) => {
                 console.log(result);
-                filelist = []
             })
             .catch((err) => {
+                alert("실패하였습니다. " + err)
                 console.log(err);
                 filelist = []
             })
+        filelist = []
+        formdataHandler.init();
     },
     removeFile(e){
         for(let i = 0; i < filelist.length; i++){
@@ -107,7 +133,7 @@ function createImgElement(e, file) {
     del.addEventListener('click', function(e){
         fileHandler.removeFile(e);
     })
-    del.innerHTML = "X"
+    del.innerHTML = "X";
 
     li.appendChild(img);
     li.appendChild(del);

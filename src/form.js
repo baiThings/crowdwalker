@@ -1,6 +1,8 @@
+import { makeFormdata } from "./formData.js";
 import { localStorageHandler } from "./localStorage.js";
 import { mapResize } from "./map.js";
-import { awsUrl, makeFormdata, parseToiletData, setRequireOptions } from "./store.js";
+import { knockknockHandler } from "./resource.js";
+import { parseToiletData, setRequireOptions } from "./store.js";
 
 function parsingSubmitData(){
     let obj = {};
@@ -30,7 +32,7 @@ export async function submitData(data) {
         "PK": data[0]['PK']['S'].toString()
     };
     console.log(jsonSet)
-    let response = await fetch(awsUrl + '/details',setRequireOptions(JSON.stringify(jsonSet), null));
+    let response = await fetch(knockknockHandler.getUrl() + '/details',setRequireOptions(JSON.stringify(jsonSet), null));
     let result = await response.text()
 } 
 
@@ -43,7 +45,7 @@ export async function applyData(key){
     }
     let formData = makeFormdata(formObj);
       try {
-        let response = await fetch(awsUrl + '/details', setRequireOptions(formData, null))
+        let response = await fetch(knockknockHandler.getUrl() + '/details', setRequireOptions(formData, null))
         let result = await response.text()
         let markerInfotmation = await JSON.parse(result)
         console.log(markerInfotmation)
@@ -61,7 +63,7 @@ export async function resetData(key){
     }
     let formData = makeFormdata(formObj);
     try {
-        let response = await fetch(awsUrl + '/details', setRequireOptions(formData, null))
+        let response = await fetch(knockknockHandler.getUrl() + '/details', setRequireOptions(formData, null))
         if(response.ok){
             alert('초기화 되었습니다!')
             return response.text();
@@ -113,7 +115,6 @@ export function formFixed(key, value){
 }
 
  export function formRadio(key, value){
-
     let tmp;
     try {
         if(localStorageHandler.getData()[0][('D'+ key)]['BOOL']){

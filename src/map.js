@@ -3,7 +3,6 @@ import { localStorageHandler } from './localStorage.js';
 import {setMarkerInformation, spreadMarkers } from './marker.js';
 import {getMarkerInformation} from './store.js';
 
-
 let container = document.getElementById('map');
 let options = {
     center: new kakao.maps.LatLng(36.479074216, 127.28465568800002),
@@ -47,7 +46,7 @@ export function mapInit(){
 }
 
 window.onload=function(){
-    mapInit();
+    mapInit();    
     let mapNode = document.getElementById('map');
     mapNode.removeChild(mapNode.childNodes[1]);
 }

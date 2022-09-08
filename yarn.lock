@@ -69,6 +69,11 @@
   "resolved" "https://registry.npmjs.org/balanced-match/-/balanced-match-1.0.2.tgz"
   "version" "1.0.2"
 
+"blueimp-load-image@^5.16.0":
+  "integrity" "sha512-3DUSVdOtlfNRk7moRZuTwDmA3NnG8KIJuLcq3c0J7/BIr6X3Vb/EpX3kUH1joxUhmoVF4uCpDfz7wHkz8pQajA=="
+  "resolved" "https://registry.npmjs.org/blueimp-load-image/-/blueimp-load-image-5.16.0.tgz"
+  "version" "5.16.0"
+
 "boxen@7.0.0":
   "integrity" "sha512-j//dBVuyacJbvW+tvZ9HuH03fZ46QcaKvvhZickZqtB271DxJ7SNRSNxrV/dZX0085m7hISRZWbzWlJvx/rHSg=="
   "resolved" "https://registry.npmjs.org/boxen/-/boxen-7.0.0.tgz"

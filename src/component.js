@@ -1,7 +1,8 @@
 import { deleteNode } from "./form.js";
+import { makeFormdata } from "./formData.js";
 import { localStorageHandler } from "./localStorage.js";
 import { setImageToilet, setMarkerInformation } from "./marker.js";
-import { makeFormdata, setRequireOptions } from "./store.js";
+import { setRequireOptions } from "./store.js";
 
 window.onresize = function(){
     try {
@@ -60,6 +61,14 @@ function translateContainerRight(idx){
         let imgFiles = [];
         imgFiles = imgSrc['urls']
         for(let i = 0; i < imgFiles.length; i++){
+            // loadImage(
+            //     imgFiles[i], {meta: true, canvas:true, maxWidth:100, crossOrigin:'Anonymous'},
+            //     function(img, data){
+            //         console.log(img);
+            //         console.log(data.imageHead)
+            //     },
+               
+            // )
             let newNode = document.createElement('img')
             newNode.setAttribute('id', 'img-frame')
             newNode.setAttribute('src', imgFiles[i]);
