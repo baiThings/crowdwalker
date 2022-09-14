@@ -41,6 +41,7 @@ export function spreadMarkers(mapLat, mapLng, mapLevel){
                 kakao.maps.event.addListener(marker, 'click', function(){
                     getMarkerInformation(marker.getTitle()).then((data)=>{
                         // myStorage.setItem("data", JSON.stringify(data));
+                        localStorageHandler.clear()
                         localStorageHandler.setData(JSON.stringify(data));
                         localStorageHandler.setPosition(marker.getPosition().getLat(), marker.getPosition().getLng());
                         localStorageHandler.setPK(marker.getTitle());

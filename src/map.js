@@ -49,6 +49,7 @@ window.onload=function(){
     mapInit();    
     let mapNode = document.getElementById('map');
     mapNode.removeChild(mapNode.childNodes[1]);
+    localStorageHandler.clear();
 }
 
 export let clusterer = new kakao.maps.MarkerClusterer({
@@ -122,6 +123,7 @@ function getMarkerList(markers){
             newNode.setAttribute('id', 'marker_list')
             newNode.innerHTML=toiletNameList
             newNode.addEventListener("click", function(){
+                localStorageHandler.clear()
                 localStorageHandler.setData(JSON.stringify(data));
                 localStorageHandler.setPosition(marker.getPosition().getLat(), marker.getPosition().getLng());
                 localStorageHandler.setPK(marker.getTitle());

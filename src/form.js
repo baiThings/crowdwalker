@@ -54,6 +54,7 @@ export async function applyData(key){
     } catch (error) {
         console.log(error)   
     }
+    localStorageHandler.clear();
 }
 
 export async function resetData(key){
