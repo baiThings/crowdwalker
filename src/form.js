@@ -88,6 +88,7 @@ export function setFormlist(){
 export function formlists(){
     let formlist = '';
     for(let [key, value] of parseToiletData) {
+        console.log(key + " : " + value);
         if(['lat', 'lng'].includes(key)){
             formlist += formFixed(key, value)
         }else if(['toiletType'].includes(key)){
@@ -118,9 +119,10 @@ export function formFixed(key, value){
 }
 export function formInput(key, value){  
     let floor = 1;
-    if(localStorageHandler.getItem('entryFloor') != "undefined"){
+    if(localStorageHandler.getItem('entryFloor') != null){
         floor = parseInt(localStorageHandler.getItem(key));
     }else floor = 1;
+    console.log(floor)
     try {
         return '<div class="mb-3 mt-3 form-fixed">'+
         '<label class="form-label" >' + value + '</label>'+

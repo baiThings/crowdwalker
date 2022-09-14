@@ -10,6 +10,7 @@ export let localStorageHandler = {
     },
     setData(data){
         myStorage.setItem('data', data);
+        console.log(data);
         try {
             myStorage.setItem('entryFloor', JSON.parse(data)[0]['DentryFloor']['N']);
         } catch (error) {
