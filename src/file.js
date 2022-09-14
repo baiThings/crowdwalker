@@ -48,10 +48,6 @@ let fileOptions = {
     meta: true, 
     orientation: true, 
     canvas: true, 
-    maxWidth: 800,
-    maxHeight: 300,
-    minWidth: 100,
-    minHeight: 50, 
 }
 let fileHandler = {
     init(){
@@ -106,6 +102,7 @@ let fileHandler = {
                 filelist = []
             })
         filelist = []
+        localStorageHandler.clear();
         formdataHandler.init();
     },
     removeFile(e){

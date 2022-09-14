@@ -231,15 +231,7 @@ export function mapContentChangeSize(size){
         console.log(error)
     }
 }
-// export function mapContentChangeSize(size){
-//     let mapWrap = document.getElementById('map');
-//     try {
-//         mapWrap.style.height = size + '%';  
-//         map.relayout();
-//     } catch (error) {
-//         console.log(error)
-//     }
-// }
+
 // 동별로 중심 좌표 찍어주기.
 let element = document.getElementById("region_form_dong");
 element.onchange = function() {

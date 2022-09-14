@@ -8,7 +8,7 @@ function parsingSubmitData(){
     let obj = {};
     let formData =new FormData(document.getElementById("form1"));
     for(let [name, value] of formData) {
-        if(name == "lat" || name == "lng") value=parseFloat(value);
+        if(name == "lat" || name == "lng" || name == "entryFloor") value=parseFloat(value);
         else if(name == "toiletType") {
             if(value === "개방화장실") value="N"
             else if(value === "공공화장실") value="G"
@@ -18,6 +18,7 @@ function parsingSubmitData(){
         else if(value == "YES") value=true;
         else if(value == "NO") value=false;
         obj[name] = value;
+        console.log(value);
     }
     return JSON.stringify(obj)
 }
@@ -69,10 +70,10 @@ export async function resetData(key){
             return response.text();
         }else{
             alert("초기화에 실패하였습니다. 이미 초기화 된게 아닌지 확인하십시오.")
-
         }
     } catch (error) {
     }
+    localStorageHandler.clear();
 }
 
 export function setFormlist(){
@@ -91,6 +92,8 @@ export function formlists(){
             formlist += formFixed(key, value)
         }else if(['toiletType'].includes(key)){
             formlist += formSelect(key, value)   
+        }else if(['entryFloor'].includes(key)){
+            formlist += formInput(key, value)
         }else{
             formlist += formRadio(key, value)   
         }
@@ -108,6 +111,20 @@ export function formFixed(key, value){
         return '<div class="mb-3 mt-3 form-fixed">'+
         '<label class="form-label" >' + value + '</label>'+
         '<input type="text" class="form-control" id='+ key+' value='+ localStorageHandler.getItem(key)+' name='+ key +' readonly>'+
+        '</div>'
+    } catch (error) {
+        console.log("fail to get markerInfo")
+    }
+}
+export function formInput(key, value){  
+    let floor = 1;
+    if(localStorageHandler.getItem('entryFloor') != "undefined"){
+        floor = parseInt(localStorageHandler.getItem(key));
+    }else floor = 1;
+    try {
+        return '<div class="mb-3 mt-3 form-fixed">'+
+        '<label class="form-label" >' + value + '</label>'+
+        '<input type="text" class="form-control" id='+ key+' value='+ floor + ' name='+ key +'>'+
         '</div>'
     } catch (error) {
         console.log("fail to get markerInfo")

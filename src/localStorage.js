@@ -10,11 +10,19 @@ export let localStorageHandler = {
     },
     setData(data){
         myStorage.setItem('data', data);
+        try {
+            myStorage.setItem('entryFloor', JSON.parse(data)[0]['DentryFloor']['N']);
+        } catch (error) {
+            console.log("entryFloor가 기록되지 않았습니다.")
+        }
     },
     getData(){
         return JSON.parse(myStorage.getItem('data'));
     },
     getItem(key){
         return myStorage.getItem(key)
+    },
+    clear(){
+        myStorage.clear()
     }
 }

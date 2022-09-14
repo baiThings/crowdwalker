@@ -20,7 +20,7 @@ export async function getMarkerKey(lat, lng, radius){
             formdataTmp.append("radius", "700");
             break;
         default:
-            formdataTmp.append("radius", "100");
+            formdataTmp.append("radius", "400");
             break;
     }
     if(whileFetching) controller.abort()
@@ -29,7 +29,6 @@ export async function getMarkerKey(lat, lng, radius){
     whileFetching = true;
 
     try {
-        console.log(knockknockHandler.getUrl())
         let response = await fetch(knockknockHandler.getUrl(), setRequireOptions(formdataTmp, controller.signal))
         if(response.ok){
             whileFetching = false;

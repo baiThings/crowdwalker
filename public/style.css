@@ -160,7 +160,7 @@ body::-webkit-scrollbar {
 #marker-summary{
     color: #41464b;
     font-weight: bold;
-    font-size: 0.8rem;
+    font-size: 3vw;
     padding: 0.2rem 0.5rem;
     height: 2rem;
 }
