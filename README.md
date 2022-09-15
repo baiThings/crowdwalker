@@ -1,4 +1,5 @@
-![header](https://capsule-render.vercel.app/api?type=transparent&height=400&text=KnockKnock&color=0d6efd&fontColor=ffffff&animation=twinkling&desc=크라우드%20워커%20 )
+![kk-logo-blue](https://user-images.githubusercontent.com/36848509/190374076-9b27cbfc-5caa-4bbf-bb72-efc516d679dd.png)
+# 크라우드 워커
 
 ># 원천 데이터를 수집하기 위해 도움을 주는 데이터 수집 앱
 
