@@ -1,4 +1,5 @@
 import { makeFormdata } from "./formData.js";
+import { formModule } from "./formModule.js";
 import { localStorageHandler } from "./localStorage.js";
 import { mapResize } from "./map.js";
 import { knockknockHandler } from "./resource.js";
@@ -10,9 +11,9 @@ function parsingSubmitData(){
     for(let [name, value] of formData) {
         if(name == "lat" || name == "lng" || name == "entryFloor") value=parseFloat(value);
         else if(name == "toiletType") {
-            if(value === "개방화장실") value="N"
-            else if(value === "공공화장실") value="G"
-            else if(value === "가족화장실") value="F"
+            if(value === "개방형화장실") value="N"
+            else if(value === "공공시설화장실") value="G"
+            else if(value === "장애인화장실 없음") value="E"
             else value = "NULL"
         }
         else if(value == "YES") value=true;
@@ -25,7 +26,6 @@ function parsingSubmitData(){
 
 export async function submitData(data) {
     let jsonData = JSON.parse(parsingSubmitData());
-    console.log(data[0]['PK']['S'].toString())
     let jsonSet = { 
         "method": "UPDATE_ITEM",
         "input" : jsonData,
@@ -91,116 +91,23 @@ export function formlists(){
     for(let [key, value] of parseToiletData) {
         console.log(key + " : " + value);
         if(['lat', 'lng'].includes(key)){
-            formlist += formFixed(key, value)
+            formlist += formModule.formFixed(key, value)
         }else if(['toiletType'].includes(key)){
-            formlist += formSelect(key, value)   
+            formlist += formModule.formSelect(key, value)   
         }else if(['entryFloor'].includes(key)){
-            formlist += formInput(key, value)
+            formlist += formModule.formInput(key, value)
         }else{
-            formlist += formRadio(key, value)   
+            formlist += formModule.formRadio(key, value)   
         }
     }
     let buttonNode = '<div id="button-wrapper">'+ 
                      '<input type="button" id="button-marker-info" value ="제출"></input>' + 
                      '<input type="button" id="button-marker-reset" value="초기화"></input>' + 
-                     '</div></form>'  
-                
+                     '</div></form>'    
     formlist += buttonNode
     return formlist;
 } 
-export function formFixed(key, value){  
-    try {
-        return '<div class="mb-3 mt-3 form-fixed">'+
-        '<label class="form-label" >' + value + '</label>'+
-        '<input type="text" class="form-control" id='+ key+' value='+ localStorageHandler.getItem(key)+' name='+ key +' readonly>'+
-        '</div>'
-    } catch (error) {
-        console.log("fail to get markerInfo")
-    }
-}
-export function formInput(key, value){  
-    let floor = 1;
-    if(localStorageHandler.getItem('entryFloor') != null){
-        floor = parseInt(localStorageHandler.getItem(key));
-    }else floor = 1;
-    console.log(floor)
-    try {
-        return '<div class="mb-3 mt-3 form-fixed">'+
-        '<label class="form-label" >' + value + '</label>'+
-        '<input type="text" class="form-control" id='+ key+' value='+ floor + ' name='+ key +'>'+
-        '</div>'
-    } catch (error) {
-        console.log("fail to get markerInfo")
-    }
-}
 
- export function formRadio(key, value){
-    let tmp;
-    try {
-        if(localStorageHandler.getData()[0][('D'+ key)]['BOOL']){
-            tmp = '<input class="form-radio" type="radio" name="'+key+'" value="YES" checked="checked"><label for="yes">YES</label>'
-                    + '<input class="form-radio" type="radio" name="'+key+'" value="NO"><label for="no">NO</label>'
-        }else{
-            tmp = '<input class="form-radio" type="radio" name="'+key+'" value="YES" ><label for="yes">YES</label>'
-                    + '<input class="form-radio" type="radio" name="'+key+'" value="NO" checked="checked"><label for="no">NO</label>'
-        }
-    } catch (error) {
-        tmp = '<input class="form-radio" type="radio" name="'+key+'" value="YES" ><label for="yes">YES</label>'
-        + '<input class="form-radio" type="radio" name="'+key+'" value="NO" checked="checked"><label for="no">NO</label>'
-    }
-   
-    let node =  '<div class="mb-3 mt-3" id="form-radio">' 
-    + '<label for=' + key + 'class="form-label">' + value +':</label>'
-    + '<div>' + tmp + '</div>'   
-    +'</div>'
-
-    return node;
- }
-export function formSelect(key, value){
-    let node = "";
-    try {
-        let toiletType = localStorageHandler.getData()[0]["DtoiletType"]['S']
-
-        if(toiletType === 'N'){
-            node =     
-            '       <option>선택</options>' + 
-            '       <option>공공화장실</options>' + 
-            '       <option selected>개방화장실</option>' + 
-            '       <option>가족화장실</option>' 
-        }else if(toiletType === "G"){
-            node =     
-            '       <option>선택</options>' + 
-            '       <option selected>공공화장실</options>' + 
-            '       <option>개방화장실</option>' + 
-            '       <option>가족화장실</option>'
-        }else if(toiletType === "F"){
-            node =     
-            '       <option>선택</options>' + 
-            '       <option>공공화장실</options>' + 
-            '       <option>개방화장실</option>' + 
-            '       <option selected>가족화장실</option>'
-        }else{
-            node =     
-            '       <option selected>선택</options>' + 
-            '       <option>공공화장실</options>' + 
-            '       <option>개방화장실</option>' + 
-            '       <option>가족화장실</option>'
-        }
-    } catch (error) {
-        node =     
-            '       <option selected>선택</options>' + 
-            '       <option>공공화장실</options>' + 
-            '       <option>개방화장실</option>' + 
-            '       <option>가족화장실</option>'
-    }
-   
-    return  '<div class="mb-3 mt-3 form-fixed">' + 
-    '   <label for='+ key + ' class="form-label">'+value+':</label>' + 
-    '   <select class="form-select-list" id='+ key+ ' name='+ key+ '>' +
-        node + 
-    '   </select>' + 
-    '</div>'
-}
  export function deleteNode(){
     let parentnode = document.getElementById('map_inner')
     try {

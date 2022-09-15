@@ -90,10 +90,10 @@ export function setMarkerInformation(){
     }
     newNode.innerHTML = "<div id='marker-title'>" + toiletTitle + "</div>"
     newNode.innerHTML += "<div id='marker-summary'>" + data[0]['newPlatPlc']['S'] + "</div>"
-    newNode.innerHTML += "<div id='marker-summary-button'>" + 
+    newNode.innerHTML += "<div class='marker-summary-button'> <div id='marker-summary-button'>" + 
                             "<div id='marker-summary-button-input' type='input'>사진 등록</div>" + 
                             "<div id='marker-summary-button-input' type='input'>세부 정보 입력</div>" + 
-                         "</div>";
+                         "</div></div>";
     parentNode.appendChild(newNode)
     // document.getElementById('map').style.bottom = '10%';
     touchScroll();

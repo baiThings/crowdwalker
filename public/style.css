@@ -8,7 +8,7 @@
 html, body{
     height: 100%;
     font-family: 'GmarketSansMedium', sans-serif;
-    font-size: 2.5vh;
+    /* font-size: 2vh; */
     overscroll-behavior-y: none;
 }
 body::-webkit-scrollbar {
@@ -21,19 +21,22 @@ body::-webkit-scrollbar {
     height: 6%;
 }
 .restWalker_title{
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: 5%;
     color: white;
     background-color: #0d6efd;
 }
 .restWalker_title_frame{
     font-weight: bolder;
-    display: table;
+    /* display: table; */
 }
 .restWalker_title_label{
-    display: table-cell;
-    vertical-align: middle;
+    /* display: table-cell; */
+    /* vertical-align: middle; */
     text-align: center;
-    font-size: 2.5vh;
+    /* font-size: 2.3vh; */
 }
 .restWalker_header{
     width: 100%;
@@ -58,7 +61,13 @@ body::-webkit-scrollbar {
     height: 100%;
 
 }
-
+.crowdWalker_title_logo{
+    position: absolute;
+    right: 3%;
+}
+#crowdWalker_title_logo_img{
+    width: 6vh;
+}
  #map_content{
     width: 100%;
     height: 30%;
@@ -149,9 +158,12 @@ body::-webkit-scrollbar {
 #marker-title{
     color:black;
     font-weight: bold;
-    font-size: 1rem;
+    font-size: 2vh;
     padding: 0.2rem 0.5rem;
     height: 2rem;
+    display: flex;
+    align-items:center;
+    margin: 1vh 0px;
 }
 #marker-content{
     height: 100%;
@@ -160,15 +172,18 @@ body::-webkit-scrollbar {
 #marker-summary{
     color: #41464b;
     font-weight: bold;
-    font-size: 3vw;
+    font-size: 1.5vh;
     padding: 0.2rem 0.5rem;
     height: 2rem;
+    display: flex;
+    align-items: center;
 }
 #marker-summary-button{
     display: flex;
     justify-content: center;
     /* margin: 1rem 0px; */
     height: 2rem;
+    margin-top: 2vh;
 }
 #marker-summary-button-input{
     display: flex;
