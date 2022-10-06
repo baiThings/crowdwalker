@@ -5,7 +5,7 @@ import {getMarkerInformation} from './store.js';
 
 let container = document.getElementById('map');
 let options = {
-    center: new kakao.maps.LatLng(36.479074216, 127.28465568800002),
+    center: new kakao.maps.LatLng(37.32194457569437, 126.83082307143813),
     level: 3
 };
 let tmpMarker = [];
@@ -118,7 +118,11 @@ function getMarkerList(markers){
         console.log(marker)
         getMarkerInformation(marker.getTitle()).then((data)=>{
             // console.log(i);
-            toiletNameList = data[0]["bldNm"]["S"] + " " + data[0]["dongNm"]["S"]
+            try {
+                toiletNameList = data[0]["bldNm"]["S"] + " " + data[0]["dongNm"]["S"];
+            } catch (error) {
+                toiletNameList = data[0]["platPlc"]["S"];
+            }
             newNode = document.createElement('div')
             newNode.setAttribute('id', 'marker_list')
             newNode.innerHTML=toiletNameList
@@ -198,10 +202,10 @@ kakao.maps.event.addListener(map, 'dragend', function() {
 kakao.maps.event.addListener(map, 'zoom_changed', function() {
     console.log("zoom : " + map.getLevel())
     map.setZoomable(true)
-    if(map.getLevel() > 5){
-        map.setZoomable(false)
-        map.setLevel(5)
-    }
+    // if(map.getLevel() > 7){
+    //     map.setZoomable(false)
+    //     map.setLevel(7)
+    // }
     if(dragLock == false) mapInit();
 });
 

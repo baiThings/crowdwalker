@@ -23,5 +23,5 @@ export let formdataHandler = {
     },
     getImgFormdata(){
         return this.imgFormdata;
-    }
+    },
 }

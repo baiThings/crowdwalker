@@ -85,11 +85,12 @@ export function setMarkerInformation(){
         }else toiletTitle = data[0]['dongNm']['S'];
     }else if(Object.hasOwn(data[0], 'dongNm')){
         toiletTitle = data[0]['dongNm']['S'];
-    }else{
+    }else if(Object.hasOwn(data[0], 'bldNm')){
         toiletTitle = data[0]['bldNm']['S'];
     }
     newNode.innerHTML = "<div id='marker-title'>" + toiletTitle + "</div>"
     newNode.innerHTML += "<div id='marker-summary'>" + data[0]['newPlatPlc']['S'] + "</div>"
+                        +"<div id='marker-summary'>" + data[0]['platPlc']['S'] + "</div>";
     newNode.innerHTML += "<div class='marker-summary-button'> <div id='marker-summary-button'>" + 
                             "<div id='marker-summary-button-input' type='input'>사진 등록</div>" + 
                             "<div id='marker-summary-button-input' type='input'>세부 정보 입력</div>" + 

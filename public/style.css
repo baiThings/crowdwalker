@@ -109,10 +109,24 @@ body::-webkit-scrollbar {
 #map_inner::-webkit-scrollbar {
     display: none;
 }
+
 .map-custom-movedong {
     position:absolute;
     top:2vh;
     left:10px;
+    overflow:hidden;
+    width:30%;
+    height:6%;
+    margin:0;
+    padding:0;
+    z-index:1;
+    font-size:12px;
+    display: flex;
+    align-items: center;
+}
+.map-custom-makeMarker{
+    position:absolute;
+    top:2vh;
     overflow:hidden;
     width:30%;
     height:6%;

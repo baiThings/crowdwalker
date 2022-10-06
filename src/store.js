@@ -9,20 +9,22 @@ export async function getMarkerKey(lat, lng, radius){
     let formdataTmp = new FormData();
     formdataTmp.append("lat", lat)
     formdataTmp.append("lng", lng)
-    switch(radius){
-        case 5:
-            formdataTmp.append("radius", "1800");
-            break;
-        case 4:
-            formdataTmp.append("radius", "1000");
-            break;
-        case 3:
-            formdataTmp.append("radius", "700");
-            break;
-        default:
-            formdataTmp.append("radius", "400");
-            break;
+    if(radius <= 3){
+        formdataTmp.append("radius", "600");
+    }else if(radius == 4){
+        formdataTmp.append("radius", "1000");
+    }else if(radius == 5){
+        formdataTmp.append("radius", "1800");
+    }else if(radius == 6){
+        formdataTmp.append("radius", "2500");
+    }else if(radius == 7){
+        formdataTmp.append("radius", "3500");
+    }else if(radius == 8){
+        formdataTmp.append("radius", "4500");
+    }else{
+        formdataTmp.append("radius", "6500");
     }
+
     if(whileFetching) controller.abort()
 
     controller = new AbortController();

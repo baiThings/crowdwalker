@@ -1,0 +1,26 @@
+{
+    "lat"           : "위도",        
+    "lng"           : "경도",         
+    "toiletType"    : "화장실타입", 
+    "entryFloor"    : "화장실층수",
+    "entryLock"     : "화장실문열림여부",     
+    "entryAuto"     : "입구자동문여부",   
+    "entryStair"    : "화장실계단없음",   
+    " "    : "입구문턱없음",      
+    "entryDotB"     : "입구점자블록",    
+    "entryDotS"     : "입구점자표시판존재여부",
+    "entrySpace"    : "입구폭넒음",
+    "internalSpace" : "내부공간넓음", 
+    "washUse"       : "세면대이용가능여부",
+    "handRailUse"   : "변기핸드레일이용가능여부",
+    "childKeepUse"  : "기저귀교환대이용가능여부",
+    "backKeepUse"   : "등받이이용가능여부",
+    "trashBin"      : "쓰레기통존재여부",
+    "emerCall"      : "비상벨존재여부",
+    "cleanChartEx"  : "청소점검표존재여부",
+    "cleanChartMg"  : "청소점검표관리여부",
+    "ableSpace"     : "가용공간확보",
+    "cleanStatus"   : "청결상태",  
+    "supplies"    : "비품제공유무"
+}
+    

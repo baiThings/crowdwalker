@@ -21,6 +21,7 @@ export let localStorageHandler = {
         return JSON.parse(myStorage.getItem('data'));
     },
     getItem(key){
+        console.log(JSON.parse(myStorage.getItem('data')));
         return myStorage.getItem(key)
     },
     clear(){
