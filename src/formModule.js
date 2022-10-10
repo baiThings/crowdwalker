@@ -45,7 +45,7 @@ export let formModule = (function(){
             console.log('D'+k + " : " + v);
             // console.log(localStorageHandler.getData()[0]['D'+k]['N']);
             try{   
-                if(k =='OpTime') num = parseInt(localStorageHandler.getData()[0]['D'+k]['S']);
+                if(k =='OpTime') num = localStorageHandler.getData()[0]['D'+k]['S'];
                 else num = parseInt(localStorageHandler.getData()[0]['D'+k]['N']);
             }
             catch{

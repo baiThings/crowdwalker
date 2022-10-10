@@ -109,14 +109,23 @@ body::-webkit-scrollbar {
 #map_inner::-webkit-scrollbar {
     display: none;
 }
-
-.map-custom-movedong {
+.map-custom-top{
     position:absolute;
+    top:2vh;
+    width:100%;
+    height:6%;
+    display: flex;
+    flex-direction:row;
+    justify-content: space-evenly;
+    align-items: center;
+}
+.map-custom-movedong {
+    /* position:absolute; */
     top:2vh;
     left:10px;
     overflow:hidden;
     width:30%;
-    height:6%;
+    height:100%;
     margin:0;
     padding:0;
     z-index:1;
@@ -125,25 +134,29 @@ body::-webkit-scrollbar {
     align-items: center;
 }
 .map-custom-makeMarker{
-    position:absolute;
+    /* position:absolute; */
     top:2vh;
     overflow:hidden;
     width:30%;
-    height:6%;
+    height:60%;
     margin:0;
     padding:0;
     z-index:1;
     font-size:12px;
     display: flex;
     align-items: center;
+    background-color: #fff;
+    text-align: center;
+    justify-content: space-evenly;
+    border: 1px #80808047 solid;
 }
 .map-custom-geolocation{
-    position:absolute;
+    /* position:absolute; */
     top:2vh;
     right:10px;
     overflow:hidden;
     width:10%;
-    height:6%;
+    height:100%;
     margin:0;
     padding:0;
     z-index:1;
@@ -152,7 +165,18 @@ body::-webkit-scrollbar {
     align-items: center;
     justify-content:space-evenly;
 }
-
+#map-custom-content{
+    position:absolute;
+    top:6vh;
+    width:100%;
+    height:100%;
+    background-color: #ffffffa6;
+    z-index: 1;
+}
+#map-custom-content-cancle{
+    text-align: end;
+    padding: 10px;
+}
  /* CSS 미세 조절 */
  #padding_zero{
     padding :0px!important;
@@ -188,7 +212,7 @@ body::-webkit-scrollbar {
     font-weight: bold;
     font-size: 1.5vh;
     padding: 0.2rem 0.5rem;
-    height: 2rem;
+    height: 1rem;
     display: flex;
     align-items: center;
 }
@@ -368,5 +392,24 @@ ul{
 }
 #triangle{
     transform-origin: 50% 50%;
+}
+
+
+#mask{
+    width: 100%;
+    height: 100%;
+    position:absolute; 
+    z-index:1; 
+    background-color:#000000; 
+    display:none; 
+    left:0; 
+    top:0;
+}
+#loadingImg{
+    width: 100%;
+    height: 100px;
+    position: absolute;
+    top: 50%;
+    z-index: 2;
 }
 

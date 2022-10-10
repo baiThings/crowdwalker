@@ -1,5 +1,6 @@
 {
   "name": "crowd-walker",
+  "homepage": ".",
   "version": "1.0.0",
   "description": "",
   "main": "./public/index.html",
@@ -10,9 +11,13 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.186.0",
     "blueimp-load-image": "^5.16.0",
     "serve": "^14.0.1",
     "yarn": "^1.22.19"
   },
-  "repository": "https://github.com/BasiThings/crowdwalker.git"
+  "repository": "https://github.com/BasiThings/crowdwalker.git",
+  "devDependencies": {
+    "webpack": "^5.74.0"
+  }
 }

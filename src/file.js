@@ -1,3 +1,4 @@
+import { addPhoto } from "./app.js";
 import { deleteNode, deleteNodeClass } from "./form.js";
 import { formdataHandler, makeFormdata } from "./formData.js";
 import { localStorageHandler } from "./localStorage.js";
@@ -23,13 +24,14 @@ export function uploadImageToilet(){
         "<ul class='img-preview'></ul>"
     parentNode.appendChild(imgNode);
     document.querySelector('.img-upload').addEventListener('change', function(e){
-        fileHandler.init();
-       
+        fileHandler.init(localStorageHandler.getItem('PK'));       
     });
     parentNode.appendChild(buttonNode());
     document.getElementById('button-upload-image').addEventListener('click', function(){
         fileHandler.selectFile();
-        fileHandler.uploadFile();
+        // fileHandler.uploadFile();
+        addPhoto("Ansan", localStorageHandler.getItem('PK'));
+
         // uploadImage(imgList)
         document.querySelector('.img-upload').value='';
         deleteNodeClass('.img-preview');
@@ -44,13 +46,13 @@ export function uploadImageToilet(){
 
 let filelist = [];
 let formdata = new FormData();
-let fileOptions = {
+export let fileOptions = {
     meta: true, 
     orientation: true, 
     canvas: true, 
 }
 let fileHandler = {
-    init(){
+    init(pk){
         const files = Array.from(document.querySelector('.img-upload').files);
         const imagePreview = document.querySelector('.img-preview');    
         files.forEach(file => {
@@ -59,10 +61,16 @@ let fileHandler = {
             loadImage(
                 file,
                 function(img, data){
-                    loadImage.writeExifData(data.imageHead, data, 'Orientation', 1)
+                    try {
+                        loadImage.writeExifData(data.imageHead, data, 'Orientation', 1) 
+                    } catch (error) {
+                        console.log(error)
+                    }
+
                     img.toBlob(function (blob) {
                         loadImage.replaceHead(blob, data.imageHead, function (newBlob) {
-                            let newfile = new File([newBlob], file.name, { type: "image/jpeg"});
+                            let newfile = new File([newBlob], pk, { type: "image/jpeg"});
+                            console.log(newfile)
                             file = newfile;
                             formdataHandler.setImgFormdata(file);
                             reader.readAsDataURL(file);
@@ -88,21 +96,27 @@ let fileHandler = {
             'user': 'user01'
         }
         formdataHandler.setImgOptionFormdata(formObj);
-        fetch(knockknockHandler.getUrl() + '/details/images', setRequireOptions(formdataHandler.getImgFormdata(), null))
+        loadingWithMask();
+        //knockknockHandler.getUrl() + '/details/images'
+        fetch('http://192.168.0.101:3000/single/upload', setRequireOptions(formdataHandler.getImgFormdata(), null))
             .then((response) => {
-                if(response.ok) alert('등록되었습니다.')
+                console.log(response)
+                if(response.ok) closeLoadingWithMask(true);
+                else closeLoadingWithMask(false)
                 return response.json()
             })
             .then((result) => {
                 console.log(result);
             })
             .catch((err) => {
+                closeLoadingWithMask(false);
                 alert("실패하였습니다. " + err)
+
                 console.log(err);
                 filelist = []
             })
         filelist = []
-        localStorageHandler.clear();
+        // localStorageHandler.clear();
         formdataHandler.init();
     },
     removeFile(e){
@@ -135,4 +149,40 @@ function createImgElement(e, file) {
     li.appendChild(img);
     li.appendChild(del);
     return li;
+}
+
+export function loadingWithMask(){
+    let maskHeight = $(document).height();
+    let maskWidth = window.document.body.clientWidth;
+    console.log(maskHeight);
+    
+    let mask = "<div id='mask' style='position:absolute; z-index:9000; background-color:#000000; display:none; left:0; top:0;'></div>";
+    let loadingImg = '';
+
+    loadingImg += "<div id='loadingImg'>";
+    loadingImg += " <img src='../resource/loading.gif' style='position: relative; display: block; margin: 0px auto;'/>";
+    loadingImg += "</div>";  
+    
+    $('body')
+        .append(mask)
+        .append(loadingImg)
+
+    $('#mask').css({
+            'width' : maskWidth
+            , 'height' : maskHeight
+            , 'opacity' : '0.3'
+    });
+
+    $('#mask').show();
+
+    $('#loadingImg').show();
+    
+}
+
+export function closeLoadingWithMask(flag){
+    console.log(flag)
+    $('#mask').remove();
+    $('#loadingImg').remove();
+    if(flag == true) alert('등록되었습니다.')
+    else alert('실패하였습니다.')
 }

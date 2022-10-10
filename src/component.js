@@ -1,3 +1,4 @@
+import { viewAlbum } from "./app.js";
 import { deleteNode } from "./form.js";
 import { makeFormdata } from "./formData.js";
 import { localStorageHandler } from "./localStorage.js";
@@ -15,8 +16,8 @@ window.onresize = function(){
      console.log("not ready : " + error)   
     }
 }
-let index = 0; 
-function translateContainerLeft(){
+export let index = 0; 
+export function translateContainerLeft(){
     if(index == 0) return;
     index += 1;
     console.log(index)
@@ -28,7 +29,7 @@ function translateContainerLeft(){
     container.style.transform = `translate3d(${dynamicWidth * index}px, 0, 0)`
     container.style.transitionDuration= '500ms';
 }
-function translateContainerRight(idx){
+export function translateContainerRight(idx){
     if(index == -(idx-1)) return;
     index -= 1;
 
@@ -40,76 +41,69 @@ function translateContainerRight(idx){
     container.style.transitionDuration= '500ms';
 }                    
  export function makeCarousel(){
-    let parentNode = document.getElementById("marker-content")
-    let carouselWrapperNode = document.createElement('div')
-    let carouselNode = document.createElement("div");
-    let leftButton = document.createElement('img')
-    let rightButton = document.createElement('img')
-    let carouselWidth = $('#map_inner').width();
+    viewAlbum('Ansan', localStorageHandler.getItem('PK'));
+    // let parentNode = document.getElementById("marker-content")
+    // let carouselWrapperNode = document.createElement('div')
+    // let carouselNode = document.createElement("div");
+    // let leftButton = document.createElement('img')
+    // let rightButton = document.createElement('img')
+    // let carouselWidth = $('#map_inner').width();
 
-    carouselWrapperNode.setAttribute('id', 'carousel-wrapper');
-    carouselWrapperNode.style.overflow="hidden"
-    carouselWrapperNode.style.width="100%";
-    carouselWrapperNode.style.position="relative";
+    // carouselWrapperNode.setAttribute('id', 'carousel-wrapper');
+    // carouselWrapperNode.style.overflow="hidden"
+    // carouselWrapperNode.style.width="100%";
+    // carouselWrapperNode.style.position="relative";
 
-    carouselNode.setAttribute("id", "carousel");
-    carouselNode.style.width= carouselWidth * 2 + "px";
-    carouselNode.style.height="100%";
-
-    getFile()
-    .then((imgSrc) =>{
-        let imgFiles = [];
-        imgFiles = imgSrc['urls']
-        for(let i = 0; i < imgFiles.length; i++){
-            // loadImage(
-            //     imgFiles[i], {meta: true, canvas:true, maxWidth:100, crossOrigin:'Anonymous'},
-            //     function(img, data){
-            //         console.log(img);
-            //         console.log(data.imageHead)
-            //     },
-               
-            // )
-            let newNode = document.createElement('img')
-            newNode.setAttribute('id', 'img-frame')
-            newNode.setAttribute('src', imgFiles[i]);
-            newNode.style.height = "100%";
-            newNode.style.width = carouselWidth + "px";
-            carouselNode.appendChild(newNode)
-        }
-        index = 0;
-        document.querySelectorAll('.next-button')[0].addEventListener('click', function(){
-            translateContainerRight(imgFiles.length);
-        })
-        document.querySelectorAll('.prev-button')[0].addEventListener('click', function(){
-            translateContainerLeft();
-        })
-    })
-    .catch(err => {
-        console.log(err);
-        alert("사진이 없습니다.")
-        deleteNode();
-        setMarkerInformation();
-    })
+    // carouselNode.setAttribute("id", "carousel");
+    // carouselNode.style.width= carouselWidth * 2 + "px";
+    // carouselNode.style.height="100%";
+    // getFile()
+    // .then((imgSrc) =>{
+    //     let imgFiles = [];
+    //     console.log(imgSrc)
+    //     imgFiles = imgSrc['urls']
+    //     for(let i = 0; i < imgFiles.length; i++){
+    //         let newNode = document.createElement('img')
+    //         newNode.setAttribute('id', 'img-frame')
+    //         newNode.setAttribute('src', imgFiles[i]);
+    //         newNode.style.height = "100%";
+    //         newNode.style.width = carouselWidth + "px";
+    //         carouselNode.appendChild(newNode)
+    //     }
+    //     index = 0;
+    //     document.querySelectorAll('.next-button')[0].addEventListener('click', function(){
+    //         translateContainerRight(imgFiles.length);
+    //     })
+    //     document.querySelectorAll('.prev-button')[0].addEventListener('click', function(){
+    //         translateContainerLeft();
+    //     })
+    // })
+    // .catch(err => {
+    //     console.log(err);
+    //     alert("사진이 없습니다.")
+    //     deleteNode();
+    //     setMarkerInformation();
+    // })
  
-    leftButton.setAttribute("class", "prev-button")
-    leftButton.style.position = "absolute";
-    leftButton.style.top = "100px";
-    leftButton.style.left = "10px";
-    leftButton.style.zIndex= "1";
+    // leftButton.setAttribute("class", "prev-button")
+    // leftButton.style.position = "absolute";
+    // leftButton.style.top = "100px";
+    // leftButton.style.left = "10px";
+    // leftButton.style.zIndex= "1";
    
-    rightButton.setAttribute("class", "next-button")
-    rightButton.style.position = "absolute";
-    rightButton.style.top = "100px";
-    rightButton.style.right = "10px";
-    rightButton.style.zIndex= "1";
+    // rightButton.setAttribute("class", "next-button")
+    // rightButton.style.position = "absolute";
+    // rightButton.style.top = "100px";
+    // rightButton.style.right = "10px";
+    // rightButton.style.zIndex= "1";
 
-    leftButton.setAttribute('src', "../resource/left-arrow.png")
-    rightButton.setAttribute('src', "../resource/right-arrow.png")
-    carouselWrapperNode.appendChild(rightButton)
-    carouselWrapperNode.appendChild(leftButton);
+    // leftButton.setAttribute('src', "../resource/left-arrow.png")
+    // rightButton.setAttribute('src', "../resource/right-arrow.png")
+    // carouselWrapperNode.appendChild(rightButton)
+    // carouselWrapperNode.appendChild(leftButton);
    
-    carouselWrapperNode.appendChild(carouselNode);
-    parentNode.appendChild(carouselWrapperNode);
+    // carouselWrapperNode.appendChild(carouselNode);
+    // parentNode.appendChild(carouselWrapperNode);
 
  }                          
 
@@ -150,4 +144,3 @@ async function getFile(){
     let result = (await response).json();
     return result;
 }
-

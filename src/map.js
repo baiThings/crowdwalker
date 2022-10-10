@@ -93,6 +93,7 @@ export let dragLock = false;
 export const changeDragLock = () => { 
     if(dragLock == false) dragLock = true;
     else dragLock = false;
+    console.log(dragLock);
 }
 
 export const clearMarkers = () => {
@@ -117,9 +118,12 @@ function getMarkerList(markers){
         let toiletNameList; 
         console.log(marker)
         getMarkerInformation(marker.getTitle()).then((data)=>{
-            // console.log(i);
+            console.log(data);
             try {
-                toiletNameList = data[0]["bldNm"]["S"] + " " + data[0]["dongNm"]["S"];
+                let dongNM = ''; let bldNM = '';
+                if(Object.hasOwn(data[0], 'dongNm')) dongNM = data[0]['dongNm']['S'];
+                if(Object.hasOwn(data[0], 'bldNm')) bldNM = data[0]['bldNm']['S'];
+                toiletNameList = dongNM + bldNM;
             } catch (error) {
                 toiletNameList = data[0]["platPlc"]["S"];
             }
@@ -238,6 +242,19 @@ export function mapContentChangeSize(size){
     }
 }
 
+// #1 
+// maphandler 제작중
+export let mapHandler = {
+    getMapCenter(){
+      return map.getCenter();
+    },
+    setMarkerMap(marker){
+        marker.setMap(map);
+    },
+    removeMarker(marker){
+        marker.setMap(null);  
+    }
+}
 // 동별로 중심 좌표 찍어주기.
 let element = document.getElementById("region_form_dong");
 element.onchange = function() {
@@ -266,6 +283,7 @@ fetch("../resource/dongTojson.json")
 var imageSrc_RedMarker = '../resource/marker_red.png', // 마커이미지의 주소입니다
     imageSrc_GreenMarker = '../resource/marker_green.png', 
     imageSrc_GreyMarker = '../resource/marker_grey.png',
+    imageSrc_OrangeMarker = '../resouce/marker_orange.png',
     imageSrc_Circle = markerSrcCircle,
     imageSize = new kakao.maps.Size(34, 34), // 마커이미지의 크기입니다
     imageOption = {offset: new kakao.maps.Point(10, 20)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다. (+왼쪽, +위쪽)
@@ -274,4 +292,5 @@ var imageSrc_RedMarker = '../resource/marker_red.png', // 마커이미지의 주
 var markerImageRedMarker = new kakao.maps.MarkerImage(imageSrc_RedMarker, imageSize, imageOption),
     markerImageGreenMarker = new kakao.maps.MarkerImage(imageSrc_GreenMarker, imageSize, imageOption),
     markerImageGreyMarker = new kakao.maps.MarkerImage(imageSrc_GreyMarker, imageSize, imageOption),
+    markerImageOrangeMarker = new kakao.maps.MarkerImage(imageSrc_OrangeMarker, imageSize, imageOption),
     markerImageCircleMarker = new kakao.maps.MarkerImage(imageSrc_Circle, imageSize, imageOption)

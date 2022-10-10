@@ -22,7 +22,7 @@ export async function getMarkerKey(lat, lng, radius){
     }else if(radius == 8){
         formdataTmp.append("radius", "4500");
     }else{
-        formdataTmp.append("radius", "6500");
+        formdataTmp.append("radius", "10000");
     }
 
     if(whileFetching) controller.abort()

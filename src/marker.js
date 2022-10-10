@@ -10,13 +10,15 @@ import { getMarkerInformation, getMarkerKey} from "./store.js";
 var imageSrc_RedMarker = '../resource/marker_red.png', // 마커이미지의 주소입니다
     imageSrc_GreenMarker = '../resource/marker_green.png', 
     imageSrc_GreyMarker = '../resource/marker_grey.png',
+    imageSrc_OrangeMarker = '../resource/marker_orange.png',
     imageSize = new kakao.maps.Size(34, 34), // 마커이미지의 크기입니다
     imageOption = {offset: new kakao.maps.Point(10, 20)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다. (+왼쪽, +위쪽)
       
 // 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
-var markerImageRedMarker = new kakao.maps.MarkerImage(imageSrc_RedMarker, imageSize, imageOption),
-    markerImageGreenMarker = new kakao.maps.MarkerImage(imageSrc_GreenMarker, imageSize, imageOption),
-    markerImageGreyMarker = new kakao.maps.MarkerImage(imageSrc_GreyMarker, imageSize, imageOption)
+export let markerImageRedMarker = new kakao.maps.MarkerImage(imageSrc_RedMarker, imageSize, imageOption),
+        markerImageGreenMarker = new kakao.maps.MarkerImage(imageSrc_GreenMarker, imageSize, imageOption),
+        markerImageGreyMarker = new kakao.maps.MarkerImage(imageSrc_GreyMarker, imageSize, imageOption),
+        markerImageOrangeMarker = new kakao.maps.MarkerImage(imageSrc_OrangeMarker, imageSize, imageOption)
 
 export function makeMarker(pos, pk, img){
     return new kakao.maps.Marker({
@@ -31,12 +33,14 @@ export function spreadMarkers(mapLat, mapLng, mapLevel){
     getMarkerKey(mapLat, mapLng, mapLevel).then((toilets) => {
         clusterer.clear();
         let markers= [];
+        console.log(toilets)
         try {
             for(let i = 0; i < toilets.length; i++){
                 let markerImg = '';
                 let latlng = toilets[i]['geoJson']['S'].split(',')
-                if(toilets[i].hasOwnProperty(['DtoiletType'])) markerImg = markerImageGreenMarker
-                else markerImg = markerImageRedMarker
+                if(toilets[i].hasOwnProperty(['DtoiletIs'])) markerImg = markerImageGreenMarker
+                else markerImg = markerImageOrangeMarker;
+                
                 let marker = makeMarker(new kakao.maps.LatLng(latlng[0], latlng[1]), toilets[i]['PK']['S'], markerImg)
                 kakao.maps.event.addListener(marker, 'click', function(){
                     getMarkerInformation(marker.getTitle()).then((data)=>{
@@ -88,9 +92,17 @@ export function setMarkerInformation(){
     }else if(Object.hasOwn(data[0], 'bldNm')){
         toiletTitle = data[0]['bldNm']['S'];
     }
+    console.log(data[0]['newPlatPlc']['S'])
+    let platplc = '';
+    let newplatplc = '';
+    if(data[0]['newPlatPlc']['S'] == 'None') newplatplc = "도로명 주소 없음"
+    else newplatplc = data[0]['newPlatPlc']['S'];
+    if(data[0]['platPlc']['S'] == 'None') platplc = "지번 주소 없음";
+    else platplc = data[0]['platPlc']['S'];
+
     newNode.innerHTML = "<div id='marker-title'>" + toiletTitle + "</div>"
-    newNode.innerHTML += "<div id='marker-summary'>" + data[0]['newPlatPlc']['S'] + "</div>"
-                        +"<div id='marker-summary'>" + data[0]['platPlc']['S'] + "</div>";
+    newNode.innerHTML += "<div id='marker-summary'>" + newplatplc + "</div>"
+                        +"<div id='marker-summary'>" + platplc + "</div>";
     newNode.innerHTML += "<div class='marker-summary-button'> <div id='marker-summary-button'>" + 
                             "<div id='marker-summary-button-input' type='input'>사진 등록</div>" + 
                             "<div id='marker-summary-button-input' type='input'>세부 정보 입력</div>" + 

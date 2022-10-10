@@ -8,6 +8,10 @@ export let localStorageHandler = {
     setPK(pk){
         myStorage.setItem('PK', pk);
     },
+    setItem(key, value){
+        myStorage.setItem(key, value);
+        console.log(key + "에 " + value + "가 저장 되었습니다.");
+    },
     setData(data){
         myStorage.setItem('data', data);
         console.log(data);
