@@ -51,7 +51,7 @@
 ```
 
 ## 사용 방법
-[크라우드 워커 사용 방법 바로가기](https://power-waiter-acb.notion.site/cbd12aed8a5545b9a958590157f77a02)
+[크라우드 워커 사용 방법 바로가기](https://baithings.notion.site/cbd12aed8a5545b9a958590157f77a02)
 
 ## 참조 
 
