@@ -11,7 +11,7 @@
   "type": "module",
   "dependencies": {
     "blueimp-load-image": "^5.16.0",
-    "serve": "^14.0.1",
+    "serve": "^14.2.3",
     "yarn": "^1.22.19"
   },
   "repository": "https://github.com/BasiThings/crowdwalker.git"
